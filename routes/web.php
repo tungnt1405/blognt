@@ -14,5 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    try {
+        throw new Exception('foobar');
+    } catch (Exception $e) {
+        Debugbar::addThrowable($e);
+    }
     return view('welcome');
 });
