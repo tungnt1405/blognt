@@ -5,10 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>My Blog</title>
-        @vite('resources/css/app.css')
+        {{-- @vite('resources/css/app.css') --}}
+        @vite('resources/js/app.js')
+
     </head>
     <body>
         <div id="app"></div>
-        @vite('resources/js/app.js')
     </body>
 </html>
