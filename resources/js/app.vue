@@ -1,5 +1,10 @@
 <template>
-    <h1>Laravel 9, Vue 2</h1>
+    <v-app>
+        <span class="test">hello</span>
+        <v-main>
+            <router-view></router-view>
+        </v-main>
+    </v-app>
 </template>
 
 <script>
