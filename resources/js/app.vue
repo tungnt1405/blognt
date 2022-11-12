@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <span class="test">hello</span>
         <v-main>
             <router-view></router-view>
         </v-main>

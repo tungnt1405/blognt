@@ -1,7 +1,12 @@
 <template>
-    <div class="flex justify-center items-center h-screen">
-        <p class="text-red-600">The quick brown fox...</p>
-        <router-link :to="{ name: 'About' }">About</router-link>
+    <div class="flex flex-column justify-center items-center h-screen">
+        <p class="text-red-600">Homepage</p>
+        <span
+            >Redirect to page
+            <router-link :to="{ name: 'About' }" class="text-blue-600"
+                >About</router-link
+            ></span
+        >
     </div>
 </template>
 
