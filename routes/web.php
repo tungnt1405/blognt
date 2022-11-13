@@ -20,11 +20,18 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/{any?}', function () {
-    return view('welcome');
+    return view('guest.app');
 })->where(['any' => '^(?!admin).*']);
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    })->name('admin.home');
     Route::get('/dashboard', function () {
-        return "test";
-    });
+        return view('admin.dashboard');
+    })->name('dashboard');
 });

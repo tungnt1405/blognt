@@ -1,8 +1,13 @@
 import "./bootstrap";
 import "../css/app.css";
 
-import { createApp } from "vue";
+import Alpine from "alpinejs";
 
+window.Alpine = Alpine;
+
+Alpine.start();
+
+import { createApp } from "vue";
 import app from "./app.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify.js";

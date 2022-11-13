@@ -3,7 +3,7 @@
         <p class="text-red-600">Homepage</p>
         <span
             >Redirect to page
-            <router-link :to="{ name: 'About' }" class="text-blue-600"
+            <router-link :to="{ name: 'About' }" class="text-blue-600/100"
                 >About</router-link
             ></span
         >
