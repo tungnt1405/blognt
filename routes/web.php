@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/{any}', function () {
-    return view('welcome');
-})->where(['any' => '.*']);;
+// Route::get('/{any}', function () {
+//     return view('welcome');
+// })->where(['any' => '.*']);
+
+
+Route::get('/{any?}', function () {
+    return view('guest.app');
+})->where(['any' => '^(?!admin).*']);
+
+Route::prefix('admin')->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    })->name('admin.home');
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+});
