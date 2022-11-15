@@ -33,5 +33,5 @@ Route::prefix('admin')->middleware([
     })->name('admin.home');
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->name('dashboard');
+    })->name('admin.dashboard');
 });
