@@ -29,7 +29,7 @@ Route::prefix('admin')->middleware([
     'verified'
 ])->group(function () {
     Route::get('/', function () {
-        return redirect()->route('dashboard');
+        return redirect()->route('admin.dashboard');
     })->name('admin.home');
     Route::get('/dashboard', function () {
         return view('dashboard');
