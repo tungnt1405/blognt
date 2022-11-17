@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\Jetstream\DeleteUser;
+use App\Http\Livewire\Admin\SideBar\Show;
 use App\Http\Livewire\Jetstream\ApiTokenManager;
 use App\Http\Livewire\Jetstream\CreateTeamForm;
 use App\Http\Livewire\Jetstream\DeleteTeamForm;
@@ -46,6 +47,8 @@ class JetstreamServiceProvider extends ServiceProvider
             Livewire::component('admin.teams.team-member-manager', TeamMemberManager::class);
             Livewire::component('admin.teams.delete-team-form', DeleteTeamForm::class);
         }
+
+        Livewire::component('admin.side-bar', Show::class);
     }
 
     /**

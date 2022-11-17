@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SideBarController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CurrentTeamController;
@@ -42,6 +43,7 @@ Route::prefix('admin')->middleware([
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
+    Route::get('/side-bar', [SideBarController::class, 'index'])->name('admin.side-bar');
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
         if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {
