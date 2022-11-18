@@ -44,6 +44,7 @@ Route::prefix('admin')->middleware([
         return view('admin.dashboard');
     })->name('admin.dashboard');
     Route::get('/side-bar', [SideBarController::class, 'index'])->name('admin.side-bar');
+    Route::post("/side-bar/new", [SideBarController::class, 'store'])->name('admin.side-bar.new');
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
         if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {
