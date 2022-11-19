@@ -34,7 +34,41 @@
     </div>
 </div>
 <x-section.section-border />
-
+<div class="md:grid md:grid-cols-3 md:gap-6">
+    <x-section.section-title>
+        <x-slot name="title">{{ __('Socials') }}</x-slot>
+        <x-slot name="description">{{ __('Các trang mạng xã hội sử dụng như facebook, linkin, zalo,...') }}</x-slot>
+    </x-section.section-title>
+    <div class="mt-5 md mt-0 md:col-span-2">
+        <div class="px-4 py-5 bg-white sm:p-6 shadow sm:rounded-tl-md sm:rounded-tr-md">
+            <span><i class="view-grid-plus"></i></span>
+            <div>
+                {{ Form::label('facebook', '', ['class' => 'awesome']) }}
+                {{ Form::text('facebook', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+            </div>
+            <div class="mt-4">
+                {{ Form::label('twitter', '', ['class' => 'awesome']) }}
+                {{ Form::text('twitter', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+            </div>
+            <div class="mt-4">
+                {{ Form::label('linkin', '', ['class' => 'awesome']) }}
+                {{ Form::text('linkin', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+            </div>
+            <div class="mt-4">
+                {{ Form::label('zalo', '', ['class' => 'awesome']) }}
+                {{ Form::text('zalo', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+            </div>
+            <div class="mt-4">
+                {{ Form::label('github', '', ['class' => 'awesome']) }}
+                {{ Form::text('github', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+            </div>
+            <div class="mt-4">
+                {{ Form::label('gmail', '', ['class' => 'awesome']) }}
+                {{ Form::text('gmail', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+            </div>
+        </div>
+    </div>
+</div>
 {!! Form::close() !!}
 
 @section('script')
