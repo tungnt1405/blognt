@@ -32,7 +32,7 @@ Route::get('/{any?}', function () {
     return view('guest.app');
 })->where(['any' => '^(?!admin).*']);
 
-Route::prefix('admin')->middleware([
+Route::prefix('admin_blog')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified'

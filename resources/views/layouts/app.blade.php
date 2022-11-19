@@ -11,13 +11,14 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
-    <script src="{{ asset('js/jquery-3.6.0.js') }}"></script>
-
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     <!-- Styles -->
     @livewireStyles
+    @yield('style')
+
+    <!-- Scripts -->
+    <script src="{{ asset('js/admin/lib/jquery-3.6.0.js') }}"></script>
+    <script src="{{ asset('js/admin/lib/ckeditor/ckeditor.js') }}"></script>
+    @vite(['resources/css/app.css', 'resources/js/admin/js/main.js'])
 </head>
 
 <body class="font-sans antialiased">
@@ -44,6 +45,7 @@
     @stack('modals')
 
     @livewireScripts
+    @yield('script')
 </body>
 
 </html>

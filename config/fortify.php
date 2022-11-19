@@ -74,7 +74,7 @@ return [
     |
     */
 
-    'prefix' => 'admin',
+    'prefix' => 'admin_blog',
 
     'domain' => null,
 
