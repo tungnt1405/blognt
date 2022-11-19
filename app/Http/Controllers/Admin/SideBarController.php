@@ -36,6 +36,7 @@ class SideBarController extends Controller
     public function store(Request $request)
     {
         //
+        return;
     }
 
     /**

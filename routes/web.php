@@ -32,7 +32,7 @@ Route::get('/{any?}', function () {
     return view('guest.app');
 })->where(['any' => '^(?!admin).*']);
 
-Route::prefix('admin')->middleware([
+Route::prefix('admin_blog')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified'
@@ -44,6 +44,7 @@ Route::prefix('admin')->middleware([
         return view('admin.dashboard');
     })->name('admin.dashboard');
     Route::get('/side-bar', [SideBarController::class, 'index'])->name('admin.side-bar');
+    Route::post("/side-bar/new", [SideBarController::class, 'store'])->name('admin.side-bar.new');
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
         if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {
