@@ -17,7 +17,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/admin/lib/jquery-3.6.0.js') }}"></script>
-    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
     @vite(['resources/css/app.css', 'resources/js/admin/js/main.js'])
 </head>
 
@@ -45,6 +44,7 @@
     @stack('modals')
 
     @livewireScripts
+    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
     @yield('script')
 </body>
 
