@@ -25,10 +25,17 @@ $socials = [
                 </div>
                 {{ Form::file('avatar', ['class' => 'hidden file__choose', 'accept' => 'image/*']) }}
                 {{ Form::button('Select Image', ['class' => 'block btn btn-choose my-2 btn-sm md:btn-md text-white']) }}
+                @error('avatar')
+                    <div class="mt-2 alert alert-error shadow-lg text-white">{{ $message }}</div>
+                @enderror
             </div>
             <div class="mt-8">
                 {{ Form::label('name', __('Tên của mày'), ['class' => 'awesome']) }}
-                {{ Form::text('name', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+                <input type="text" name="name" id="name"
+                    class="@error('name') border-red-600 shadow-md @enderror border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full">
+                @error('name')
+                    <div class="mt-2 alert alert-error shadow-lg text-white">{{ $message }}</div>
+                @enderror
             </div>
         </div>
     </div>
@@ -112,6 +119,10 @@ $socials = [
                 if (file_upload != '') {
                     const url_demo = URL.createObjectURL(event.target.files[0]);
                     $('.avatar').removeClass('hidden');
+                    const url_old = $('.avatar #img__show').attr('src');
+                    if (url_old != undefined || url_old.trim() != '') {
+                        URL.revokeObjectURL($('.avatar #img__show').attr('src'));
+                    }
                     $('.avatar #img__show').attr('src', url_demo);
                 } else {
                     $('.avatar').attr('src', '');
@@ -132,6 +143,10 @@ $socials = [
                         $('#socials').append($(element).closest('div').find('.social div').clone());
                     }
                 })
+            })
+
+            $(window).on('load', function() {
+                $('.btn-choose').click();
             })
         });
     </script>

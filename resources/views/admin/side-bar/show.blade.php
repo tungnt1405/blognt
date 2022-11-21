@@ -1,7 +1,8 @@
+@section('title', 'Sidebar Management')
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Manage SideBar') }}
+        <h2 class="font-semibold text-xl capitalize text-gray-800 leading-tight">
+            {{ __('sidebar management') }}
         </h2>
     </x-slot>
     <div>

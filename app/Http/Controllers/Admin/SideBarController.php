@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOwnerRequest;
+use App\Http\Requests\StoreSideBarRequest;
+use App\Http\Requests\UpdateOwnerRequest;
+use App\Models\Owner;
 use Illuminate\Http\Request;
 
 class SideBarController extends Controller
@@ -30,13 +34,13 @@ class SideBarController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreSideBarRequest  $req
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreSideBarRequest $req)
     {
-        //
-        return;
+        dd($req->all());
+        // return response();
     }
 
     /**
@@ -64,11 +68,11 @@ class SideBarController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Http\Requests\UpdateOwnerRequest  $request
+     * @param  \App\Models\Owner  $owner
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateOwnerRequest $request, Owner $owner)
     {
         //
     }
@@ -76,10 +80,10 @@ class SideBarController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Owner  $owner
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Owner $owner)
     {
         //
     }
