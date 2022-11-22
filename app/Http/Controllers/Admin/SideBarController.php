@@ -7,10 +7,26 @@ use App\Http\Requests\StoreOwnerRequest;
 use App\Http\Requests\StoreSideBarRequest;
 use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Owner;
+use App\Services\UploadFileService;
 use Illuminate\Http\Request;
 
 class SideBarController extends Controller
 {
+    /**
+     * @var UploadFileService
+     */
+    protected $_uploadFileService;
+
+    /**
+     * =SideBarController construct
+     * @param UploadFileService $uploadFileService
+     */
+    public function __construct(
+        UploadFileService $uploadFileService
+    ) {
+        $this->_uploadFileService = $uploadFileService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -39,7 +55,10 @@ class SideBarController extends Controller
      */
     public function store(StoreSideBarRequest $req)
     {
-        dd($req->all());
+        $b64_img = $this->_uploadFileService->getBase64Image($req->file('avatar'));
+        echo "<img src='" . $b64_img . "' />";
+        die();
+        // dd($req->all());
         // return response();
     }
 
