@@ -4,12 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Owner extends Model
 {
     use HasFactory;
 
     protected $table = 'dtb_owner';
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'thumbnail',
@@ -26,8 +34,17 @@ class Owner extends Model
     ];
 
 
-    // public function scopeGetById($query)
-    // {
-    //     return $query->with([]);
-    // }
+    public function scopeGetAllOwner($query)
+    {
+        return $query->all();
+    }
+
+    public function createOwner($data)
+    {
+        try {
+            return $this->create($data);
+        } catch (\Exception $ex) {
+            Log::error($ex->getMessage());
+        }
+    }
 }

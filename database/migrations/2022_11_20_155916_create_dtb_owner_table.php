@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('dtb_owner', function (Blueprint $table) {
             $table->id();
-            $table->string('thumbnail');
+            $table->longText('thumbnail')->nullable();
             $table->string('name_owner');
             $table->text('description')->nullable();
             $table->string('link_1')->nullable();

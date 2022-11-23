@@ -8,6 +8,7 @@ use App\Http\Requests\StoreSideBarRequest;
 use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Owner;
 use App\Services\UploadFileService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SideBarController extends Controller
@@ -34,7 +35,9 @@ class SideBarController extends Controller
      */
     public function index()
     {
-        return view('admin.side-bar.show');
+        $owner = 1;
+        // dd($owner);
+        return view('admin.side-bar.show')->with(['owner' => $owner]);
     }
 
     /**
@@ -55,11 +58,25 @@ class SideBarController extends Controller
      */
     public function store(StoreSideBarRequest $req)
     {
+        $owner = new Owner();
         $b64_img = $this->_uploadFileService->getBase64Image($req->file('avatar'));
-        echo "<img src='" . $b64_img . "' />";
-        die();
-        // dd($req->all());
-        // return response();
+        $data = array(
+            'thumbnail' => $b64_img,
+            'name_owner' => $req->get('name'),
+            'description' => '',
+            'link_1' => '',
+            'link_2' => '',
+            'link_3' => '',
+            'link_4' => '',
+            'link_5' => '',
+            'link_6' => '',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        );
+
+        $owner->createOwner($data);
+
+        return redirect()->route('admin.side-bar');
     }
 
     /**

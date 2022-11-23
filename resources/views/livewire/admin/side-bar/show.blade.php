@@ -18,6 +18,11 @@ $socials = [
     <div class="mt-5 md mt-0 md:col-span-2">
         <div class="px-4 py-5 bg-white sm:p-6 shadow sm:rounded-tl-md sm:rounded-tr-md">
             <div>
+                <div class="avatar pl-2 sm:pl-0">
+                    <div class="rounded-full w-24 sm:w-32">
+                        <img src="{{ $owner->thumbnail }}" alt="img-show">
+                    </div>
+                </div>
                 <div class="avatar pl-2 sm:pl-0 hidden">
                     <div class="rounded-full w-24 sm:w-32">
                         <img src="" id="img__show" alt="img-show">
