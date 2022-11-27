@@ -8,6 +8,31 @@ $socials = [
     6 => 'gmail',
 ];
 ?>
+@section('style')
+<style>
+    .arrow{
+        position: absolute;
+        width: 80px;
+        height: 20px;
+        line-height: 10px;
+        background: #bebebe;
+        right: 0;
+        top: 45%;
+        transform: translateX(120%);
+    }
+    .arrow::after{
+        content: '';
+        position: absolute;
+        right:0;
+        transform: translateX(20px);
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-left: 20px solid #bebebe;
+        border-bottom: 10px solid transparent;
+    }
+</style>
+@endsection
 {!! Form::open(['route' => 'admin.side-bar.new', 'enctype' => 'multipart/form-data']) !!}
 {{ Form::token() }}
 <div class="md:grid md:grid-cols-3 md:gap-6">
@@ -18,9 +43,10 @@ $socials = [
     <div class="mt-5 md mt-0 md:col-span-2">
         <div class="px-4 py-5 bg-white sm:p-6 shadow sm:rounded-tl-md sm:rounded-tr-md">
             <div>
-                <div class="avatar pl-2 sm:pl-0">
+                <div class="avatar pl-2 sm:pl-0 relative">
                     <div class="rounded-full w-24 sm:w-32">
                         <img src="{{ $owner->thumbnail }}" alt="img-show">
+                        <div class="arrow"></div>
                     </div>
                 </div>
                 <div class="avatar pl-2 sm:pl-0 hidden">
