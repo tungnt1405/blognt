@@ -60,21 +60,23 @@ class SideBarController extends Controller
     {
         $owner = new Owner();
         $b64_img = $this->_uploadFileService->getBase64Image($req->file('avatar'));
-        $data = array(
-            'thumbnail' => $b64_img,
-            'name_owner' => $req->get('name'),
-            'description' => '',
-            'link_1' => '',
-            'link_2' => '',
-            'link_3' => '',
-            'link_4' => '',
-            'link_5' => '',
-            'link_6' => '',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        );
+        echo "<img src='". $b64_img ."' alt='11'";
+        die;
+        // $data = array(
+        //     'thumbnail' => $b64_img,
+        //     'name_owner' => $req->get('name'),
+        //     'description' => '',
+        //     'link_1' => '',
+        //     'link_2' => '',
+        //     'link_3' => '',
+        //     'link_4' => '',
+        //     'link_5' => '',
+        //     'link_6' => '',
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now()
+        // );
 
-        $owner->createOwner($data);
+        // $owner->createOwner($data);
 
         return redirect()->route('admin.side-bar');
     }

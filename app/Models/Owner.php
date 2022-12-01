@@ -11,6 +11,8 @@ class Owner extends Model
     use HasFactory;
 
     protected $table = 'dtb_owner';
+    
+    public $timestamps = false;
 
     /**
      * The primary key associated with the table.
@@ -20,31 +22,7 @@ class Owner extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'thumbnail',
-        'name_owner',
-        'description',
-        'link_1',
-        'link_2',
-        'link_3',
-        'link_4',
-        'link_5',
-        'link_6',
-        'create_at',
-        'update_at'
+        'meta_key',
+        'meta_value'
     ];
-
-
-    public function scopeGetAllOwner($query)
-    {
-        return $query->all();
-    }
-
-    public function createOwner($data)
-    {
-        try {
-            return $this->create($data);
-        } catch (\Exception $ex) {
-            Log::error($ex->getMessage());
-        }
-    }
 }
