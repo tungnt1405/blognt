@@ -15,16 +15,8 @@ return new class extends Migration
     {
         Schema::create('dtb_owner', function (Blueprint $table) {
             $table->id();
-            $table->longText('thumbnail')->nullable();
-            $table->string('name_owner');
-            $table->text('description')->nullable();
-            $table->string('link_1')->nullable();
-            $table->string('link_2')->nullable();
-            $table->string('link_3')->nullable();
-            $table->string('link_4')->nullable();
-            $table->string('link_5')->nullable();
-            $table->string('link_6')->nullable();
-            $table->timestamps();
+            $table->string('meta_key');
+            $table->string('meta_value')->nullable();
         });
     }
 
@@ -35,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dtb_sidebar');
+        Schema::dropIfExists('dtb_owner');
     }
 };
