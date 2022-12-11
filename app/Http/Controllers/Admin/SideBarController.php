@@ -3,29 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOwnerRequest;
 use App\Http\Requests\StoreSideBarRequest;
 use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Owner;
-use App\Services\UploadFileService;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Repositories\Admin\OwnerRepository;
 
 class SideBarController extends Controller
 {
     /**
-     * @var UploadFileService
+     * @var OwnerRepository
      */
-    protected $_uploadFileService;
+    protected $ownerRepository;
 
     /**
-     * =SideBarController construct
-     * @param UploadFileService $uploadFileService
+     * SideBarController construct
+     * @param OwnerRepository $ownerRepository
      */
     public function __construct(
-        UploadFileService $uploadFileService
+        OwnerRepository $ownerRepository
     ) {
-        $this->_uploadFileService = $uploadFileService;
+        $this->ownerRepository = $ownerRepository;
     }
 
     /**
@@ -35,8 +32,7 @@ class SideBarController extends Controller
      */
     public function index()
     {
-        $owner = 1;
-        // dd($owner);
+        $owner = $this->ownerRepository->getAll();
         return view('admin.side-bar.show')->with(['owner' => $owner]);
     }
 
@@ -58,26 +54,8 @@ class SideBarController extends Controller
      */
     public function store(StoreSideBarRequest $req)
     {
-        $owner = new Owner();
-        $b64_img = $this->_uploadFileService->getBase64Image($req->file('avatar'));
-        echo "<img src='". $b64_img ."' alt='11'";
-        die;
-        // $data = array(
-        //     'thumbnail' => $b64_img,
-        //     'name_owner' => $req->get('name'),
-        //     'description' => '',
-        //     'link_1' => '',
-        //     'link_2' => '',
-        //     'link_3' => '',
-        //     'link_4' => '',
-        //     'link_5' => '',
-        //     'link_6' => '',
-        //     'created_at' => Carbon::now(),
-        //     'updated_at' => Carbon::now()
-        // );
-
-        // $owner->createOwner($data);
-
+        $datas = $req->all();
+        $this->ownerRepository->setOwnerAttributes($datas);
         return redirect()->route('admin.side-bar');
     }
 

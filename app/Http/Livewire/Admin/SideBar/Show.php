@@ -7,6 +7,8 @@ use Livewire\Component;
 
 class Show extends Component
 {
+    public $owner;
+    
     public function render()
     {
         return view('livewire.admin.side-bar.show', []);

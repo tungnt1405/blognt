@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('dtb_owner', function (Blueprint $table) {
             $table->id();
             $table->string('meta_key');
-            $table->string('meta_value')->nullable();
+            $table->longText('meta_value')->nullable();
         });
     }
 
