@@ -10,9 +10,10 @@ class Owner extends Model
 {
     use HasFactory;
 
+    const CREATE_AT = 'create_at';
+    const UPDATED_AT = 'updated_at';
+
     protected $table = 'dtb_owner';
-    
-    public $timestamps = false;
 
     /**
      * The primary key associated with the table.
@@ -22,7 +23,14 @@ class Owner extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'meta_key',
-        'meta_value'
+        'avatar',
+        'name',
+        'introduce',
+        'gmail_url',
+        'fb_url',
+        'twitter_url',
+        'linkin_url',
+        'zalo_url',
+        'github_url',
     ];
 }

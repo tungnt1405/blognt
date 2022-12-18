@@ -47,7 +47,8 @@ Route::prefix('admin_blog')->middleware([
     // Route::post("/side-bar/new", [SideBarController::class, 'store'])->name('admin.side-bar.new');
     Route::resource('side-bar', SideBarController::class)->names([
         'index' => 'admin.side-bar',
-        'store' => 'admin.side-bar.new'
+        'store' => 'admin.side-bar.new',
+        'update' => 'admin.side-bar.update',
     ]);
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {

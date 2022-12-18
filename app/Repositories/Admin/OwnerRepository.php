@@ -32,23 +32,54 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
     public function setOwnerAttributes($attr)
     {
         $base_64  = $this->_uploadFileService->getBase64Image($attr['avatar']);
-        echo "<img src=\"$base_64\" width=\"180px\" height=\"auto\" />";
         try {
             $setField = array(
-                array('meta_key' => 'avatar', 'meta_value' => $base_64),
-                array('meta_key' => 'name', 'meta_value' => $attr['name']),
-                array('meta_key' => 'description', 'meta_value' => $attr['description']),
-                array('meta_key' => 'facebook', 'meta_value' => $attr['facebook'] ?? ''),
-                array('meta_key' => 'twitter', 'meta_value' => $attr['twitter'] ?? ''),
-                array('meta_key' => 'linkin', 'meta_value' => $attr['linkin'] ?? ''),
-                array('meta_key' => 'zalo', 'meta_value' => $attr['zalo'] ?? '' ),
-                array('meta_key' => 'github', 'meta_value' => $attr['github'] ?? '' ),
-                array('meta_key' => 'gmail', 'meta_value' => $attr['gmail'] ?? '')
+                'avatar' => $base_64,
+                'name' => $attr['name'],
+                'introduce' => $attr['description'],
+                'gmail_url' => $attr['gmail'],
+                'fb_url' => $attr['facebook'],
+                'twitter_url' => $attr['twitter'],
+                'linkin_url' => $attr['linkin'],
+                'zalo_url' => $attr['zalo'] ,
+                'github_url' => $attr['github']
             );
 
-            $this->model->insert($setField);
+            return $this->create($setField);
         } catch (Exception $ex) {
             throw new \RuntimeException($ex->getMessage());
         }
+    }
+
+    public function getFirstRecord()
+    {
+        return $this->model->all()->first();
+    }
+
+    public function update($id, $attributes = [])
+    {
+        if(isset($attributes['avatar'])){
+            $base_64 = $this->_uploadFileService->getBase64Image($attributes['avatar']);
+        }
+
+        $result = $this->find($id);
+        $setField = array(
+            'avatar' => $base_64 ?? $result->avatar,
+            'name' => $attributes['name'],
+            'introduce' => $attributes['description'],
+            'gmail_url' => $attributes['gmail'] ?? '',
+            'fb_url' => $attributes['facebook'] ?? '',
+            'twitter_url' => $attributes['twitter'] ?? '',
+            'linkin_url' => $attributes['linkin'] ?? '',
+            'zalo_url' => $attributes['zalo'] ?? '',
+            'github_url' => $attributes['github'] ?? ''
+        );
+
+        if ($result) {
+            $result->update($setField);
+            return $result;
+        }
+
+        return false;
     }
 }

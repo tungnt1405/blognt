@@ -17,7 +17,8 @@
         "laravel/tinker": "^2.7",
         "laravelcollective/html": "^6.3",
         "livewire/livewire": "^2.5",
-        "nesbot/carbon": "^2.63"
+        "nesbot/carbon": "^2.63",
+        "yoeunes/toastr": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

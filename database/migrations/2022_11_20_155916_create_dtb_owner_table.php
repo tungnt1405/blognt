@@ -15,8 +15,17 @@ return new class extends Migration
     {
         Schema::create('dtb_owner', function (Blueprint $table) {
             $table->id();
-            $table->string('meta_key');
-            $table->longText('meta_value')->nullable();
+            $table->longText('avatar')->nullable();
+            $table->string('name', 100);
+            $table->text('introduce')->nullable();
+            $table->string('gmail_url', 1000)->nullable();
+            $table->string('fb_url', 1000)->nullable();
+            $table->string('twitter_url', 1000)->nullable();
+            $table->string('linkin_url', 1000)->nullable();
+            $table->string('zalo_url', 1000)->nullable();
+            $table->string('github_url', 1000)->nullable();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable();
         });
     }
 

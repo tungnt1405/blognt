@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSideBarRequest;
 use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Owner;
 use App\Repositories\Admin\OwnerRepository;
+use Illuminate\Database\Eloquent\Model;
 
 class SideBarController extends Controller
 {
@@ -32,7 +33,8 @@ class SideBarController extends Controller
      */
     public function index()
     {
-        $owner = $this->ownerRepository->getAll();
+        $owner = $this->ownerRepository->getFirstRecord();
+
         return view('admin.side-bar.show')->with(['owner' => $owner]);
     }
 
@@ -55,8 +57,14 @@ class SideBarController extends Controller
     public function store(StoreSideBarRequest $req)
     {
         $datas = $req->all();
-        $this->ownerRepository->setOwnerAttributes($datas);
-        return redirect()->route('admin.side-bar');
+        $owner = $this->ownerRepository->setOwnerAttributes($datas);
+        if($owner instanceof Model){
+            toastr()->success('Create successfully!');
+            return redirect()->route('admin.side-bar');
+        }
+
+        toastr()->error('Oops! Create failed.');
+        return back();
     }
 
     /**
@@ -88,9 +96,17 @@ class SideBarController extends Controller
      * @param  \App\Models\Owner  $owner
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateOwnerRequest $request, Owner $owner)
+    public function update(UpdateOwnerRequest $request, Owner $side_bar)
     {
-        //
+        $data = $request->all();
+        $updateOwner = $this->ownerRepository->update($side_bar->id, $data);
+
+        if($updateOwner instanceof Model){
+            toastr()->success('Update successfully!');
+            return redirect()->route('admin.side-bar');
+        }
+        toastr()->error('An error has occurred please try again later.', 'Oops!');
+        return back();
     }
 
     /**

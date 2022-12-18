@@ -7,4 +7,5 @@ use App\Repositories\Interfaces\RepositoryInterface;
 interface OwnerRepositoryInterface extends RepositoryInterface
 {
     public function setOwnerAttributes($attr);
+    public function getFirstRecord();
 }
