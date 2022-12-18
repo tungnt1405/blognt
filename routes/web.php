@@ -43,8 +43,13 @@ Route::prefix('admin_blog')->middleware([
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
-    Route::get('/side-bar', [SideBarController::class, 'index'])->name('admin.side-bar');
-    Route::post("/side-bar/new", [SideBarController::class, 'store'])->name('admin.side-bar.new');
+    // Route::get('/side-bar', [SideBarController::class, 'index'])->name('admin.side-bar');
+    // Route::post("/side-bar/new", [SideBarController::class, 'store'])->name('admin.side-bar.new');
+    Route::resource('side-bar', SideBarController::class)->names([
+        'index' => 'admin.side-bar',
+        'store' => 'admin.side-bar.new',
+        'update' => 'admin.side-bar.update',
+    ]);
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
         if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {

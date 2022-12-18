@@ -6,7 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>
+        @if (View::hasSection('title'))
+            @yield('title') {{ __('- Admin ') }}{{ config('app.name', 'Laravel') }}
+        @else
+            {{ __('Admin ') }}{{ config('app.name', 'Laravel') }}
+        @endif
+    </title>
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
@@ -17,8 +23,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/admin/lib/jquery-3.6.0.js') }}"></script>
-    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
-    @vite(['resources/css/app.css', 'resources/js/admin/js/main.js'])
+    @vite(['resources/css/app.css', 'resources/scss/admin/main.scss', 'resources/js/admin/main.js'])
 </head>
 
 <body class="font-sans antialiased">
@@ -45,6 +50,7 @@
     @stack('modals')
 
     @livewireScripts
+    <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
     @yield('script')
 </body>
 

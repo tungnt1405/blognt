@@ -6,8 +6,9 @@ export default defineConfig({
         laravel({
             input: [
                 "resources/scss/main.scss",
+                "resources/scss/admin/main.css",
                 "resources/js/app.js",
-                "resources/js/admin/js/main.js",
+                "resources/js/admin/**",
             ],
             refresh: [...refreshPaths, "app/Http/Livewire/**"],
         }),
