@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Actions\Jetstream\DeleteUser;
 use App\Http\Livewire\Admin\SideBar\Show;
 use App\Http\Livewire\Jetstream\ApiTokenManager;
+use App\Http\Livewire\Jetstream\ChangeLanguageForm;
 use App\Http\Livewire\Jetstream\CreateTeamForm;
 use App\Http\Livewire\Jetstream\DeleteTeamForm;
 use App\Http\Livewire\Jetstream\DeleteUserForm;
@@ -36,6 +37,7 @@ class JetstreamServiceProvider extends ServiceProvider
         Livewire::component('admin.profile.two-factor-authentication-form', TwoFactorAuthenticationForm::class);
         Livewire::component('admin.profile.logout-other-browser-sessions-form', LogoutOtherBrowserSessionsForm::class);
         Livewire::component('admin.profile.delete-user-form', DeleteUserForm::class);
+        Livewire::component('admin.profile.change-language-form', ChangeLanguageForm::class);
 
         if (Features::hasApiFeatures()) {
             Livewire::component('api.api-token-manager', ApiTokenManager::class);

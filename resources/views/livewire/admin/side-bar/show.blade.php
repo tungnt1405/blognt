@@ -41,8 +41,8 @@ $method = !empty($owner) ? 'PUT' :'POST';
 {{ Form::token() }}
 <div class="md:grid md:grid-cols-3 md:gap-6">
     <x-section.section-title>
-        <x-slot name="title">{{ __('Avatar') }}</x-slot>
-        <x-slot name="description">{{ __('Hiển thị ảnh trên sidebar của website') }}</x-slot>
+        <x-slot name="title">{{ __('title.owner.avatar') }}</x-slot>
+        <x-slot name="description">{{ __('title.owner.sub_avatar') }}</x-slot>
     </x-section.section-title>
     <div class="mt-5 md mt-0 md:col-span-2">
         <div class="px-4 py-5 bg-white sm:p-6 shadow sm:rounded-tl-md sm:rounded-tr-md">

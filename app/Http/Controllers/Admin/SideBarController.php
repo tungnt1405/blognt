@@ -59,11 +59,11 @@ class SideBarController extends Controller
         $datas = $req->all();
         $owner = $this->ownerRepository->setOwnerAttributes($datas);
         if($owner instanceof Model){
-            toastr()->success('Create successfully!');
+            $this->toastrSuccess('Create successfully!');
             return redirect()->route('admin.side-bar');
         }
 
-        toastr()->error('Oops! Create failed.');
+        $this->toastrError('Oops! Create failed.', 'Oops!');
         return back();
     }
 
@@ -102,10 +102,10 @@ class SideBarController extends Controller
         $updateOwner = $this->ownerRepository->update($side_bar->id, $data);
 
         if($updateOwner instanceof Model){
-            toastr()->success('Update successfully!');
+            $this->toastrSuccess('Update successfully!');
             return redirect()->route('admin.side-bar');
         }
-        toastr()->error('An error has occurred please try again later.', 'Oops!');
+        $this->toastrError('An error has occurred please try again later.', 'Oops!');
         return back();
     }
 
