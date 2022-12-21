@@ -1,3 +1,22 @@
 {
-    "Profile": "Thông tin người dùng"
+    "Dashboard": "Bảng điều khiển",
+    "Sidebar Management" : "Quản lý Menu",
+    "Setting": "Cài đặt",
+    "Description": "Mô tả",
+    "Socials" : "Mạng xã hội",
+    "Name": "Tên của mày",
+    "Manage Account": "Quản lý tài khoản",
+    "Profile": "Thông tin người dùng",
+    "Profile Information" : "Thông tin cá nhân",
+    "Update Password" : "Cập nhật Password",
+    "Current Password" : "Mật khẩu hiện tại",
+    "New Password" : "Mật khẩu mới",
+    "Confirm Password" : "Xác nhận mật khẩu",
+    "Two Factor Authentication": "Xác thực hai yếu tố",
+    "Browser Sessions": "Phiên trình duyệt",
+    "Delete Account": "Xoá tài khoản",
+    "Enable" : "Bật",
+    "Save" : "Lưu",
+    "Log Out Other Browser Sessions": "Xoá phiên đăng nhập",
+    "Log Out": "Đăng xuất"
 }
