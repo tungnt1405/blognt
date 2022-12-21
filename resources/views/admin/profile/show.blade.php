@@ -30,6 +30,12 @@
             @endif
 
             <div class="mt-10 sm:mt-0">
+                @livewire('admin.profile.change-language-form')
+            </div>
+
+            <x-jet-section-border />
+
+            <div class="mt-10 sm:mt-0">
                 @livewire('admin.profile.logout-other-browser-sessions-form')
             </div>
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\Livewire\PrivacyPolicyController;
 use App\Http\Controllers\Livewire\TeamController;
 use App\Http\Controllers\Livewire\TermsOfServiceController;
 use App\Http\Controllers\Livewire\UserProfileController;
+use App\Http\Controllers\SystemController;
 use App\Http\Controllers\TeamInvitationController;
 use Laravel\Jetstream\Jetstream;
 
@@ -28,14 +29,15 @@ use Laravel\Jetstream\Jetstream;
 // })->where(['any' => '.*']);
 
 
-Route::get('/{any?}', function () {
+Route::get('/{any}', function () {
     return view('guest.app');
 })->where(['any' => '^(?!admin).*']);
 
 Route::prefix('admin_blog')->middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
-    'verified'
+    'verified',
+    'localization'
 ])->group(function () {
     Route::get('/', function () {
         return redirect()->route('admin.dashboard');
@@ -88,4 +90,6 @@ Route::prefix('admin_blog')->middleware([
             });
         });
     });
+
+    Route::get('/change-language/{language}', [SystemController::class, 'changeLanguage'])->name('change-language');
 });

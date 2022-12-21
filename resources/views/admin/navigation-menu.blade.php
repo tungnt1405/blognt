@@ -18,6 +18,9 @@
                     <x-jet-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs('admin.side-bar')">
                         {{ __('Sidebar Management') }}
                     </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs('admin.side-bar')">
+                        {{ __('Setting') }}
+                    </x-jet-nav-link>
                 </div>
             </div>
 

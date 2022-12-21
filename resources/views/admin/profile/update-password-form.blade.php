@@ -4,7 +4,7 @@
     </x-slot>
 
     <x-slot name="description">
-        {{ __('Ensure your account is using a long, random password to stay secure.') }}
+        {{ __('title.profile.sub_password') }}
     </x-slot>
 
     <x-slot name="form">

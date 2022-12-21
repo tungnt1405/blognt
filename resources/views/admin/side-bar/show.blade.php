@@ -2,7 +2,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl capitalize text-gray-800 leading-tight">
-            {{ __('sidebar management') }}
+            {{ __('Sidebar Management') }}
         </h2>
     </x-slot>
     <div>
