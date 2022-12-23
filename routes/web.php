@@ -9,6 +9,7 @@ use App\Http\Controllers\Livewire\PrivacyPolicyController;
 use App\Http\Controllers\Livewire\TeamController;
 use App\Http\Controllers\Livewire\TermsOfServiceController;
 use App\Http\Controllers\Livewire\UserProfileController;
+use App\Http\Controllers\Admin\System\SettingsController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\TeamInvitationController;
 use Laravel\Jetstream\Jetstream;
@@ -52,6 +53,11 @@ Route::prefix('admin_blog')->middleware([
         'store' => 'admin.side-bar.new',
         'update' => 'admin.side-bar.update',
     ]);
+    Route::controller(SettingsController::class)->group(function(){
+        Route::get('/system', 'index')->name('admin.setting');
+        Route::post('/system/redirect-to', 'redirectToSelected')->name('admin.setting.redirect');
+        Route::get('/system/countries', 'countries')->name('admin.setting.countries');
+    });
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
         if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {

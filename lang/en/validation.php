@@ -170,5 +170,9 @@ return [
     */
 
     'attributes' => [],
-
+    'admin' => [
+        'setting' => [
+            'error' => "Please enter a setting"
+        ]
+    ]
 ];

@@ -1,6 +1,7 @@
 {
     "Dashboard": "Bảng điều khiển",
     "Sidebar Management" : "Quản lý Menu",
+    "Setting Manager": "Cài đặt",
     "Setting": "Cài đặt",
     "Description": "Mô tả",
     "Socials" : "Mạng xã hội",
@@ -15,8 +16,10 @@
     "Two Factor Authentication": "Xác thực hai yếu tố",
     "Browser Sessions": "Phiên trình duyệt",
     "Delete Account": "Xoá tài khoản",
+    "Please select a setting": "Chọn thứ để cài đặt",
     "Enable" : "Bật",
     "Save" : "Lưu",
+    "Select": "Chọn",
     "Log Out Other Browser Sessions": "Xoá phiên đăng nhập",
     "Log Out": "Đăng xuất"
 }
