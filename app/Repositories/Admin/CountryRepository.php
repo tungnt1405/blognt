@@ -7,9 +7,14 @@ use App\Repositories\Interfaces\Admin\CountryRepositoryInterface;
 
 class CountryRepository extends BaseRepository implements CountryRepositoryInterface
 {
+
+    public function __construct(){
+        parent::__construct();
+    }
+
     public function getModel()
     {
-        return \App\Models\Country::class;
+        return \App\Models\Master\Country::class;
     }
 
     public function getCountry()

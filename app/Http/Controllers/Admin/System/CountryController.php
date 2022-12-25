@@ -2,113 +2,50 @@
 
 namespace App\Http\Controllers\Admin\System;
 
-use Illuminate\Http\Request;
-use App\Repositories\Interfaces\Admin\CountryRepositoryInterface;
+use App\Http\Requests\Setting\AddCountriesRequest;
+use App\Services\Admin\CountryService;
 
 class CountryController extends SettingsController
 {
     /**
-     * @var CountryRepositoryInterface|\App\Repositories\Repository
+     * @var \App\Services\Admin\CountryService
      */
-    protected $countryRepo;
+    protected $_countryService;
 
-    public function __construct(CountryRepositoryInterface $country)
+    public function __construct(CountryService $countryService)
     {
-        $this->countryRepo = $country;
-    }
-
-
-    /**
-    * Display a listing of the resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
-    public function index()
-    {
-        $country = $this->countryRepo->getAll();
-
-        return view('', ['country' => $country]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $data = $request->all();
-
-        //... Validation here
-
-        $country = $this->countryRepo->create($data);
-
-        return redirect()->route('');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $country = $this->countryRepo->find($id);
-
-        return view('', ['country' => $country]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $this->_countryService = $countryService;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * 
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function addCountries(AddCountriesRequest $request)
     {
         $data = $request->all();
 
-        //... Validation here
+        if(!$request->isMethod('put')) abort(405);
 
-        $country = $this->countryRepo->update($id, $data);
-
-        return redirect()->route('');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $this->countryRepo->delete($id);
+        if(empty($data['countries']['language_name'])){
+            return redirect()->route('admin.setting.show',['view'=>'countries']);
+        }
         
+        $mergeIdFromVal = array();
+        
+        if(empty($data['countries']['language_id'][0]) && isset($data['countries']['language_name'][0])){
+            dd($data);
+            foreach($data['countries'] as $country){
+                foreach($country['language_id'] as $id){
+                    array_push($mergeIdFromVal, $id);
+                }
+            }
+        }
+        dd($data['countries']['language_name'][0]);
+
         return redirect()->route('');
     }
 }

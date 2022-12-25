@@ -17,7 +17,7 @@
             @endif --}}
             <div>
                 {!! Form::open(['url' => route('admin.setting.redirect'), 'method' => 'post']) !!}
-                {{ Form::select('setting', $masterTables, null, [
+                {{ Form::select('setting', $masterTables, $view ?? null, [
                     'class' => 'select select-bordered w-xl max-w-xs',
                     'placeholder' => __('Please select a setting')
                 ]) }}
@@ -26,4 +26,5 @@
             </div>
         </div>
     </div>
+    @yield('table')
 </x-app-layout>

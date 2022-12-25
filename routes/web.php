@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\SideBarController;
+use App\Http\Controllers\Admin\System\CountryController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CurrentTeamController;
@@ -56,8 +57,10 @@ Route::prefix('admin_blog')->middleware([
     Route::controller(SettingsController::class)->group(function(){
         Route::get('/system', 'index')->name('admin.setting');
         Route::post('/system/redirect-to', 'redirectToSelected')->name('admin.setting.redirect');
-        Route::get('/system/countries', 'countries')->name('admin.setting.countries');
+        Route::get('/system/{view}', 'show')->name('admin.setting.show')
+             ->where('view', '^([a-zA-Z]+)');
     });
+    Route::put('/system/countries/update', [CountryController::class, 'addCountries'])->name('admin.setting.countries.update');
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
         if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {

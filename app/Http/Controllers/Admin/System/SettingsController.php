@@ -16,22 +16,33 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->__masterData = $this->getAllMasterTable();
+
+        //tham khảo các cách share all dât cho view
+        //https://chungnguyen.xyz/posts/truyen-du-lieu-ra-view-trong-laravel
+        view()->share('masterTables', $this->__masterData);
     }
 
     /**
      * settings view
-     * 
      */
     public function index()
     {
-        //tham khảo
-        //https://chungnguyen.xyz/posts/truyen-du-lieu-ra-view-trong-laravel
-       return view('admin.setting.settings', ['masterTables' => $this->__masterData]);
+       return view('admin.setting.settings');
     }
 
-    public function countries()
+    /**
+     * settings view display
+     * 
+     * @param string $view
+     */
+    public function show($view = null)
     {
-        return view('admin.setting.countries',['masterTables' => $this->__masterData]);
+        $display = 'admin.setting.' . $view;
+        if(view()->exists($display)){
+            return view($display)->with(['view' => $view]);
+        }
+
+        abort(404);
     }
 
     /**
@@ -49,7 +60,6 @@ class SettingsController extends Controller
             return back();
         }
 
-        $page = 'admin.setting.' . $data['setting'];
-        return redirect()->route($page);
+        return redirect()->route('admin.setting.show', ['view' => $data['setting']]);
     }
 }
