@@ -172,7 +172,11 @@ return [
     'attributes' => [],
     'admin' => [
         'setting' => [
-            'error' => "Please enter a setting"
-        ]
+            'error' => "Please enter a setting",
+            'countries' => [
+                'language_required' => 'Please enter name country',
+                'symbol_required' => 'Please enter name symbol',
+            ]
+        ],
     ]
 ];

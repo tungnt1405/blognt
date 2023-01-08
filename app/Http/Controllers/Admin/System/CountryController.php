@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\System;
 
 use App\Http\Requests\Setting\AddCountriesRequest;
+use App\Http\Requests\Setting\UpdateCountriesRequest;
 use App\Services\Admin\CountryService;
 
 class CountryController extends SettingsController
@@ -24,28 +25,46 @@ class CountryController extends SettingsController
      * 
      * @return \Illuminate\Http\Response
      */
-    public function addCountries(AddCountriesRequest $request)
+    public function create(AddCountriesRequest $request)
     {
-        $data = $request->all();
+        $data = $request->request->all();
+        $all_countries = $this->_countryService->all()->toArray();        
+        $new_data = array_merge($data, array('sort_no' => count($all_countries) + 1));
+        
+        $insert = $this->_countryService->insert($new_data);
 
-        if(!$request->isMethod('put')) abort(405);
+        if(!$insert) {
+            $this->toastrSuccess('Insert Failed', 'Error');
+        }else{
+            $this->toastrSuccess('Insert Success', 'Success');
+        }
 
-        if(empty($data['countries']['language_name'])){
-            return redirect()->route('admin.setting.show',['view'=>'countries']);
+        return redirect()->route('admin.setting.show', ['view' => 'countries']);
+    }
+
+
+    public function update(UpdateCountriesRequest $rq, $id){
+        
+        $data = $rq->all();
+        $update = $this->_countryService->update($id, $data);
+        if(!$update){
+            $this->toastrError('Update failed', 'Error');
+        }else{
+            $this->toastrSuccess('Updated Success', 'Success');
         }
         
-        $mergeIdFromVal = array();
-        
-        if(empty($data['countries']['language_id'][0]) && isset($data['countries']['language_name'][0])){
-            dd($data);
-            foreach($data['countries'] as $country){
-                foreach($country['language_id'] as $id){
-                    array_push($mergeIdFromVal, $id);
-                }
-            }
-        }
-        dd($data['countries']['language_name'][0]);
+        return redirect()->route('admin.setting.show', ['view' => 'countries']);
+    }
 
-        return redirect()->route('');
+    public function delete($id)
+    {
+        $delete = $this->_countryService->delete($id);
+        if(!$delete){
+            $this->toastrError('Delete failed', 'Error');
+        }else{
+            $this->toastrSuccess('Delete Success', 'Success');
+        }
+
+        return redirect()->route('admin.setting.show', ['view' => 'countries']);
     }
 }

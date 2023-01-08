@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('mtb_countries', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->string('language', 100);
+            $table->string('symbol', 11);
             $table->integer('sort_no')->nullable();
         });
     }

@@ -12,4 +12,17 @@ class Country extends Model
     protected  $table = "mtb_countries";
 
     public $timestamps = false;
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    protected $fillable = [
+        'language',
+        'symbol',
+        'sort_no',
+    ];
 }

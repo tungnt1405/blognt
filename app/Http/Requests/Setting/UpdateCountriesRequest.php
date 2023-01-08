@@ -4,7 +4,7 @@ namespace App\Http\Requests\Setting;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddCountriesRequest extends FormRequest
+class UpdateCountriesRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +25,16 @@ class AddCountriesRequest extends FormRequest
     {
         return [
             'language' => 'required',
-            'symbol' => 'required',          
+            'symbol' => 'required',
         ];
     }
 
     /**
-     * Get the validation message that apply to the request.
-     *
+     * Get the error messages for the defined validation rules.
+     * 
      * @return array<string, mixed>
      */
-    public function messages()
+    public function message()
     {
         return [
             'language.required' => trans('validation.setting.countries.language_required'),

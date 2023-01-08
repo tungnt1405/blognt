@@ -25,9 +25,9 @@ class CountryService extends AbstractService implements CountryServiceInterface
      * 
      * @return \App\Models\Country
      */
-    public function getAllCountries()
+    public function all()
     {
-        return $this->repository->getAll();
+        return $this->repository->all();
     }
 
     /**
@@ -37,6 +37,15 @@ class CountryService extends AbstractService implements CountryServiceInterface
      */
     public function insert($data)
     {
-        $this->repository->create($data);
+        return $this->repository->insert($data);
+    }
+
+    /**
+     * update records for country table
+     * 
+     * @return array
+     */
+    public function update($id, array $data){
+        return $this->repository->upgrade($id, $data);
     }
 }

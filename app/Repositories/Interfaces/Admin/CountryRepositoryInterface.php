@@ -6,5 +6,7 @@ use App\Repositories\Interfaces\RepositoryInterface;
 
 interface CountryRepositoryInterface extends RepositoryInterface
 {
-    public function getCountry();
+    public function all();
+    public function insert($data);
+    public function upgrade($id, $data);
 }

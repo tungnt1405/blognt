@@ -60,7 +60,9 @@ Route::prefix('admin_blog')->middleware([
         Route::get('/system/{view}', 'show')->name('admin.setting.show')
              ->where('view', '^([a-zA-Z]+)');
     });
-    Route::put('/system/countries/update', [CountryController::class, 'addCountries'])->name('admin.setting.countries.update');
+    Route::post('/system/countries/create', [CountryController::class, 'create'])->name('admin.setting.countries.create');
+    Route::put('/system/countries/{id}/update', [CountryController::class, 'update'])->name('admin.setting.countries.update');
+    Route::delete('/system/countries/{id}/delete', [CountryController::class, 'delete'])->name('admin.setting.countries.delete');
 
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
         if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {
