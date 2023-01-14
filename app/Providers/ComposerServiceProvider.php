@@ -23,6 +23,6 @@ class ComposerServiceProvider extends AppServiceProvider
      */
     public function boot()
     {
-        view()->composer(['admin.setting.countries'], CountryComposer::class);
+        view()->composer(['admin.setting.countries', 'admin.profile.change-language-form'], CountryComposer::class);
     }
 }

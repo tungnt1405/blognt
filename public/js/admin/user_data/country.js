@@ -1,3 +1,4 @@
+'use strict';
 const hanldeButton = {
     init: function(){
         this.addLanguage();

@@ -102,5 +102,5 @@ Route::prefix('admin_blog')->middleware([
         });
     });
 
-    Route::get('/change-language/{language}', [SystemController::class, 'changeLanguage'])->name('change-language');
+    Route::get('/change-language/{language}', [SystemController::class, 'changeLanguage'])->name('admin-change-language');
 });
