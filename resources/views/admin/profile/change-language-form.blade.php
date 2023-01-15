@@ -9,7 +9,14 @@
                     {!! Form::open(['route' => ['admin-change-language',$country->symbol], 'method' => 'get']) !!}
                         <label class="cursor-pointer label capitalize circle js-click-btn" data-id="{{$country->id}}">
                             <span class="label-text text-lg text-left font-semibold">{{ $country->language }}</span>
-                            <input type="radio" name="language" class="radio ml-4" value="{{ $country->symbol }}">
+                            <input 
+                               type="radio"
+                               name="language" 
+                               class="radio ml-4"
+                               @if (app()->getLocale() === $country->symbol)
+                                checked="checked"
+                               @endif
+                               value="{{ $country->symbol }}">
                         </label>
                         <button type="submit" class="hidden {{ 'js-btn-'.$country->id }}"></button>
                     {!! Form::close() !!}
