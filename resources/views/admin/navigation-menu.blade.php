@@ -18,9 +18,6 @@
                     <x-jet-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs('admin.side-bar')">
                         {{ __('Sidebar Management') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('admin.setting') }}" :active="request()->routeIs('admin.setting')|request()->routeIs('admin.setting.*')">
-                        {{ __('Setting') }}
-                    </x-jet-nav-link>
                 </div>
             </div>
 
@@ -115,6 +112,10 @@
 
                             <x-jet-dropdown-link href="{{ route('profile.show') }}">
                                 {{ __('Profile') }}
+                            </x-jet-dropdown-link>
+
+                            <x-jet-dropdown-link href="{{ route('admin.setting') }}">
+                                {{ __('Setting Master Data') }}
                             </x-jet-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
