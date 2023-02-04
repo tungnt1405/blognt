@@ -1,17 +1,19 @@
-import { defineConfig } from "vite";
-import laravel, { refreshPaths } from "laravel-vite-plugin";
-import vue from "@vitejs/plugin-vue";
+import { defineConfig } from 'vite';
+import laravel, { refreshPaths } from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
 export default defineConfig({
     plugins: [
         laravel({
-            input: [
-                "resources/scss/main.scss",
-                "resources/scss/admin/main.css",
-                "resources/js/app.js",
-                "resources/js/admin/**",
-            ],
-            refresh: [...refreshPaths, "app/Http/Livewire/**"],
+            input: ['~~/main.scss', '~~/admin/main.css', '@/frontend/app.js', '@/backend/admin/**'],
+            refresh: [...refreshPaths, 'app/Http/Livewire/**'],
         }),
         vue(),
     ],
+    resolve: {
+        alias: {
+            '~': '/resources/css/',
+            '~~': '/resources/scss/',
+            '@': '/resources/js',
+        },
+    },
 });

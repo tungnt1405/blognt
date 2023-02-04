@@ -23,8 +23,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/admin/lib/jquery-3.6.0.js') }}"></script>
-    <script src="{{ asset('js/admin/lib/jquery-3.6.0.js') }}"></script>
-    @vite(['resources/css/app.css', 'resources/scss/admin/main.scss', 'resources/js/admin/main.js', 'resources/js/admin/common.js'])
+    @vite(['resources/css/app.css', 'resources/scss/admin/main.scss', 'resources/js/backend/admin/main.js', 'resources/js/backend/admin/common.js'])
 </head>
 
 <body class="font-sans antialiased">

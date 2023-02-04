@@ -1,43 +1,43 @@
 <?php
 $socials = [
-    'gmail'    => 'gmail_url',
+    'gmail' => 'gmail_url',
     'facebook' => 'fb_url',
     'twitter' => 'twitter_url',
     'linkin' => 'linkin_url',
     'zalo' => 'zalo_url',
     'github' => 'github_url',
-];
-?>
+]; ?>
 @section('style')
-<style>
-    .arrow{
-        position: absolute;
-        width: 80px;
-        height: 20px;
-        line-height: 10px;
-        background: #bebebe;
-        right: 0;
-        top: 45%;
-        transform: translateX(120%);
-    }
-    .arrow::after{
-        content: '';
-        position: absolute;
-        right:0;
-        transform: translateX(20px);
-        width: 0;
-        height: 0;
-        border-top: 10px solid transparent;
-        border-left: 20px solid #bebebe;
-        border-bottom: 10px solid transparent;
-    }
-</style>
+    <style>
+        .arrow {
+            position: absolute;
+            width: 80px;
+            height: 20px;
+            line-height: 10px;
+            background: #bebebe;
+            right: 0;
+            top: 45%;
+            transform: translateX(120%);
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            transform: translateX(20px);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-left: 20px solid #bebebe;
+            border-bottom: 10px solid transparent;
+        }
+    </style>
 @endsection
 <?php
 $route = !empty($owner) ? ['admin.side-bar.update', $owner->id] : 'admin.side-bar.new';
-$method = !empty($owner) ? 'PUT' :'POST';
+$method = !empty($owner) ? 'PUT' : 'POST';
 ?>
-{!! Form::open(['route' => $route, 'method' => $method,'enctype' => 'multipart/form-data']) !!}
+{!! Form::open(['route' => $route, 'method' => $method, 'enctype' => 'multipart/form-data']) !!}
 {{ Form::token() }}
 <div class="md:grid md:grid-cols-3 md:gap-6">
     <x-section.section-title>
@@ -48,11 +48,11 @@ $method = !empty($owner) ? 'PUT' :'POST';
         <div class="px-4 py-5 bg-white sm:p-6 shadow sm:rounded-tl-md sm:rounded-tr-md">
             <div>
                 @if (!empty($owner->avatar))
-                <div class="avatar pl-2 sm:pl-0">
-                    <div class="rounded-full w-24 sm:w-32">
-                        <img src="{{ $owner->avatar }}" id="img__avatar" alt="img-show">
+                    <div class="avatar pl-2 sm:pl-0">
+                        <div class="rounded-full w-24 sm:w-32">
+                            <img src="{{ $owner->avatar }}" id="img__avatar" alt="img-show">
+                        </div>
                     </div>
-                </div>
                 @endif
                 <div class="avatar pre-show pl-2 sm:pl-0 hidden">
                     <div class="rounded-full w-24 sm:w-32">
@@ -85,7 +85,7 @@ $method = !empty($owner) ? 'PUT' :'POST';
     <div class="mt-5 md mt-0 md:col-span-2">
         <div class="px-4 py-5 bg-white sm:p-6 shadow sm:rounded-tl-md sm:rounded-tr-md">
             <div>
-                {{ Form::textarea('description', $owner->introduce ?? null , ['class' => 'textarea textarea-bordered', 'id' => 'textarea__sidebar-des']) }}
+                {{ Form::textarea('description', $owner->introduce ?? null, ['class' => 'textarea textarea-bordered', 'id' => 'textarea__sidebar-des']) }}
             </div>
         </div>
     </div>
@@ -125,14 +125,12 @@ $method = !empty($owner) ? 'PUT' :'POST';
         @foreach ($socials as $val => $social)
             <div class="form-control mt-4">
                 <label class="cursor-pointer label justify-start select__social capitalize">
-                    <input type="checkbox" class="checkbox mr-4" 
-                    @if (!empty($owner->$social))
-                        checked="checked"
-                    @endif
-                    <span class="label-text text-lg capitalize font-semibold">{{ $val }}</span>
+                    <input type="checkbox" class="checkbox mr-4"
+                        @if (!empty($owner->$social)) checked="checked" @endif <span
+                        class="label-text text-lg capitalize font-semibold">{{ $val }}</span>
                 </label>
                 <div class="hidden social">
-                    <div class="mt-4">          
+                    <div class="mt-4">
                         {{ Form::label($val, '', ['class' => 'awesome']) }}
                         {{ Form::text($val, $owner->$social ?? null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
                     </div>
@@ -145,6 +143,6 @@ $method = !empty($owner) ? 'PUT' :'POST';
         </div>
     </div>
 </div>
-@section('script')
-    @vite('resources/js/admin/onwer.js')
+@section('javascript')
+    @vite('resources/js/backend/admin/onwer.js')
 @endsection

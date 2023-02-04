@@ -58,7 +58,7 @@ class SideBarController extends Controller
     {
         $datas = $req->all();
         $owner = $this->ownerRepository->setOwnerAttributes($datas);
-        if($owner instanceof Model){
+        if ($owner instanceof Model) {
             $this->toastrSuccess('Create successfully!');
             return redirect()->route('admin.side-bar');
         }
@@ -101,7 +101,7 @@ class SideBarController extends Controller
         $data = $request->all();
         $updateOwner = $this->ownerRepository->update($side_bar->id, $data);
 
-        if($updateOwner instanceof Model){
+        if ($updateOwner instanceof Model) {
             $this->toastrSuccess('Update successfully!');
             return redirect()->route('admin.side-bar');
         }
