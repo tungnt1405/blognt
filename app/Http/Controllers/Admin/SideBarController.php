@@ -7,7 +7,9 @@ use App\Http\Requests\StoreSideBarRequest;
 use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Owner;
 use App\Repositories\Admin\OwnerRepository;
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Http;
 
 class SideBarController extends Controller
 {
@@ -28,6 +30,8 @@ class SideBarController extends Controller
 
     /**
      * Display a listing of the resource.
+     * screen: owner for sidebar
+     * method: get
      *
      * @return \Illuminate\Http\Response
      */
@@ -118,5 +122,16 @@ class SideBarController extends Controller
     public function destroy(Owner $owner)
     {
         //
+    }
+
+    /**
+     * screen: owner information
+     * method: get
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getMoreInfo()
+    {
+        return view('admin.side-bar.more-info');
     }
 }

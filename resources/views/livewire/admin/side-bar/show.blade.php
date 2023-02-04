@@ -1,12 +1,13 @@
-<?php
-$socials = [
-    'gmail' => 'gmail_url',
-    'facebook' => 'fb_url',
-    'twitter' => 'twitter_url',
-    'linkin' => 'linkin_url',
-    'zalo' => 'zalo_url',
-    'github' => 'github_url',
-]; ?>
+@php
+    $socials = [
+        'gmail' => 'gmail_url',
+        'facebook' => 'fb_url',
+        'twitter' => 'twitter_url',
+        'linkin' => 'linkin_url',
+        'zalo' => 'zalo_url',
+        'github' => 'github_url',
+    ];
+@endphp
 @section('style')
     <style>
         .arrow {
