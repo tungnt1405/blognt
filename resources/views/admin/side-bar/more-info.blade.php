@@ -5,7 +5,6 @@
             <h2 class="font-semibold text-xl capitalize text-gray-800 leading-tight">
                 {{ __('Sidebar Management') }}
             </h2>
-            <a href="{{ route('admin.side-bar') }}" class="btn btn-outline mt-5 md:mt-auto ">@lang('Back')</a>
         </div>
     </x-slot>
     <div>
