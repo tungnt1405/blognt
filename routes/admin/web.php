@@ -37,6 +37,8 @@ Route::prefix('admin_blog')->middleware([
         'update' => 'admin.side-bar.update',
     ]);
     Route::get('/owner/more-info', [SideBarController::class, 'getMoreInfo'])->name('admin.owner.more-info');
+    Route::post('/owner/more-info/create', [SideBarController::class, 'postMoreInfo'])->name('admin.owner.more-info.create');
+    Route::put('/owner/more-info/{id}/update', [SideBarController::class, 'putMoreInfo'])->name('admin.owner.more-info.update');
 
     // ================== Master Data ========================
     Route::controller(SettingsController::class)->group(function () {

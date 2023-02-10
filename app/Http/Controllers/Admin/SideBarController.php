@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\admin\Owner\StoreOwnerInfoRequest;
+use App\Http\Requests\admin\Owner\UpdateOwnerInfoRequest;
 use App\Http\Requests\StoreSideBarRequest;
 use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Owner;
 use App\Repositories\Admin\OwnerRepository;
+use App\Services\Admin\OwnerInfoService;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Request;
 
 class SideBarController extends Controller
 {
@@ -19,13 +23,21 @@ class SideBarController extends Controller
     protected $ownerRepository;
 
     /**
+     * @var OwnerInfoService
+     */
+    protected $ownerInfoService;
+
+    /**
      * SideBarController construct
      * @param OwnerRepository $ownerRepository
      */
     public function __construct(
-        OwnerRepository $ownerRepository
+        OwnerRepository $ownerRepository,
+        OwnerInfoService $ownerInfoService,
+
     ) {
         $this->ownerRepository = $ownerRepository;
+        $this->ownerInfoService = $ownerInfoService;
     }
 
     /**
@@ -132,6 +144,60 @@ class SideBarController extends Controller
      */
     public function getMoreInfo()
     {
-        return view('admin.side-bar.more-info');
+        $infoOwner = $this->ownerInfoService->all()->first();
+        return view('admin.side-bar.more-info', compact('infoOwner'));
+    }
+
+    /**
+     * screen: additional information
+     * method: post
+     *
+     * @param \App\Http\Requests\admin\Owner\StoreOwnerInfoRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postMoreInfo(StoreOwnerInfoRequest $request)
+    {
+        $data = $request->all();
+        $attributes = [];
+        $attributes['owner_id'] = $data['owner_id'];
+        $attributes['description'] = $data['description'];
+        $attributes['experience'] = $data['experience'];
+        $attributes['make_project'] = $data['project'];
+        $attributes['career_goals'] = $data['career_goals'];
+
+        $results = $this->ownerInfoService->create($attributes);
+        if ($results) {
+            $this->toastrSuccess('Create more info successfully!');
+            return redirect()->route('admin.side-bar');
+        }
+
+        $this->toastrError('An error has occurred please try again later.', 'Oops!');
+        return redirect()->route('admin.side-bar');
+    }
+
+    /**
+     * screen: update information
+     * method: put
+     *
+     * @param \App\Http\Requests\admin\Owner\UpdateOwnerInfoRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function putMoreInfo(UpdateOwnerInfoRequest $request, $id = null)
+    {
+        $data = $request->all();
+        $attributes = [];
+        $attributes['description'] = $data['description'];
+        $attributes['experience'] = $data['experience'];
+        $attributes['make_project'] = $data['project'];
+        $attributes['career_goals'] = $data['career_goals'];
+
+        $results = $this->ownerInfoService->update($id, $attributes);
+        if ($results) {
+            $this->toastrSuccess('Update more info successfully!');
+            return redirect()->route('admin.side-bar');
+        }
+
+        $this->toastrError('An error has occurred please try again later.', 'Oops!');
+        return redirect()->route('admin.side-bar');
     }
 }
