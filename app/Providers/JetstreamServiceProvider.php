@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\Jetstream\DeleteUser;
+use App\Http\Livewire\Admin\SideBar\MoreInfo as SideBarMoreInfo;
 use App\Http\Livewire\Admin\SideBar\Show;
 use App\Http\Livewire\Jetstream\ApiTokenManager;
 use App\Http\Livewire\Jetstream\ChangeLanguageForm;
@@ -51,6 +52,7 @@ class JetstreamServiceProvider extends ServiceProvider
         }
 
         Livewire::component('admin.side-bar', Show::class);
+        Livewire::component('admin.side-bar.more-info', SideBarMoreInfo::class);
     }
 
     /**

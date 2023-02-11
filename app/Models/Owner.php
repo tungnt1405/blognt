@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Log;
 
 class Owner extends Model
@@ -33,4 +34,14 @@ class Owner extends Model
         'zalo_url',
         'github_url',
     ];
+
+    /**
+     * Get the owner_info associated with the Owner
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function owner_info(): HasOne
+    {
+        return $this->hasOne(OwnerInfo::class, 'owner_id', 'id');
+    }
 }

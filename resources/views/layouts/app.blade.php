@@ -23,7 +23,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/admin/lib/jquery-3.6.0.js') }}"></script>
-    @vite(['resources/css/app.css', 'resources/scss/admin/main.scss', 'resources/js/admin/main.js'])
+    @vite(['resources/css/app.css', 'resources/scss/admin/main.scss', 'resources/js/backend/admin/main.js', 'resources/js/backend/admin/common.js'])
 </head>
 
 <body class="font-sans antialiased">
@@ -51,7 +51,7 @@
 
     @livewireScripts
     <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
-    @yield('script')
+    @yield('javascript')
 </body>
 
 </html>
