@@ -197,6 +197,13 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
 
+        /**
+         * Custom Service Providers
+        */
+        App\Providers\ShareServiceProvider::class,
+        App\Providers\ComposerServiceProvider::class,
+
+
     ],
 
     /*
