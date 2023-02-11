@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin\System;
 
-use App\Http\Requests\Setting\AddCountriesRequest;
-use App\Http\Requests\Setting\UpdateCountriesRequest;
+use App\Http\Requests\admin\Setting\AddCountriesRequest;
+use App\Http\Requests\admin\Setting\UpdateCountriesRequest;
 use App\Services\Admin\CountryService;
 
 class CountryController extends SettingsController
@@ -28,14 +28,14 @@ class CountryController extends SettingsController
     public function create(AddCountriesRequest $request)
     {
         $data = $request->request->all();
-        $all_countries = $this->_countryService->all()->toArray();        
+        $all_countries = $this->_countryService->all()->toArray();
         $new_data = array_merge($data, array('sort_no' => count($all_countries) + 1));
-        
+
         $insert = $this->_countryService->insert($new_data);
 
-        if(!$insert) {
+        if (!$insert) {
             $this->toastrSuccess('Insert Failed', 'Error');
-        }else{
+        } else {
             $this->toastrSuccess('Insert Success', 'Success');
         }
 
@@ -43,25 +43,26 @@ class CountryController extends SettingsController
     }
 
 
-    public function update(UpdateCountriesRequest $rq, $id){
-        
+    public function update(UpdateCountriesRequest $rq, $id)
+    {
+
         $data = $rq->all();
         $update = $this->_countryService->update($id, $data);
-        if(!$update){
+        if (!$update) {
             $this->toastrError('Update failed', 'Error');
-        }else{
+        } else {
             $this->toastrSuccess('Updated Success', 'Success');
         }
-        
+
         return redirect()->route('admin.setting.show', ['view' => 'countries']);
     }
 
     public function delete($id)
     {
         $delete = $this->_countryService->delete($id);
-        if(!$delete){
+        if (!$delete) {
             $this->toastrError('Delete failed', 'Error');
-        }else{
+        } else {
             $this->toastrSuccess('Delete Success', 'Success');
         }
 

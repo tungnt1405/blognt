@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admin\System;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class SettingsController extends Controller
+class SettingsController extends AdminController
 {
     /**
      * @var array $masterData
@@ -27,7 +26,7 @@ class SettingsController extends Controller
      */
     public function index()
     {
-       return view('admin.setting.settings');
+        return view('admin.setting.settings');
     }
 
     /**
@@ -38,7 +37,7 @@ class SettingsController extends Controller
     public function show($view = null)
     {
         $display = 'admin.setting.' . $view;
-        if(view()->exists($display)){
+        if (view()->exists($display)) {
             return view($display)->with(['view' => $view]);
         }
 
@@ -53,7 +52,7 @@ class SettingsController extends Controller
     public function redirectToSelected(Request $request)
     {
         $data = $request->all();
-        if(empty($data['setting'])){
+        if (empty($data['setting'])) {
             // return back()->withError('error', trans('validation.admin.setting.error'));
             // return back()->withErrors(['error' => trans('validation.admin.setting.error')]);
             $this->toastrError(trans('validation.admin.setting.error'));

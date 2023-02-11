@@ -17,3 +17,13 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+// Remove all file in folder logs
+Artisan::command('logs:clear', function () {
+
+    exec('rm -f ' . storage_path('logs/*.log'));
+
+    exec('rm -f ' . base_path('*.log'));
+
+    $this->info('Logs have been cleared!');
+})->describe('Clear log files');

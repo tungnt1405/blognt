@@ -42,6 +42,8 @@ return [
     */
 
     'debug' => (bool) env('APP_DEBUG', false),
+    'log' => 'daily',
+    'log_max_files' => 30,
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +71,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'GMT'),
 
     /*
     |--------------------------------------------------------------------------
@@ -199,9 +201,11 @@ return [
 
         /**
          * Custom Service Providers
-        */
+         */
         App\Providers\ShareServiceProvider::class,
         App\Providers\ComposerServiceProvider::class,
+        App\Providers\LivewireServiceProvider::class,
+        App\Providers\RegisterInterfaceServiceProvider::class,
 
 
     ],

@@ -40,7 +40,7 @@ class Owner extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function owner_info(): HasOne
+    public function ownerInfo(): HasOne
     {
         return $this->hasOne(OwnerInfo::class, 'owner_id', 'id');
     }

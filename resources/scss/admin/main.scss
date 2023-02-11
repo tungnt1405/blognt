@@ -1,47 +1,154 @@
-.step{
-    display:inline-block;
-    position:relative;
-    height:25px;
-    line-height:25px;
-    padding:0 20px;
-    border:1px solid #46C2CB;
-    margin-right:30px;
-    background-color:#C0DEFF;
+.step {
+    display: inline-block;
+    position: relative;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 20px;
+    border: 1px solid #46c2cb;
+    margin-right: 30px;
+    background-color: #c0deff;
     transform: translate(20%, -40px);
 }
-.step.right::after{
-    content:'';
-    border-top:1px solid #46C2CB;
-    border-right:1px solid #46C2CB;
-    width:17.5px;
-    height:17.5px;
-    position:absolute;
-    right:0;
-    top:-1px;
-    background-color:#C0DEFF;
-    z-index:150;
-    
-    -webkit-transform: translate(10px,4px) rotate(45deg);
-       -moz-transform: translate(10px,4px) rotate(45deg);
-        -ms-transform: translate(10px,4px) rotate(45deg);
-         -o-transform: translate(10px,4px) rotate(20deg); 
-            transform: translate(10px,4px) rotate(45deg);
+.step.right::after {
+    content: '';
+    border-top: 1px solid #46c2cb;
+    border-right: 1px solid #46c2cb;
+    width: 17.5px;
+    height: 17.5px;
+    position: absolute;
+    right: 0;
+    top: -1px;
+    background-color: #c0deff;
+    z-index: 150;
+
+    -webkit-transform: translate(10px, 4px) rotate(45deg);
+    -moz-transform: translate(10px, 4px) rotate(45deg);
+    -ms-transform: translate(10px, 4px) rotate(45deg);
+    -o-transform: translate(10px, 4px) rotate(20deg);
+    transform: translate(10px, 4px) rotate(45deg);
 }
-.step.left::before{
-    content:'';
-    border-top:1px solid #46C2CB;
-    border-right:1px solid #46C2CB;
-    width:18px;
-    height:18px;
-    position:absolute;
-    left:0;
-    top:-1px;
-    background-color:#fff;
-    z-index:50;
-    
-    -webkit-transform: translate(-10px,4px) rotate(45deg);
-       -moz-transform: translate(-10px,4px) rotate(45deg);
-        -ms-transform: translate(-10px,4px) rotate(45deg);
-         -o-transform: translate(-10px,4px) rotate(20deg);
-            transform: translate(-10px,4px) rotate(45deg);
+.step.left::before {
+    content: '';
+    border-top: 1px solid #46c2cb;
+    border-right: 1px solid #46c2cb;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    left: 0;
+    top: -1px;
+    background-color: #fff;
+    z-index: 50;
+
+    -webkit-transform: translate(-10px, 4px) rotate(45deg);
+    -moz-transform: translate(-10px, 4px) rotate(45deg);
+    -ms-transform: translate(-10px, 4px) rotate(45deg);
+    -o-transform: translate(-10px, 4px) rotate(20deg);
+    transform: translate(-10px, 4px) rotate(45deg);
+}
+
+// ======================= Overlay ===========================
+#overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 8px solid;
+        border-color: #fff transparent transparent transparent;
+        border-radius: 50%;
+        box-sizing: border-box;
+        animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+}
+@keyframes loading {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+// ======================= End Overlay ===========================
+
+.js-input-sortNo {
+    margin: 4px 0 0;
+    padding: 8px 12px;
+}
+
+.form-group {
+    padding: 20px;
+}
+
+// ====================== Posts ===============================
+.series-status input,
+.post-status input {
+    display: none;
+}
+.series-status input:checked ~ label .btn-series::before,
+.post-status input:checked ~ label .btn-status::before {
+    left: 40px;
+    background-color: #35f704;
+}
+.series-status label .btn-series {
+    position: relative;
+    background-color: #ccc;
+    width: 80px;
+    height: 40px;
+    border-radius: 20px;
+    cursor: pointer;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        background-color: #000;
+        border-radius: 20px;
+        transition: 0.3s linear;
+    }
+}
+.post-status label .btn-status {
+    position: relative;
+    background-color: #ccc;
+    width: 80px;
+    height: 40px;
+    border-radius: 20px;
+    cursor: pointer;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        background-color: #000;
+        border-radius: 20px;
+        transition: 0.3s linear;
+    }
+}
+.ui-widget-header .ui-icon {
+    background-image: url("/public/assets/images/jquery-ui-icons.png");
+}
+
+.search-options {
+    display: block;
+    width: max-content;
+}
+@media all and (max-width: 768px) {
+    .js-input-sortNo {
+        background-color: #fff;
+    }
 }
