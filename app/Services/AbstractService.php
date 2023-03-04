@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\Interfaces\ServiceInterface;
+use Illuminate\Support\Facades\Log;
 
 abstract class AbstractService implements ServiceInterface
 {
@@ -13,7 +14,7 @@ abstract class AbstractService implements ServiceInterface
 
     /**
      * AbstractService construct
-    */
+     */
     public function __construct()
     {
         $this->setRepository();
@@ -62,5 +63,20 @@ abstract class AbstractService implements ServiceInterface
     {
         // TODO: Implement delete() method.
         return $this->repository->delete($id);
+    }
+
+    public function logger($message, $data, $type)
+    {
+        switch ($type) {
+            case config('constants.LOG_INFO'):
+                $notify = $message ?: 'INFO';
+                return Log::info('===*** ' . $notify .  ' ***===', $data);
+            case config('constants.LOG_ERROR'):
+                return Log::error('===*** ERROR ***===', (array) $data);
+            case config('constants.LOG_WARNING'):
+                return Log::warning('===*** WARNING ***===', $data);
+            default:
+                return -1;
+        }
     }
 }

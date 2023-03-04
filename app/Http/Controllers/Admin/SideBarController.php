@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\admin\Owner\StoreOwnerInfoRequest;
 use App\Http\Requests\admin\Owner\UpdateOwnerInfoRequest;
 use App\Http\Requests\StoreSideBarRequest;
@@ -10,12 +9,9 @@ use App\Http\Requests\UpdateOwnerRequest;
 use App\Models\Owner;
 use App\Repositories\Admin\OwnerRepository;
 use App\Services\Admin\OwnerInfoService;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Request;
 
-class SideBarController extends Controller
+class SideBarController extends AdminController
 {
     /**
      * @var OwnerRepository

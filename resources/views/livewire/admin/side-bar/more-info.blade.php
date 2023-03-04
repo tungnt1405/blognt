@@ -31,18 +31,18 @@
                     </td>
                     <td><a class="text-blue-700 hover:text-blue-700/50"
                             href="{{ route('admin.side-bar') }}">@lang('admin/common.watch_more_details')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50"
-                            href="{!! $owner->fb_url ?: 'javascript:void(-1)' !!}">@lang('Facebook')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50"
-                            href="{!! $owner->gmail_url ?: 'javascript:void(-1)' !!}">@lang('Gmail')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50"
-                            href="{!! $owner->twitter_url ?: 'javascript:void(-1)' !!}">@lang('Twitter')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50"
-                            href="{!! $owner->linkin_url ?: 'javascript:void(-1)' !!}">@lang('Linkin')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50"
-                            href="{!! $owner->zalo_url ?: 'javascript:void(-1)' !!}">@lang('Zalo')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50"
-                            href="{!! $owner->github_url ?: 'javascript:void(-1)' !!}">@lang('Github')</a>
+                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->fb_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->fb_url ? '_blank' : '_self' }}">@lang('Facebook')</a></td>
+                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->gmail_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->gmail_url ? '_blank' : '_self' }}">@lang('Gmail')</a></td>
+                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->twitter_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->twitter_url ? '_blank' : '_self' }}">@lang('Twitter')</a></td>
+                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->linkin_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->linkin_url ? '_blank' : '_self' }}">@lang('Linkin')</a></td>
+                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->zalo_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->zalo_url ? '_blank' : '_self' }}">@lang('Zalo')</a></td>
+                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->github_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->github_url ? '_blank' : '_self' }}">@lang('Github')</a>
                     </td>
                 </tr>
             </tbody>
@@ -54,7 +54,8 @@
             <div class="btn-action">
                 <button type="submit" form="frm-more-info"
                     class="js-btn-add btn btn-outline btn-primary btn-sm md:mt-auto">@lang('admin/common.add')</button>
-                <a href="{{ route('admin.side-bar') }}" class="btn btn-outline btn-sm md:mt-auto">@lang('admin/common.back')</a>
+                <a href="{{ route('admin.side-bar') }}"
+                    class="btn btn-outline btn-sm md:mt-auto">@lang('admin/common.back')</a>
             </div>
         </header>
         @if ($errors->any())

@@ -6,7 +6,7 @@
                 {{ __('Sidebar Management') }}
             </h2>
             <a href="{{ route('admin.owner.more-info') }}"
-                class="btn btn-outline btn-primary mt-5 md:mt-auto ">@lang('Add more')</a>
+                class="btn btn-outline btn-primary mt-5 md:mt-auto ">@lang('More other')</a>
         </div>
     </x-slot>
     <div>

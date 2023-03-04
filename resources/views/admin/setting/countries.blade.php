@@ -2,8 +2,9 @@
 @section('title', 'Country Management')
 
 @section('table')
-    @if(!$errors->isEmpty())
-    <div class="mb-2 alert alert-error shadow-lg text-white w-1/3 ml-3">{{ __('Please enter input language and symbol') }}</div>
+    @if (!$errors->isEmpty())
+        <div class="mb-2 alert alert-error shadow-lg text-white w-1/3 ml-3">
+            {{ __('Please enter input language and symbol') }}</div>
     @endif
     <table class="min-w-full border-collapse block md:table">
         <thead class="block md:table-header-group">
@@ -20,7 +21,11 @@
         <tbody class="block md:table-row-group">
             @foreach ($countries as $country)
                 <tr class="bg-gray-300 border border-grey-500 md:border-none block md:table-row">
-                    {!! Form::open(['route' => ['admin.setting.countries.update', $country->id], 'method' => 'put', 'class'=>'frmUpdateLanguage_'.$country->id]) !!}
+                    {!! Form::open([
+                        'route' => ['admin.setting.countries.update', $country->id],
+                        'method' => 'put',
+                        'class' => 'frmUpdateLanguage_' . $country->id,
+                    ]) !!}
                     <td class="p-2 md:border md:border-grey-500 text-left md:table-cell block">
                         <span class="block w-1/3 md:hidden font-bold">@lang('ID')</span>{{ $country->id }}
                     </td>
@@ -35,11 +40,8 @@
                     <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
                         <button
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 border border-blue-500 rounded">@lang('Edit')</button>
-                        <button
-                            data-trigger="click"
-                            data-path="{{ route('admin.setting.countries.delete', $country->id) }}"
-                            data-method="delete"
-                            data-id="{{ $country->id }}"
+                        <button data-trigger="click" data-path="{{ route('admin.setting.countries.delete', $country->id) }}"
+                            data-method="delete" data-id="{{ $country->id }}"
                             class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 border border-red-500 rounded">@lang('Delete')</button>
                     </td>
                     {!! Form::close() !!}
@@ -50,7 +52,7 @@
                 <td class="p-2 md:border md:border-grey-500 text-left md:table-cell hidden md:block">&nbsp;</td>
                 <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
                     <span class="inline-block w-1/3 md:hidden font-bold">@lang('Language')</span>
-                    {{ Form::text('language', null, ['class' =>'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 md:block w-full input-language']) }}
+                    {{ Form::text('language', null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 md:block w-full input-language']) }}
                 </td>
                 <td class="p-2 md:border md:border-grey-500 text-left block md:table-cell">
                     <span class="inline-block w-1/3 md:hidden font-bold">@lang('Symbol')</span>

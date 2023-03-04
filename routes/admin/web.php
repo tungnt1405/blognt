@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\SideBarController;
 use App\Http\Controllers\Admin\System\CountryController;
 use Illuminate\Routing\Router;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Livewire\TeamController;
 use App\Http\Controllers\Livewire\TermsOfServiceController;
 use App\Http\Controllers\Livewire\UserProfileController;
 use App\Http\Controllers\Admin\System\SettingsController;
+use App\Http\Controllers\Admin\System\CategoryController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\TeamInvitationController;
 use Laravel\Jetstream\Jetstream;
@@ -40,6 +42,17 @@ Route::prefix('admin_blog')->middleware([
     Route::post('/owner/more-info/create', [SideBarController::class, 'postMoreInfo'])->name('admin.owner.more-info.create');
     Route::put('/owner/more-info/{id}/update', [SideBarController::class, 'putMoreInfo'])->name('admin.owner.more-info.update');
 
+    // ================== Posts =============================
+    Route::get('/posts', [PostController::class, 'index'])->name('admin.posts');
+    Route::get('/posts/create', [PostController::class, 'create'])->name('admin.posts.create');
+    Route::post('/posts/create', [PostController::class, 'store'])->name('admin.posts.store');
+    Route::put(
+        '/posts/update/{id}/status',
+        [PostController::class, 'updateStatus']
+    )->name('admin.posts.update.status')->whereNumber('id');
+    Route::delete('/posts/destroy', [PostController::class, 'destroy'])->name('admin.posts.delete');
+    Route::delete('/posts/soft-delete', [PostController::class, 'softDeletePosts'])->name('admin.posts.soft.delete');
+
     // ================== Master Data ========================
     Route::controller(SettingsController::class)->group(function () {
         Route::get('/system', 'index')->name('admin.setting');
@@ -50,6 +63,10 @@ Route::prefix('admin_blog')->middleware([
     Route::post('/system/countries/create', [CountryController::class, 'create'])->name('admin.setting.countries.create');
     Route::put('/system/countries/{id}/update', [CountryController::class, 'update'])->name('admin.setting.countries.update');
     Route::delete('/system/countries/{id}/delete', [CountryController::class, 'delete'])->name('admin.setting.countries.delete');
+
+    Route::post('/system/categories/create', [CategoryController::class, 'create'])->name('admin.setting.category.create');
+    Route::put('/system/categories/{id}/update', [CategoryController::class, 'update'])->name('admin.setting.category.update');
+    Route::delete('/system/categories/{id}/delete', [CategoryController::class, 'delete'])->name('admin.setting.category.delete');
 
     // ================== Jetstream ========================
     Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {

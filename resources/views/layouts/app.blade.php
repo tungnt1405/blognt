@@ -17,12 +17,14 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
 
+
     <!-- Styles -->
     @livewireStyles
     @yield('style')
 
     <!-- Scripts -->
-    <script src="{{ asset('js/admin/lib/jquery-3.6.0.js') }}"></script>
+    <script src="{{ asset('assets/js/admin/lib/jquery-3.6.0.js') }}"></script>
+    @yield('header-scripts')
     @vite(['resources/css/app.css', 'resources/scss/admin/main.scss', 'resources/js/backend/admin/main.js', 'resources/js/backend/admin/common.js'])
 </head>
 

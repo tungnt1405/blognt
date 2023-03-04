@@ -4,15 +4,15 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['~~/main.scss', '~~/admin/main.css', '@/frontend/app.js', '@/backend/admin/**'],
+            input: ['~~/admin/main.scss', '~/main.css', '@/frontend/app.js', '@/backend/admin/**'],
             refresh: [...refreshPaths, 'app/Http/Livewire/**'],
         }),
         vue(),
     ],
     resolve: {
         alias: {
-            '~': '/resources/css/',
-            '~~': '/resources/scss/',
+            '~': '/resources/css',
+            '~~': '/resources/scss',
             '@': '/resources/js',
         },
     },

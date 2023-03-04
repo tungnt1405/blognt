@@ -30,7 +30,8 @@ class CountryComposer extends AbstractComposer
      * @param  \Illuminate\View\View  $view
      * @return void
      */
-    public function compose(View $view){
+    public function compose(View $view)
+    {
         $view->with('countries', $this->_countryService->all());
     }
 }
