@@ -78,5 +78,5 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="{{ asset('js/admin/user_data/country.js') }}"></script>
+    <script src="{{ asset('assets/js/admin/user_data/country.js') }}"></script>
 @endsection

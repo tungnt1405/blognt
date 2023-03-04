@@ -1,3 +1,63 @@
+// ======================= Overlay ===========================
+#overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 8px solid;
+        border-color: #fff transparent transparent transparent;
+        border-radius: 50%;
+        box-sizing: border-box;
+        animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+}
+@keyframes loading {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+// ======================= End Overlay ===========================
+
+// ====================== Side bar ===============================
+.arrow {
+    position: absolute;
+    width: 80px;
+    height: 20px;
+    line-height: 10px;
+    background: #bebebe;
+    right: 0;
+    top: 45%;
+    transform: translateX(120%);
+}
+
+.arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    transform: translateX(20px);
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-left: 20px solid #bebebe;
+    border-bottom: 10px solid transparent;
+}
+
 .step {
     display: inline-block;
     position: relative;
@@ -45,51 +105,7 @@
     -o-transform: translate(-10px, 4px) rotate(20deg);
     transform: translate(-10px, 4px) rotate(45deg);
 }
-
-// ======================= Overlay ===========================
-#overlay {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.5);
-
-    &::before {
-        content: '';
-        position: absolute;
-        width: 80px;
-        height: 80px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        border: 8px solid;
-        border-color: #fff transparent transparent transparent;
-        border-radius: 50%;
-        box-sizing: border-box;
-        animation: loading 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    }
-}
-@keyframes loading {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-// ======================= End Overlay ===========================
-
-.js-input-sortNo {
-    margin: 4px 0 0;
-    padding: 8px 12px;
-}
-
-.form-group {
-    padding: 20px;
-}
+// ====================== End Side bar ===============================
 
 // ====================== Posts ===============================
 .series-status input,
@@ -139,6 +155,38 @@
         transition: 0.3s linear;
     }
 }
+
+.posts-menu ul{
+    li{
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    li::after {
+        content: '';
+        border-right: 1px solid #000;
+        padding-left: 10px;
+    }
+    li:last-child::after {
+        border-right: none;
+        padding-left: 0;
+    }
+    li:hover{
+        color: rgb(29 78 216 / 1);
+        font-size: 1.125rem;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}
+// End Post
+
+.js-input-sortNo {
+    margin: 4px 0 0;
+    padding: 8px 12px;
+}
+
+.form-group {
+    padding: 20px;
+}
+
 .ui-widget-header .ui-icon {
     background-image: url("/public/assets/images/jquery-ui-icons.png");
 }

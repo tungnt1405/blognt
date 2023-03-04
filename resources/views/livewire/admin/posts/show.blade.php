@@ -1,49 +1,101 @@
+@php
+    $listsMenu = [
+        request()->url() => [
+            'title' => __('All (') . count($posts) . __(')'),
+            'posts' => '',
+        ],
+        request()->fullUrlWithQuery(['posts' => 'trash']) => [
+            'title' => __('Trash (') . count($postsBySoftDelete) . __(')'),
+            'posts' => 'trash',
+        ],
+    ];
+    $listPosts = $posts;
+    $showDeleteAt = false;
+    if (request()->query->get('posts') === 'trash') {
+        $listPosts = $postsBySoftDelete;
+        $showDeleteAt = true;
+    }
+@endphp
 <div class="wrapper bg-white w-full">
     <div class="bg-slate-200 posts-header p-5">
         <div class="posts-header-search mb-3">
             {!! Form::text('search', null, [
+                'wire:model' => 'filter.search',
+                'wire:model.debounce.5000ms' => 'filter.search',
                 'placeholder' => 'Enter keywords search posts as label post, slug ',
                 'class' =>
                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
             ]) !!}
 
-            <div class="posts-category-search my-3 hidden">
+            <div class="posts-category-search my-3 {{ $showFilters ? '' : 'hidden' }}">
                 <h2 class="font-bold text-lg">{{ __('Select Category') }}</h2>
                 @foreach ($categories as $category)
                     <label class="mr-4">
-                        <input type="checkbox" name="category[]" class="checkbox checkbox-sm" value="{{ $category->id }}" />
+                        <input type="checkbox" wire:model="filter.categories"
+                            {{ is_array(request()->input('category')) && in_array($category->id, request()->input('category')) ? 'checked' : '' }}
+                            name="category[]" class="checkbox checkbox-sm" value="{{ $category->id }}" />
                         <span> {{ $category->name }} </span>
                     </label>
                 @endforeach
             </div>
-            <div class="posts-status-search hidden">
+            <div class="posts-status-search {{ $showFilters ? '' : 'hidden' }}">
                 <h2 class="font-bold text-lg"> {{ __('Select Status') }} </h2>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm" value="1" checked />
+                    <input type="radio" name="status" wire:model="filter.status" class="radio radio-sm"
+                        value="1" checked />
                     <span> {{ __('Display') }} </span>
                 </label>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm" value="0" />
+                    <input type="radio" name="status" wire:model="filter.status" class="radio radio-sm"
+                        value="0" />
                     <span> {{ __('None') }} </span>
                 </label>
             </div>
         </div>
-        <label class="search-options cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        </label>
+        @empty($showFilters)
+            <label class="search-options cursor-pointer" wire:click="toggleFilters()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </label>
+        @else
+            <label class="search-options cursor-pointer" wire:click="toggleFilters()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </label>
+        @endempty
         <div class="btn-search mt-4">
-            <button class="btn btn-info btn-active text-white btn-sm">Search</button>
+            <button wire:click.prevent="searchPosts()"
+                class="btn btn-info btn-active text-white btn-sm js-submit-search">Search</button>
             <label for="show-modal-delete" class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
                 {{ __('Delete') }}
             </label>
-            <label for="show-modal-soft-delete"
-                class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
-                {{ __('Remove trash') }}
-            </label>
+            @if ($showDeleteAt)
+                <label for="show-modal-soft-delete"
+                    class="btn btn-info btn-active text-white btn-sm hidden js-delete-post">
+                    {{ __('Restore') }}
+                </label>
+            @else
+                <label for="show-modal-soft-delete"
+                    class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
+                    {{ __('Remove trash') }}
+                </label>
+            @endif
+        </div>
+
+        <div class="posts-menu">
+            <ul class="flex gap-[10px] mt-3">
+                @foreach ($listsMenu as $url => $item)
+                    <li><a href="{{ $url }}" @class([
+                        'text-blue-700' => request()->query->get('posts') == $item['posts'],
+                    ])>{{ $item['title'] }}</a>
+                    </li>
+                @endforeach
+            </ul>
         </div>
     </div>
     <div class="posts-body">
@@ -64,10 +116,13 @@
                         <th>{{ __('Status') }}</th>
                         <th>{{ __('Category') }}</th>
                         <th>{{ __('Description') }}</th>
+                        @if ($showDeleteAt)
+                            <th>{{ __('Delete At') }}</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($posts as $post)
+                    @foreach ($listPosts as $post)
                         <tr>
                             <td>
                                 <label>
@@ -77,7 +132,7 @@
                             </td>
                             <td>{{ $post->id }}</td>
                             <td><a href=""
-                                    class="text-blue-700 hover:text-blue-500 hover:underline hover:text-lg">{{ $post->title }}</a>
+                                    class="text-blue-700 timing-function-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] duration-[0.5s] hover:text-blue-500 hover:underline hover:text-[1.125rem]">{{ $post->title }}</a>
                             </td>
                             <td>{{ $post->slug }}</td>
                             <td>
@@ -86,24 +141,35 @@
                                 <p>
                             </td>
                             <td>
-                                {!! Form::select(
-                                    'post-status',
-                                    [
-                                        0 => 'None',
-                                        1 => 'Display',
-                                    ],
-                                    $post->postsInfomation->status,
-                                    [
-                                        'class' =>
-                                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block',
-                                        'data-path' => route('admin.posts.update.status', ['id' => $post->id]),
-                                        'data-method' => 'put',
-                                        'data-trigger' => 'change',
-                                    ],
-                                ) !!}
+                                @if ($showDeleteAt)
+                                    {{ $post->postsInfomation->status == 0 ? 'None' : 'Display' }}
+                                @else
+                                    {!! Form::select(
+                                        'post-status',
+                                        [
+                                            0 => 'None',
+                                            1 => 'Display',
+                                        ],
+                                        $post->postsInfomation->status,
+                                        [
+                                            'class' =>
+                                                'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block',
+                                            'data-path' => route('admin.posts.update.status', ['id' => $post->id]),
+                                            'data-method' => 'put',
+                                            'data-trigger' => 'change',
+                                        ],
+                                    ) !!}
+                                @endif
                             </td>
                             <td>{{ $post->category->name }}</td>
                             <td>{!! $post->description !!}</td>
+                            @if ($showDeleteAt)
+                                <td>
+                                    <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date }}">
+                                        {{ \Carbon\Carbon::parse($post->delete_at)->format('d-m-Y') }}
+                                    <p>
+                                </td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

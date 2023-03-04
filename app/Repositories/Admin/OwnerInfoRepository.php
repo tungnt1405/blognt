@@ -19,6 +19,22 @@ class OwnerInfoRepository implements OwnerInfoRepositoryInterface
         $this->model = $model;
     }
 
+    /**
+     * Get table
+     */
+    public function getTable()
+    {
+        return 'dtb_owner_info';
+    }
+
+    /**
+     * Get Join Table
+     */
+    public function getJoinTable()
+    {
+        return [];
+    }
+
     // Your methods for repository
     public function all()
     {

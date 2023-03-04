@@ -12,4 +12,5 @@ interface PostRepositoryInterface extends RepositoryInterface
     public function restorePostSoftDelete($ids);
     public function deletePosts($ids);
     public function destroyPosts($ids);
+    public function paginatePosts($conditions = [], $orders = [], $records = 10, $columns = ['*']);
 }
