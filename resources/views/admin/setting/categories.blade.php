@@ -80,5 +80,5 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="{{ asset('js/admin/user_data/categories.js') }}"></script>
+    <script src="{{ asset('assets/js/admin/user_data/categories.js') }}"></script>
 @endsection
