@@ -17,6 +17,22 @@ class PostInfomationRepository extends BaseRepository implements PostInfomationR
         return \App\Models\PostsInfomation::class;
     }
 
+    /**
+     * Get table
+     */
+    public function getTable()
+    {
+        return 'dtb_posts_infomation';
+    }
+
+    /**
+     * Get Join Table
+     */
+    public function getJoinTable()
+    {
+        return [];
+    }
+
     public function getInfomationByPostId($postId, $postStatus)
     {
         $postInformation = $this->model->where([

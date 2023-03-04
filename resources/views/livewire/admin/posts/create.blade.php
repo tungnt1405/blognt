@@ -199,5 +199,5 @@
     </div>
 </div>
 @section('javascript')
-    @vite('resources/js/backend/admin/posts.js')
+    <script type="text/javascript" src="{{ Vite::asset('resources/js/backend/admin/posts.js') }}"></script>
 @endsection

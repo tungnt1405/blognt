@@ -25,7 +25,7 @@
     <!-- Scripts -->
     <script src="{{ asset('assets/js/admin/lib/jquery-3.6.0.js') }}"></script>
     @yield('header-scripts')
-    @vite(['resources/css/app.css', 'resources/scss/admin/main.scss', 'resources/js/backend/admin/main.js', 'resources/js/backend/admin/common.js'])
+    @vite(['resources/scss/admin/main.scss', 'resources/js/backend/admin/main.js', 'resources/js/backend/admin/common.js'])
 </head>
 
 <body class="font-sans antialiased">

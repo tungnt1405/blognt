@@ -46,6 +46,7 @@ Route::prefix('admin_blog')->middleware([
     Route::get('/posts', [PostController::class, 'index'])->name('admin.posts');
     Route::get('/posts/create', [PostController::class, 'create'])->name('admin.posts.create');
     Route::post('/posts/create', [PostController::class, 'store'])->name('admin.posts.store');
+    Route::post('/posts/restore-posts', [PostController::class, 'restorePosts'])->name('admin.posts.restore');
     Route::put(
         '/posts/update/{id}/status',
         [PostController::class, 'updateStatus']
@@ -85,7 +86,7 @@ Route::prefix('admin_blog')->middleware([
 
         Route::group(['middleware' => array_values(array_filter([$authMiddleware, $authSessionMiddleware]))], function () {
             // User & Profile...
-            Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
+            Route::get('/user/profile', [UserProfileController::class, 'show'])->name('admin.profile.show');
 
             Route::group(['middleware' => 'verified'], function () {
                 // API...
