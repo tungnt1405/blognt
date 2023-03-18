@@ -180,5 +180,5 @@
     @include('livewire.admin.posts.show001')
 </div>
 @section('javascript')
-    <script type="text/javascript" src="{{ Vite::asset('resources/js/backend/admin/posts.js') }}"></script>
+    <script type="text/javascript" src="{{ Vite::asset('resources/assets/js/backend/admin/posts.js') }}"></script>
 @endsection

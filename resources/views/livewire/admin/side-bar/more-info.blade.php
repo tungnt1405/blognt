@@ -111,7 +111,7 @@
     </div>
 </div>
 @section('javascript')
-    <script type="text/javascript" src="{{ Vite::asset('resources/js/backend/admin/onwer.js') }}"></script>
+    <script type="text/javascript" src="{{ Vite::asset('resources/assets/js/backend/admin/onwer.js') }}"></script>
     <script>
         CKEDITOR.replace('textarea__more-exp');
         CKEDITOR.replace('textarea__more-pj');
