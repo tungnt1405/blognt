@@ -19,6 +19,22 @@ class CountryRepository extends BaseRepository implements CountryRepositoryInter
     }
 
     /**
+     * Get table
+     */
+    public function getTable()
+    {
+        return 'mtb_countries';
+    }
+
+    /**
+     * Get Join Table
+     */
+    public function getJoinTable()
+    {
+        return [];
+    }
+
+    /**
      * get all records from the country table
      * 
      * @return \App\Models\Master\Country|null

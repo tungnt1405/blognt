@@ -16,10 +16,10 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
 
     /**
      * @var UploadFileService $uploadFileService;
-    */
+     */
     public function __construct(
         UploadFileService $uploadFileService
-    ){
+    ) {
         parent::__construct();
         $this->_uploadFileService = $uploadFileService;
     }
@@ -27,6 +27,22 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
     public function getModel()
     {
         return \App\Models\Owner::class;
+    }
+
+    /**
+     * Get table
+     */
+    public function getTable()
+    {
+        return 'dtb_owner';
+    }
+
+    /**
+     * Get Join Table
+     */
+    public function getJoinTable()
+    {
+        return [];
     }
 
     public function setOwnerAttributes($attr)
@@ -37,12 +53,12 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
                 'avatar' => $base_64,
                 'name' => $attr['name'],
                 'introduce' => $attr['description'],
-                'gmail_url' => $attr['gmail'],
-                'fb_url' => $attr['facebook'],
-                'twitter_url' => $attr['twitter'],
-                'linkin_url' => $attr['linkin'],
-                'zalo_url' => $attr['zalo'] ,
-                'github_url' => $attr['github']
+                'gmail_url' => @$attr['gmail'],
+                'fb_url' => @$attr['facebook'],
+                'twitter_url' => @$attr['twitter'],
+                'linkin_url' => @$attr['linkin'],
+                'zalo_url' => @$attr['zalo'],
+                'github_url' => @$attr['github']
             );
 
             return $this->create($setField);
@@ -58,7 +74,7 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
 
     public function update($id, $attributes = [])
     {
-        if(isset($attributes['avatar'])){
+        if (isset($attributes['avatar'])) {
             $base_64 = $this->_uploadFileService->getBase64Image($attributes['avatar']);
         }
 
@@ -67,12 +83,12 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
             'avatar' => $base_64 ?? $result->avatar,
             'name' => $attributes['name'],
             'introduce' => $attributes['description'],
-            'gmail_url' => $attributes['gmail'] ?? '',
-            'fb_url' => $attributes['facebook'] ?? '',
-            'twitter_url' => $attributes['twitter'] ?? '',
-            'linkin_url' => $attributes['linkin'] ?? '',
-            'zalo_url' => $attributes['zalo'] ?? '',
-            'github_url' => $attributes['github'] ?? ''
+            'gmail_url' => @$attributes['gmail'],
+            'fb_url' => @$attributes['facebook'],
+            'twitter_url' => @$attributes['twitter'],
+            'linkin_url' => @$attributes['linkin'] ?? '',
+            'zalo_url' => @$attributes['zalo'],
+            'github_url' => @$attributes['github']
         );
 
         if ($result) {

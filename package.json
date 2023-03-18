@@ -27,5 +27,9 @@
         "vue-loader": "^17.0.0",
         "vue-router": "4",
         "vuetify": "^3.0.1"
+    },
+    "engines": {
+        "npm": ">=8.x",
+        "node": ">=14.x"
     }
 }

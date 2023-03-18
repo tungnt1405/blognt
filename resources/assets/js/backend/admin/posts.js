@@ -1,5 +1,4 @@
 'use strict';
-import * as Common from './common';
 
 const datepicker = () => {
     if ($('#datepicker').length) {
@@ -40,7 +39,7 @@ const input = {
     autoSlug() {
         $('#title').on('keyup', function () {
             const title = $(this).val();
-            $('#slug').val(Common.to_slug(title));
+            $('#slug').val(to_slug(title));
         });
     },
     selectAllPosts() {
@@ -94,10 +93,10 @@ const input = {
             },
             beforeSend: function () {
                 console.log('Send request updated!');
-                Common.showLoading();
+                showLoading();
             },
             success: function (res) {
-                Common.hideLoading(2000);
+                hideLoading(2000);
                 setTimeout(() => {
                     console.log(res.message);
                     location.reload();
@@ -105,13 +104,13 @@ const input = {
             },
             error: function (xhr, err) {
                 console.log('====== Status Response ========\n', xhr.status + ' ' + xhr.statusText);
-                Common.hideLoading(2000);
+                hideLoading(2000);
                 setTimeout(() => {
                     alert('Error! Contact the system administrator');
                 }, 2200);
             },
             always: function () {
-                Common.hideLoading();
+                hideLoading();
             },
         });
     },
@@ -203,10 +202,10 @@ const btn = {
             },
             beforeSend: function () {
                 console.log('Send request delete!');
-                Common.showLoading();
+                showLoading();
             },
             success: function (res) {
-                Common.hideLoading(2000);
+                hideLoading(2000);
                 setTimeout(() => {
                     console.log(res.message);
                     location.reload();
@@ -214,13 +213,13 @@ const btn = {
             },
             error: function (xhr, err) {
                 console.log('====== Status Response ========\n', xhr.status + ' ' + xhr.statusText);
-                Common.hideLoading(2000);
+                hideLoading(2000);
                 setTimeout(() => {
                     alert('Error! Contact the system administrator');
                 }, 2200);
             },
             always: function () {
-                Common.hideLoading();
+                hideLoading();
             },
         });
     },

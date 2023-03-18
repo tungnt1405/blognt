@@ -175,4 +175,24 @@ class PostController extends AdminController
                 'message' => 'Successfully change post status',
             ]);
     }
+
+    public function restorePosts(Request $request)
+    {
+        $restorePosts = $this->postsService->restorePostSoftDelete($request->get('ids'));
+
+        if (!$restorePosts) {
+            $this->toastrError('Sorry! Restore failed.', 'Error');
+            return response()
+                ->json([
+                    'code' => 500,
+                    'message' => 'Sorry! Restore failed',
+                ]);
+        }
+
+        $this->toastrSuccess('Successfully restore posts', 'Success');
+        return response()->json([
+            'code' => 200,
+            'message' => 'Successfully restore posts'
+        ]);
+    }
 }
