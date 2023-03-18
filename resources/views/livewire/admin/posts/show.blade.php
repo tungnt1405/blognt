@@ -1,11 +1,11 @@
 @php
     $listsMenu = [
         request()->url() => [
-            'title' => __('All (') . count($posts) . __(')'),
+            'title' => __('All (') . $posts->total() . __(')'),
             'posts' => '',
         ],
-        request()->fullUrlWithQuery(['posts' => 'trash']) => [
-            'title' => __('Trash (') . count($postsBySoftDelete) . __(')'),
+        request()->getUri() . '?posts=trash' => [
+            'title' => __('Trash (') . $postsBySoftDelete->total() . __(')'),
             'posts' => 'trash',
         ],
     ];
@@ -174,6 +174,7 @@
                     @endforeach
                 </tbody>
             </table>
+            {{ $listPosts->onEachSide(5)->links() }}
         </div>
     </div>
     <div class="posts-footer"></div>

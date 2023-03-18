@@ -107,10 +107,10 @@ abstract class BaseRepository implements RepositoryInterface
         if (!empty($conditions) && is_array($conditions)) {
             $results = $this->filterSearch($conditions, $orders, $columns);
         } else {
-            $results = $this->all();
+            return $this->model->paginate($records);
         }
 
-        return $results->paginate($records)->get();
+        return $results->paginate($records);
     }
 
     public function filterSearch($conditions = [], $orders = [], $columns = ['*'])

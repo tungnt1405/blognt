@@ -4,10 +4,12 @@ namespace App\Http\Livewire\Admin\Posts;
 
 use App\Services\Interfaces\Admin\PostsServiceInterface;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Show extends Component
 {
-    public $posts, $postsBySoftDelete;
+    use WithPagination;
+
     public $categories, $title, $slug, $status, $description, $pushDate = null;
     public $records = 15;
     public $showFilters = false;
@@ -20,25 +22,30 @@ class Show extends Component
     /**
      * @var PostsServiceInterface $postService
      */
+    // protected $postsService;
     protected $postsService;
 
-    public function mount(PostsServiceInterface $postsService)
+    public function mount()
     {
-        $this->postsService = $postsService;
-
-        $this->posts = $this->postsService->getAllPost();
-        $this->postsBySoftDelete = $this->postsService->getOnlyPostsSoftDelete();
+        $this->postsService = app()->make(PostsServiceInterface::class);
     }
 
     public function render()
     {
-        return view('livewire.admin.posts.show', ['posts' => $this->posts]);
+        return view('livewire.admin.posts.show', [
+            'posts' => $this->postsService->paginatePosts($this->records, $this->filter),
+            'postsBySoftDelete' => $this->postsService->getOnlyPostsSoftDelete()
+        ]);
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     public function searchPosts()
     {
-        $this->postsService = app()->make(PostsServiceInterface::class);
-        $this->posts = $this->postsService->paginatePosts($this->records, $this->filter);
+        $this->updatingSearch();
     }
 
     public function toggleFilters()
