@@ -7,37 +7,10 @@
         'zalo' => 'zalo_url',
         'github' => 'github_url',
     ];
+    
+    $route = !empty($owner) ? ['admin.side-bar.update', $owner->id] : 'admin.side-bar.new';
+    $method = !empty($owner) ? 'PUT' : 'POST';
 @endphp
-@section('style')
-    <style>
-        .arrow {
-            position: absolute;
-            width: 80px;
-            height: 20px;
-            line-height: 10px;
-            background: #bebebe;
-            right: 0;
-            top: 45%;
-            transform: translateX(120%);
-        }
-
-        .arrow::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            transform: translateX(20px);
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-left: 20px solid #bebebe;
-            border-bottom: 10px solid transparent;
-        }
-    </style>
-@endsection
-<?php
-$route = !empty($owner) ? ['admin.side-bar.update', $owner->id] : 'admin.side-bar.new';
-$method = !empty($owner) ? 'PUT' : 'POST';
-?>
 <div>
     {!! Form::open(['route' => $route, 'method' => $method, 'enctype' => 'multipart/form-data']) !!}
     {{ Form::token() }}
@@ -69,7 +42,7 @@ $method = !empty($owner) ? 'PUT' : 'POST';
                 </div>
                 <div class="mt-8">
                     {{ Form::label('name', __('Name'), ['class' => 'awesome']) }}
-                    <input type="text" name="name" id="name" value="{{ $owner->name ?? '' }}"
+                    <input type="text" name="name" id="name" value="{{ @$owner->name }}"
                         class="@error('name') border-red-600 shadow-md @enderror border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full">
                     @error('name')
                         <div class="mt-2 alert alert-error shadow-lg text-white">{{ $message }}</div>
@@ -87,7 +60,7 @@ $method = !empty($owner) ? 'PUT' : 'POST';
         <div class="mt-5 md mt-0 md:col-span-2">
             <div class="px-4 py-5 bg-white sm:p-6 shadow sm:rounded-tl-md sm:rounded-tr-md">
                 <div>
-                    {{ Form::textarea('description', $owner->introduce ?? null, ['class' => 'textarea textarea-bordered', 'id' => 'textarea__sidebar-des']) }}
+                    {{ Form::textarea('description', @$owner->introduce, ['class' => 'textarea textarea-bordered', 'id' => 'textarea__sidebar-des']) }}
                 </div>
             </div>
         </div>
@@ -128,25 +101,25 @@ $method = !empty($owner) ? 'PUT' : 'POST';
             @foreach ($socials as $val => $social)
                 <div class="form-control mt-4">
                     <label class="cursor-pointer label justify-start select__social capitalize">
-                        <input type="checkbox" class="checkbox mr-4"
-                            @if (!empty($owner->$social)) checked="checked" @endif <span
+                        <input type="checkbox" class="checkbox mr-4" @checked(@$owner->$social) /> <span
                             class="label-text text-lg capitalize font-semibold">{{ $val }}</span>
                     </label>
                     <div class="hidden social">
                         <div class="mt-4">
                             {{ Form::label($val, '', ['class' => 'awesome']) }}
-                            {{ Form::text($val, $owner->$social ?? null, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
+                            {{ Form::text($val, @$owner->$social, ['class' => 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full']) }}
                         </div>
                     </div>
                 </div>
             @endforeach
             <div class="modal-action">
-                <label for="checkbox_modal-show" class="btn btn-info btn-outline btn__add-field">Thêm</label>
-                <label for="checkbox_modal-show" class="btn btn-ghost">Huỷ bỏ</label>
+                <label for="checkbox_modal-show"
+                    class="btn btn-info btn-outline btn__add-field">{{ __('Thêm') }}</label>
+                <label for="checkbox_modal-show" class="btn btn-ghost">{{ __('Huỷ bỏ') }}</label>
             </div>
         </div>
     </div>
 </div>
 @section('javascript')
-    @vite('resources/js/backend/admin/onwer.js')
+    <script type="text/javascript" src="{{ Vite::asset('resources/assets/js/backend/admin/onwer.js') }}"></script>
 @endsection

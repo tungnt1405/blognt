@@ -27,14 +27,24 @@
         <div class="modal-box">
             <h3 class="font-bold text-lg">{{ __('Nhắc nhở') }}</h3>
             <p class="py-4">
-                {!! nl2br(
-                    __("Mày sẽ xoá hết tất cả những gì mày đang chọn đấy. \nNghĩ kỹ vào không lại mất phải mất công khôi phục."),
-                ) !!}
+                @if ($showDeleteAt)
+                    {!! nl2br(__("Khôi phục bài viết mày đã xoá.\nXem kỹ vào không lại phải vào lần nữa🙄")) !!}
+                @else
+                    {!! nl2br(
+                        __("Mày sẽ xoá hết tất cả những gì mày đang chọn đấy. \nNghĩ kỹ vào không lại mất phải mất công khôi phục."),
+                    ) !!}
+                @endif
             </p>
             <div class="modal-action">
-                <label for="show-modal-soft-delete" class="btn btn-error btn-active text-white js-soft-delete-handle"
-                    data-path="{{ route('admin.posts.soft.delete') }}"
-                    data-method="delete">{{ __('Remove trash') }}</label>
+                @if ($showDeleteAt)
+                    <label for="show-modal-soft-delete" class="btn btn-info btn-active text-white js-soft-delete-handle"
+                        data-path="{{ route('admin.posts.restore') }}" data-method="post">{{ __('Restore') }}</label>
+                @else
+                    <label for="show-modal-soft-delete"
+                        class="btn btn-error btn-active text-white js-soft-delete-handle"
+                        data-path="{{ route('admin.posts.soft.delete') }}"
+                        data-method="delete">{{ __('Remove trash') }}</label>
+                @endif
                 <label for="show-modal-soft-delete" class="btn js-delete-close">Cancel</label>
             </div>
         </div>

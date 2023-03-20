@@ -12,7 +12,7 @@ interface RepositoryInterface
 
     /**
      * Get one
-     * @param $id
+     * @param int $id
      * @return mixed
      */
     public function find($id);
@@ -26,7 +26,7 @@ interface RepositoryInterface
 
     /**
      * Update
-     * @param $id
+     * @param int $id
      * @param array $attributes
      * @return mixed
      */
@@ -34,8 +34,22 @@ interface RepositoryInterface
 
     /**
      * Delete
-     * @param $id
+     * @param int $id
      * @return mixed
      */
     public function delete($id);
+
+    /**
+     * paginate
+     * @param int $records
+     * @param array $conditions
+     */
+    public function paginate($conditions = [], $orders = [], $records = 10, $columns = ['*']);
+
+    /**
+     * paginate
+     * @param int $records
+     * @param array $conditions
+     */
+    public function filterSearch($conditions = [], $orders = [], $columns = ['*']);
 }

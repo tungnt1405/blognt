@@ -3,14 +3,20 @@
 namespace App\Repositories;
 
 use App\Repositories\Interfaces\RepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 abstract class BaseRepository implements RepositoryInterface
 {
     protected $model;
+    protected string $table = '';
+    protected array $join = [];
+    protected array $fields = [];
 
     public function __construct()
     {
         $this->setModel();
+        $this->setTable();
+        $this->setJoinTable();
     }
 
     /**
@@ -27,6 +33,33 @@ abstract class BaseRepository implements RepositoryInterface
             $this->getModel()
         );
     }
+
+    /**
+     * Get table
+     */
+    abstract public function getTable();
+
+    /**
+     * Set table
+     */
+    public function setTable()
+    {
+        $this->table = $this->getTable();
+    }
+
+    /**
+     * Get Join Table
+     */
+    abstract public function getJoinTable();
+
+    /**
+     * Set table
+     */
+    public function setJoinTable()
+    {
+        $this->join = $this->getJoinTable();
+    }
+
 
     public function all()
     {
@@ -66,5 +99,52 @@ abstract class BaseRepository implements RepositoryInterface
         }
 
         return false;
+    }
+
+    // inprogress
+    public function paginate($conditions = [], $orders = [], $records = 10, $columns = ['*'])
+    {
+        if (!empty($conditions) && is_array($conditions)) {
+            $results = $this->filterSearch($conditions, $orders, $columns);
+        } else {
+            return $this->model->paginate($records);
+        }
+
+        return $results->paginate($records);
+    }
+
+    public function filterSearch($conditions = [], $orders = [], $columns = ['*'])
+    {
+        $search = DB::table($this->table);
+
+        foreach ($conditions as $key => $value) {
+            if (is_array($value)) {
+                $search->where($key, function ($query, $key) use ($value) {
+                    $query->where($key, $value[0]);
+                    $new_values = array_slice($value, 1);
+                    if (!empty($new_values)) {
+                        foreach ($new_values as $new_value) {
+                            $query->orWhere($key, $new_value);
+                        }
+                    }
+                });
+            } else {
+                $search->where($key, $value['query'], $value['sql']);
+            }
+        }
+
+        if (!empty($orders) && is_array($orders)) {
+            foreach ($orders as $key => $value) {
+                $search->orderBy($key, $value);
+            }
+        }
+
+        if (empty($columns) && !empty($this->fields)) {
+            $columns = $this->fields;
+        } else {
+            $columns = ['*'];
+        }
+        $search->select($columns);
+        return $search;
     }
 }

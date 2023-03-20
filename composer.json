@@ -8,8 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
-        "ckeditor/ckeditor": "^4.20",
+        "php": ">=8.0.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.12",
@@ -22,7 +21,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
-        "fakerphp/faker": "^1.9.1",
+        "fakerphp/faker": "^1.21",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.16",
         "mockery/mockery": "^1.4.4",

@@ -16,6 +16,30 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     }
 
     /**
+     * Get model
+     */
+    public function getModel()
+    {
+        return \App\Models\Post::class;
+    }
+
+    /**
+     * Get table
+     */
+    public function getTable()
+    {
+        return $this->model->getTable();
+    }
+
+    /**
+     * Get Join Table
+     */
+    public function getJoinTable()
+    {
+        return [];
+    }
+
+    /**
      * @return \App\Repositories\Admin\PostInfomationRepository
      */
     private function getPostInformationRepository()
@@ -28,24 +52,24 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         $this->positionInformationRepository = app()->make($this->getPostInformationRepository());
     }
 
-    public function getModel()
-    {
-        return \App\Models\Post::class;
-    }
-
     public function updatePostInformation($postId, $postStatus)
     {
         return $this->positionInformationRepository->getInfomationByPostId($postId, $postStatus);
     }
 
+    public function paginatePosts($conditions = [], $orders = [], $records = 10, $columns = ['*'])
+    {
+        return $this->paginate($conditions, $orders, $records, $columns);
+    }
+
     public function getAllPostsIncludeSoftDelete()
     {
-        return $this->model->withTrashed()->get();
+        return $this->model->withTrashed()->paginate(10);
     }
 
     public function getOnlyPostsSoftDelete()
     {
-        return $this->model->onlyTrashed()->get();
+        return $this->model->onlyTrashed()->paginate(1);
     }
 
     public function restorePostSoftDelete($ids)

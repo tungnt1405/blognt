@@ -5,7 +5,7 @@ $(function () {
     });
 });
 
-export const to_slug = (str) => {
+const to_slug = (str) => {
     // Chuyển hết sang chữ thường
     str = str.toLowerCase();
 
@@ -34,11 +34,11 @@ export const to_slug = (str) => {
     return str;
 };
 
-export const showLoading = () => {
+const showLoading = () => {
     return $('body').append(`<div id="overlay"></div>`);
 };
 
-export const hideLoading = (time) => {
+const hideLoading = (time) => {
     setTimeout(() => {
         $('#overlay').remove();
     }, time);
