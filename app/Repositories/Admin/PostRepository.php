@@ -64,12 +64,12 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function getAllPostsIncludeSoftDelete()
     {
-        return $this->model->withTrashed()->get();
+        return $this->model->withTrashed()->paginate(10);
     }
 
     public function getOnlyPostsSoftDelete()
     {
-        return $this->model->onlyTrashed()->get();
+        return $this->model->onlyTrashed()->paginate(1);
     }
 
     public function restorePostSoftDelete($ids)

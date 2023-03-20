@@ -86,7 +86,7 @@ Route::prefix('admin_blog')->middleware([
 
         Route::group(['middleware' => array_values(array_filter([$authMiddleware, $authSessionMiddleware]))], function () {
             // User & Profile...
-            Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
+            Route::get('/user/profile', [UserProfileController::class, 'show'])->name('admin.profile.show');
 
             Route::group(['middleware' => 'verified'], function () {
                 // API...
