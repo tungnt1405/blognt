@@ -174,12 +174,12 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $listPosts->onEachSide(5)->links() }}
+            {{ $listPosts->onEachSide(3)->links() }}
         </div>
     </div>
     <div class="posts-footer"></div>
     @include('livewire.admin.posts.show001')
 </div>
 @section('javascript')
-    <script type="text/javascript" src="{{ Vite::asset('resources/assets/js/backend/admin/posts.js') }}"></script>
+    @vite('resources/assets/js/backend/admin/posts.js')
 @endsection

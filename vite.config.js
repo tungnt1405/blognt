@@ -7,13 +7,13 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/assets/scss/admin/main.scss',
-                'resources/assets/scss/main.scss',
                 'resources/assets/js/frontend/app.js',
                 'resources/assets/js/backend/admin/main.js',
                 'resources/assets/js/backend/admin/common.js',
                 'resources/assets/js/backend/admin/onwer.js',
                 'resources/assets/js/backend/admin/posts.js',
+                'resources/assets/scss/admin/main.scss',
+                'resources/assets/scss/main.scss',
             ],
             refresh: [...refreshPaths, 'app/Http/Livewire/**'],
         }),

@@ -19,6 +19,10 @@ class RegisterInterfaceServiceProvider extends ServiceProvider
     {
         $this->app->bind(CategoryServiceInterface::class, CategoryService::class);
         app()->bind(PostsServiceInterface::class, PostsService::class);
+
+        app()->bind('PostsService', function ($app) {
+            return new PostsService();
+        });
     }
 
     /**

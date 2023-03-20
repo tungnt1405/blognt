@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin\Posts;
 
+use App\Services\Admin\PostsService;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -11,7 +12,7 @@ class Show extends Component
     use WithPagination;
 
     public $categories, $title, $slug, $status, $description, $pushDate = null;
-    public $records = 15;
+    public $records = 1;
     public $showFilters = false;
     public $filter = [
         'search' => '',
@@ -27,14 +28,14 @@ class Show extends Component
 
     public function mount()
     {
-        $this->postsService = app()->make(PostsServiceInterface::class);
+
     }
 
     public function render()
     {
         return view('livewire.admin.posts.show', [
-            'posts' => $this->postsService->paginatePosts($this->records, $this->filter),
-            'postsBySoftDelete' => $this->postsService->getOnlyPostsSoftDelete()
+            'posts' => app()->make('PostsService')->paginatePosts($this->records, $this->filter, 1),
+            'postsBySoftDelete' => app()->make('PostsService')->getOnlyPostsSoftDelete()
         ]);
     }
 
