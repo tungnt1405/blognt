@@ -164,6 +164,12 @@
             <x-jet-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs(['admin.side-bar', 'admin.owner.more-info'])">
+                {{ __('Sidebar Management') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('admin.posts') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create'])">
+                {{ __('Posts Management') }}
+            </x-jet-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
