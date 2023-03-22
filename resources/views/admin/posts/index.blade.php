@@ -20,7 +20,8 @@
                 'categories' => $categories,
                 'isTrash' => $isTrash,
                 'posts' => $posts,
-                'showFilters' => $showFilters
+                'totalPosts' => $totalPosts,
+                'totalPostsSoftDelete' => $totalPostsSoftDelete,
             ])
         </div>
     </div>
