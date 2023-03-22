@@ -1,11 +1,11 @@
 @php
     $listsMenu = [
         'posts' => [
-            'title' => __('All (') . 1 . __(')'),
+            'title' => __('All (') . $totalPosts . __(')'),
             'posts' => '',
         ],
         'trash' => [
-            'title' => __('Trash (') . 2 . __(')'),
+            'title' => __('Trash (') . $totalPostsSoftDelete . __(')'),
             'posts' => 'trash',
         ],
     ];
@@ -19,47 +19,36 @@
                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
             ]) !!}
 
-            <div class="posts-category-search my-3 {{ $showFilters ? '' : 'hidden' }}">
+            <div class="posts-category-search my-3 hidden">
                 <h2 class="font-bold text-lg">{{ __('Select Category') }}</h2>
                 @foreach ($categories as $category)
                     <label class="mr-4">
-                        <input type="checkbox" wire:model="filter.categories"
+                        <input type="checkbox"
                             {{ is_array(request()->input('category')) && in_array($category->id, request()->input('category')) ? 'checked' : '' }}
                             name="category[]" class="checkbox checkbox-sm" value="{{ $category->id }}" />
                         <span> {{ $category->name }} </span>
                     </label>
                 @endforeach
             </div>
-            <div class="posts-status-search {{ $showFilters ? '' : 'hidden' }}">
+            <div class="posts-status-search hidden">
                 <h2 class="font-bold text-lg"> {{ __('Select Status') }} </h2>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm"
-                        value="1" checked />
+                    <input type="radio" name="status" class="radio radio-sm" value="1" checked />
                     <span> {{ __('Display') }} </span>
                 </label>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm"
-                        value="0" />
+                    <input type="radio" name="status" class="radio radio-sm" value="0" />
                     <span> {{ __('None') }} </span>
                 </label>
             </div>
         </div>
-        @empty($showFilters)
-            <label class="search-options cursor-pointer" wire:click="toggleFilters()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </label>
-        @else
-            <label class="search-options cursor-pointer" wire:click="toggleFilters()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </label>
-        @endempty
+        <label class="search-options cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </label>
         <div class="btn-search mt-4">
             <button class="btn btn-info btn-active text-white btn-sm js-submit-search">Search</button>
             <label for="show-modal-delete" class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
@@ -81,9 +70,10 @@
         <div class="posts-menu">
             <ul class="flex gap-[10px] mt-3">
                 @foreach ($listsMenu as $url => $item)
-                    <li><a href="{{ $url !== 'trash' ? route('admin.posts') : route('admin.posts') . '?posts=' . $url }}" @class([
-                        'text-blue-700' => request()->query->get('posts') == $item['posts'],
-                    ])>{{ $item['title'] }}</a>
+                    <li><a href="{{ $url !== 'trash' ? route('admin.posts') : route('admin.posts') . '?posts=' . $url }}"
+                            @class([
+                                'text-blue-700' => request()->query->get('posts') == $item['posts'],
+                            ])>{{ $item['title'] }}</a>
                     </li>
                 @endforeach
             </ul>

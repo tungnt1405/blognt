@@ -35,7 +35,8 @@ class PostController extends AdminController
     public function index(Request $request)
     {
         $isTrash = false;
-        $showFilters = false; // Xử lý hiển thị phần filter bên blate(inprogress)
+        $totalPosts = $this->postsService->paginatePosts()->total();
+        $totalPostsSoftDelete = $this->postsService->getOnlyPostsSoftDelete()->total();
         $posts = $this->postsService->paginatePosts();
 
         if (!empty($request->get('posts'))) {
@@ -45,7 +46,8 @@ class PostController extends AdminController
 
         return view('admin.posts.index', compact('posts'))
             ->with('isTrash', $isTrash)
-            ->with('showFilters', $showFilters);
+            ->with('totalPosts', $totalPosts)
+            ->with('totalPostsSoftDelete', $totalPostsSoftDelete);
     }
 
     /**
