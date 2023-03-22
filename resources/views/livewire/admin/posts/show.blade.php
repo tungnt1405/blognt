@@ -1,27 +1,19 @@
 @php
     $listsMenu = [
-        request()->url() => [
-            'title' => __('All (') . $posts->total() . __(')'),
+        'posts' => [
+            'title' => __('All (') . 1 . __(')'),
             'posts' => '',
         ],
-        request()->getUri() . '?posts=trash' => [
-            'title' => __('Trash (') . $postsBySoftDelete->total() . __(')'),
+        'trash' => [
+            'title' => __('Trash (') . 2 . __(')'),
             'posts' => 'trash',
         ],
     ];
-    $listPosts = $posts;
-    $showDeleteAt = false;
-    if (request()->query->get('posts') === 'trash') {
-        $listPosts = $postsBySoftDelete;
-        $showDeleteAt = true;
-    }
 @endphp
 <div class="wrapper bg-white w-full">
     <div class="bg-slate-200 posts-header p-5">
         <div class="posts-header-search mb-3">
             {!! Form::text('search', null, [
-                'wire:model' => 'filter.search',
-                'wire:model.debounce.5000ms' => 'filter.search',
                 'placeholder' => 'Enter keywords search posts as label post, slug ',
                 'class' =>
                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
@@ -41,12 +33,12 @@
             <div class="posts-status-search {{ $showFilters ? '' : 'hidden' }}">
                 <h2 class="font-bold text-lg"> {{ __('Select Status') }} </h2>
                 <label class="mr-4">
-                    <input type="radio" name="status" wire:model="filter.status" class="radio radio-sm"
+                    <input type="radio" name="status" class="radio radio-sm"
                         value="1" checked />
                     <span> {{ __('Display') }} </span>
                 </label>
                 <label class="mr-4">
-                    <input type="radio" name="status" wire:model="filter.status" class="radio radio-sm"
+                    <input type="radio" name="status" class="radio radio-sm"
                         value="0" />
                     <span> {{ __('None') }} </span>
                 </label>
@@ -69,12 +61,11 @@
             </label>
         @endempty
         <div class="btn-search mt-4">
-            <button wire:click.prevent="searchPosts()"
-                class="btn btn-info btn-active text-white btn-sm js-submit-search">Search</button>
+            <button class="btn btn-info btn-active text-white btn-sm js-submit-search">Search</button>
             <label for="show-modal-delete" class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
                 {{ __('Delete') }}
             </label>
-            @if ($showDeleteAt)
+            @if ($isTrash)
                 <label for="show-modal-soft-delete"
                     class="btn btn-info btn-active text-white btn-sm hidden js-delete-post">
                     {{ __('Restore') }}
@@ -90,7 +81,7 @@
         <div class="posts-menu">
             <ul class="flex gap-[10px] mt-3">
                 @foreach ($listsMenu as $url => $item)
-                    <li><a href="{{ $url }}" @class([
+                    <li><a href="{{ $url !== 'trash' ? route('admin.posts') : route('admin.posts') . '?posts=' . $url }}" @class([
                         'text-blue-700' => request()->query->get('posts') == $item['posts'],
                     ])>{{ $item['title'] }}</a>
                     </li>
@@ -116,13 +107,13 @@
                         <th>{{ __('Status') }}</th>
                         <th>{{ __('Category') }}</th>
                         <th>{{ __('Description') }}</th>
-                        @if ($showDeleteAt)
+                        @if ($isTrash)
                             <th>{{ __('Delete At') }}</th>
                         @endif
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($listPosts as $post)
+                    @foreach ($posts as $post)
                         <tr>
                             <td>
                                 <label>
@@ -141,7 +132,7 @@
                                 <p>
                             </td>
                             <td>
-                                @if ($showDeleteAt)
+                                @if ($isTrash)
                                     {{ $post->postsInfomation->status == 0 ? 'None' : 'Display' }}
                                 @else
                                     {!! Form::select(
@@ -163,7 +154,7 @@
                             </td>
                             <td>{{ $post->category->name }}</td>
                             <td>{!! $post->description !!}</td>
-                            @if ($showDeleteAt)
+                            @if ($isTrash)
                                 <td>
                                     <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date }}">
                                         {{ \Carbon\Carbon::parse($post->delete_at)->format('d-m-Y') }}
@@ -174,7 +165,7 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $listPosts->onEachSide(3)->links() }}
+            {{ $posts->withQueryString()->onEachSide(3)->links() }}
         </div>
     </div>
     <div class="posts-footer"></div>
