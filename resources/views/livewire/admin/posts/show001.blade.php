@@ -27,7 +27,7 @@
         <div class="modal-box">
             <h3 class="font-bold text-lg">{{ __('Nhắc nhở') }}</h3>
             <p class="py-4">
-                @if ($showDeleteAt)
+                @if ($isTrash)
                     {!! nl2br(__("Khôi phục bài viết mày đã xoá.\nXem kỹ vào không lại phải vào lần nữa🙄")) !!}
                 @else
                     {!! nl2br(
@@ -36,7 +36,7 @@
                 @endif
             </p>
             <div class="modal-action">
-                @if ($showDeleteAt)
+                @if ($isTrash)
                     <label for="show-modal-soft-delete" class="btn btn-info btn-active text-white js-soft-delete-handle"
                         data-path="{{ route('admin.posts.restore') }}" data-method="post">{{ __('Restore') }}</label>
                 @else

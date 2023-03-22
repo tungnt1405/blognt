@@ -7,7 +7,6 @@ use App\Http\Requests\admin\Posts\UpdatePostRequest;
 use App\Models\Post;
 use App\Services\Interfaces\Admin\CategoryServiceInterface;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class PostController extends AdminController
@@ -35,7 +34,18 @@ class PostController extends AdminController
      */
     public function index(Request $request)
     {
-        return view('admin.posts.index');
+        $isTrash = false;
+        $showFilters = false; // Xử lý hiển thị phần filter bên blate(inprogress)
+        $posts = $this->postsService->paginatePosts();
+
+        if (!empty($request->get('posts'))) {
+            $posts = $this->postsService->getOnlyPostsSoftDelete();
+            $isTrash = true;
+        }
+
+        return view('admin.posts.index', compact('posts'))
+            ->with('isTrash', $isTrash)
+            ->with('showFilters', $showFilters);
     }
 
     /**
