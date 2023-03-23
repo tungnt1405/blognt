@@ -101,50 +101,48 @@ abstract class BaseRepository implements RepositoryInterface
         return false;
     }
 
-    // inprogress
-    public function paginate($conditions = [], $orders = [], $records = 10, $columns = ['*'])
-    {
-        if (!empty($conditions) && is_array($conditions)) {
-            $results = $this->filterSearch($conditions, $orders, $columns);
-        } else {
-            return $this->model->paginate($records);
-        }
-
-        return $results->paginate($records);
-    }
-
     public function filterSearch($conditions = [], $orders = [], $columns = ['*'])
     {
         $search = DB::table($this->table);
 
-        foreach ($conditions as $key => $value) {
+        if (!empty($this->join)) {
+            foreach ($this->join as $table => $keys) {
+                $search->leftJoin($table, $table . '.' . $keys['foreign_key'], '=', $this->table . '.' . $keys['key']);
+            }
+        }
+        foreach ($conditions as $field => $value) {
             if (is_array($value)) {
-                $search->where($key, function ($query, $key) use ($value) {
-                    $query->where($key, $value[0]);
+                if (!empty($value['sql']) && !empty($value['value'])) {
+                    $search->where($field, $value['sql'], $value['value']);
+                } else {
+                    $search->where($field, $value[0]);
                     $new_values = array_slice($value, 1);
                     if (!empty($new_values)) {
                         foreach ($new_values as $new_value) {
-                            $query->orWhere($key, $new_value);
+                            $search->orWhere($field, $new_value);
                         }
                     }
-                });
+                }
             } else {
-                $search->where($key, $value['query'], $value['sql']);
+                $search->where($field, $value);
             }
         }
 
         if (!empty($orders) && is_array($orders)) {
-            foreach ($orders as $key => $value) {
-                $search->orderBy($key, $value);
+            dump($orders);
+            foreach ($orders as $field => $value) {
+                $search->orderBy($field, $value);
             }
         }
 
         if (empty($columns) && !empty($this->fields)) {
             $columns = $this->fields;
-        } else {
-            $columns = ['*'];
         }
         $search->select($columns);
-        return $search;
+        if (!empty($orders)) {
+            dump($columns);
+            dd($search->toSql());
+        }
+        return $search->paginate(10);
     }
 }

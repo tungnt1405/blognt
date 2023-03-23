@@ -44,12 +44,5 @@ interface RepositoryInterface
      * @param int $records
      * @param array $conditions
      */
-    public function paginate($conditions = [], $orders = [], $records = 10, $columns = ['*']);
-
-    /**
-     * paginate
-     * @param int $records
-     * @param array $conditions
-     */
     public function filterSearch($conditions = [], $orders = [], $columns = ['*']);
 }

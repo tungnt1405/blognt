@@ -102,3 +102,31 @@ const debounce = (fn, delay) => {
         }, delay);
     };
 };
+
+const getProductTryURL = (params = '') => {
+    let parsedUrl = new URL(window.location.href);
+    // let categories = parsedUrl.searchParams.get('categories') || '';
+    // categories = categories.split(',');
+
+    // if (Array.isArray(categories) && categories.length) {
+    //     if (id == 'all') {
+    //         categories = [];
+    //     } else if (!categories.includes(id)) {
+    //         categories.push(id);
+    //     } else {
+    //         categories = categories.filter(function (index) {
+    //             return index !== id;
+    //         });
+    //     }
+
+    //     parsedUrl.searchParams.set('categories', categories.join(','));
+    //     parsedUrl.searchParams.set('page_no', 1);
+    // }
+
+    let getParams = parsedUrl.searchParams.get(params) || '';
+    if (getParams.length) {
+        parsedUrl.searchParams.set(params, getParams);
+    }
+
+    return parsedUrl.href;
+};

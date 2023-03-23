@@ -22,6 +22,10 @@
                 'posts' => $posts,
                 'totalPosts' => $totalPosts,
                 'totalPostsSoftDelete' => $totalPostsSoftDelete,
+                'searchterm' => $searchterm,
+                'searchCategory', $searchCategory,
+                'searchStatus', $searchStatus,
+                'checkSearch', $checkSearch,
             ])
         </div>
     </div>

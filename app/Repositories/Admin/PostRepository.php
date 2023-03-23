@@ -13,6 +13,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     {
         parent::__construct();
         $this->setPostInformationRepository();
+        $this->fields = $this->model->getFillable();
     }
 
     /**
@@ -36,7 +37,16 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
      */
     public function getJoinTable()
     {
-        return [];
+        return [
+            'dtb_posts_infomation' => [
+                'foreign_key' => 'post_id',
+                'key' => 'id'
+            ],
+            'mtb_categories' => [
+                'foreign_key' => 'id',
+                'key' => 'category_id'
+            ]
+        ];
     }
 
     /**
@@ -57,14 +67,28 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return $this->positionInformationRepository->getInfomationByPostId($postId, $postStatus);
     }
 
-    public function paginatePosts($conditions = [], $orders = [], $records = 10, $columns = ['*'])
+    public function getAllPosts($conditions = [], $orders = [], $columns = ['*'])
     {
-        return $this->paginate($conditions, $orders, $records, $columns);
+        if (!empty($conditions)) {
+            $posts = $this->filterSearch($conditions);
+
+            if (!empty($orders)) {
+                $posts = $this->filterSearch($conditions, $orders);
+            } elseif ($columns[0] !== '*') {
+                $posts = $this->filterSearch($conditions, [], $columns);
+            } else {
+                $posts = $this->filterSearch($conditions, $orders, $columns);
+            }
+            // dd($posts);
+            return $posts;
+        } else {
+            return $this->model->paginate(10);
+        }
     }
 
     public function getAllPostsIncludeSoftDelete()
     {
-        return $this->model->withTrashed()->paginate(10);
+        return $this->model->withTrashed();
     }
 
     public function getOnlyPostsSoftDelete()
