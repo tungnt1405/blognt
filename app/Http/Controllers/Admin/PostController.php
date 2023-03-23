@@ -35,17 +35,51 @@ class PostController extends AdminController
     public function index(Request $request)
     {
         $isTrash = false;
-        $totalPosts = $this->postsService->paginatePosts()->total();
+        $checkSearch = false;
+        $searchterm = '';
+        $searchCategory = [];
+        $searchStatus = '1';
+        $totalPosts = $this->postsService->getAllPost()->total();
         $totalPostsSoftDelete = $this->postsService->getOnlyPostsSoftDelete()->total();
-        $posts = $this->postsService->paginatePosts();
+        $posts = $this->postsService->getAllPost();
 
         if (!empty($request->get('posts'))) {
             $posts = $this->postsService->getOnlyPostsSoftDelete();
             $isTrash = true;
         }
 
+        $search = [];
+        foreach ($request->all() as $k => $v) {
+            if ($k !== 'page' && $k !== 'posts') {
+                $field = $this->setFieldSearch($k);
+                if ($k === 'search') {
+                    $v = [
+                        'sql' => 'Like',
+                        'value' => "%" . trim($v) . "%"
+                    ];
+                }
+                $search[$field] = $v;
+            }
+        }
+
+        if (isset($search) && $search) {
+            $checkSearch = true;
+            $searchterm = $request->get('search');
+            $searchCategory = $request->get('category');
+            $searchStatus = $request->get('status');
+            if ($isTrash) {
+            } else {
+                $orders = ['dtb_posts.id' => 'DESC'];
+                $search['dtb_posts.deleted_at'] = NULL; // lỗi không search đúng vẫn search cả deleted_at != null
+                $posts = $this->postsService->getAllPost($search, $orders, ['dtb_posts.*']);
+            }
+        }
         return view('admin.posts.index', compact('posts'))
             ->with('isTrash', $isTrash)
+            ->with('checkSearch', $checkSearch)
+            ->with('searchterm', $searchterm)
+            ->with('searchStatus', $searchStatus)
+            ->with('searchCategory', $searchCategory)
             ->with('totalPosts', $totalPosts)
             ->with('totalPostsSoftDelete', $totalPostsSoftDelete);
     }
@@ -206,5 +240,16 @@ class PostController extends AdminController
             'code' => 200,
             'message' => 'Successfully restore posts'
         ]);
+    }
+
+    private function setFieldSearch($field)
+    {
+        $fields = [
+            'search' => 'dtb_posts.title',
+            'status' => 'dtb_posts_infomation.status',
+            'category' => 'dtb_posts.category_id'
+        ];
+
+        return $fields[$field];
     }
 }

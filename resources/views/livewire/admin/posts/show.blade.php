@@ -13,13 +13,14 @@
 <div class="wrapper bg-white w-full">
     <div class="bg-slate-200 posts-header p-5">
         <div class="posts-header-search mb-3">
-            {!! Form::text('search', null, [
-                'placeholder' => 'Enter keywords search posts as label post, slug ',
+            {!! Form::open(['id' => 'frmSearchPosts', 'method' => 'GET', 'onsubmit' => 'return false']) !!}
+            {!! Form::text('search', isset($searchterm) ? $searchterm : null, [
+                'placeholder' => 'Enter keywords (label posts) to search posts.',
                 'class' =>
                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
             ]) !!}
 
-            <div class="posts-category-search my-3 hidden">
+            <div class="posts-category-search my-3 {{ !$checkSearch ? 'hidden' : ''}}">
                 <h2 class="font-bold text-lg">{{ __('Select Category') }}</h2>
                 @foreach ($categories as $category)
                     <label class="mr-4">
@@ -30,27 +31,36 @@
                     </label>
                 @endforeach
             </div>
-            <div class="posts-status-search hidden">
+            <div class="posts-status-search {{ !$checkSearch ? 'hidden' : ''}}">
                 <h2 class="font-bold text-lg"> {{ __('Select Status') }} </h2>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm" value="1" checked />
+                    <input type="radio" name="status" class="radio radio-sm" value="1" @checked($searchStatus == '1') />
                     <span> {{ __('Display') }} </span>
                 </label>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm" value="0" />
+                    <input type="radio" name="status" class="radio radio-sm" value="0" @checked($searchStatus == '0')/>
                     <span> {{ __('None') }} </span>
                 </label>
             </div>
+            {!! Form::close() !!}
         </div>
-        <label class="search-options cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-        </label>
+            @if(!$checkSearch)
+            <label class="search-options cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </label>
+            @else
+            <label class="search-options cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </label>
+            @endif
         <div class="btn-search mt-4">
-            <button class="btn btn-info btn-active text-white btn-sm js-submit-search">Search</button>
+            <button class="btn btn-info btn-active text-white btn-sm js-submit-search">{{ __('Search') }}</button>
             <label for="show-modal-delete" class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
                 {{ __('Delete') }}
             </label>
@@ -117,13 +127,13 @@
                             </td>
                             <td>{{ $post->slug }}</td>
                             <td>
-                                <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date }}">
-                                    {{ \Carbon\Carbon::parse($post->postsInfomation->public_date)->format('d-m-Y') }}
+                                <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
+                                    {{ \Carbon\Carbon::parse($post->postsInfomation->public_date ?? $post->public_date)->format('d-m-Y') }}
                                 <p>
                             </td>
                             <td>
                                 @if ($isTrash)
-                                    {{ $post->postsInfomation->status == 0 ? 'None' : 'Display' }}
+                                    {{ $post->postsInfomation->status == 0 && $post->status == 0 ? 'None' : 'Display' }}
                                 @else
                                     {!! Form::select(
                                         'post-status',
@@ -131,7 +141,7 @@
                                             0 => 'None',
                                             1 => 'Display',
                                         ],
-                                        $post->postsInfomation->status,
+                                        $post->postsInfomation->status ?? $post->status,
                                         [
                                             'class' =>
                                                 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block',
@@ -142,12 +152,12 @@
                                     ) !!}
                                 @endif
                             </td>
-                            <td>{{ $post->category->name }}</td>
+                            <td>{{ $post->category->name ?? $post->name }}</td>
                             <td>{!! $post->description !!}</td>
-                            @if ($isTrash)
+                            @if (true)
                                 <td>
-                                    <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date }}">
-                                        {{ \Carbon\Carbon::parse($post->delete_at)->format('d-m-Y') }}
+                                    <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
+                                        {{ \Carbon\Carbon::parse($post->deleted_at)->format('d-m-Y') }}
                                     <p>
                                 </td>
                             @endif

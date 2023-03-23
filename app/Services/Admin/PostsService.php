@@ -24,15 +24,10 @@ class PostsService extends AbstractService implements PostsServiceInterface
         return \App\Repositories\Admin\PostRepository::class;
     }
 
-    public function getAllPost()
-    {
-        return $this->all();
-    }
-
-    public function paginatePosts($conditions = [], $orders = [], $records = 10, $columns = ['*'])
+    public function getAllPost($conditions = [], $orders = [], $columns = ['*'])
     {
         try {
-            return $this->repository->paginate($conditions, $orders, $records, $columns);
+            return $this->repository->getAllPosts($conditions, $orders, $columns);
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }

@@ -6,8 +6,7 @@ use App\Services\Interfaces\ServiceInterface;
 
 interface PostsServiceInterface extends ServiceInterface
 {
-    public function getAllPost();
-    public function paginatePosts($conditions = [], $orders = [], $records = 10, $columns = ['*']);
+    public function getAllPost($conditions = [], $orders = [], $columns = ['*']);
     public function findPost($id);
     public function insertPost($data = []);
     public function updatePost($id, $data = []);
