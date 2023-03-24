@@ -10,7 +10,7 @@ abstract class BaseRepository implements RepositoryInterface
     protected $model;
     protected string $table = '';
     protected array $join = [];
-    protected array $fields = [];
+    // protected array $fields = [];
 
     public function __construct()
     {
@@ -115,13 +115,15 @@ abstract class BaseRepository implements RepositoryInterface
                 if (!empty($value['sql']) && !empty($value['value'])) {
                     $search->where($field, $value['sql'], $value['value']);
                 } else {
-                    $search->where($field, $value[0]);
-                    $new_values = array_slice($value, 1);
-                    if (!empty($new_values)) {
-                        foreach ($new_values as $new_value) {
-                            $search->orWhere($field, $new_value);
+                    $search->where(function ($query) use ($field, $value) {
+                        $query->where($field, $value[0]);
+                        $new_values = array_slice($value, 1);
+                        if (!empty($new_values)) {
+                            foreach ($new_values as $new_value) {
+                                $query->orWhere($field, $new_value);
+                            }
                         }
-                    }
+                    });
                 }
             } else {
                 $search->where($field, $value);
@@ -129,20 +131,68 @@ abstract class BaseRepository implements RepositoryInterface
         }
 
         if (!empty($orders) && is_array($orders)) {
-            dump($orders);
             foreach ($orders as $field => $value) {
                 $search->orderBy($field, $value);
             }
         }
 
-        if (empty($columns) && !empty($this->fields)) {
-            $columns = $this->fields;
+        // if (empty($columns) && !empty($this->fields)) {
+        //     $columns = $this->fields;
+        // }
+        // $search->select($columns);
+        if (empty($columns) || is_array($columns) && in_array('*', $columns) || $columns === '*') {
+            $search->select(['*']);
+        } else {
+            $search->select($columns);
         }
-        $search->select($columns);
-        if (!empty($orders)) {
-            dump($columns);
-            dd($search->toSql());
+
+        return $search->paginate(10);
+    }
+
+    public function filterOnlyTrashSearch($conditions = [], $orders = [], $columns = ['*'])
+    {
+        $search = $this->model->onlyTrashed();
+
+        if (is_array($conditions) && !empty($conditions)) {
+            if (!empty($this->join)) {
+                foreach ($this->join as $table => $keys) {
+                    $search->leftJoin($table, $table . '.' . $keys['foreign_key'], '=', $this->table . '.' . $keys['key']);
+                }
+            }
+
+            foreach ($conditions as $field => $value) {
+                if (is_array($value)) {
+                    if (!empty($value['sql']) && !empty($value['value'])) {
+                        $search->where($field, $value['sql'], $value['value']);
+                    } else {
+                        $search->where(function ($query) use ($field, $value) {
+                            $query->where($field, $value[0]);
+                            $new_values = array_slice($value, 1);
+                            if (!empty($new_values)) {
+                                foreach ($new_values as $new_value) {
+                                    $query->orWhere($field, $new_value);
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    $search->where($field, $value);
+                }
+            }
         }
+
+        if (!empty($orders) && is_array($orders)) {
+            foreach ($orders as $field => $value) {
+                $search->orderBy($field, $value);
+            }
+        }
+
+        if (empty($columns) || is_array($columns) && in_array('*', $columns) || $columns === '*') {
+            $search->select(['*']);
+        } else {
+            $search->select($columns);
+        }
+
         return $search->paginate(10);
     }
 }

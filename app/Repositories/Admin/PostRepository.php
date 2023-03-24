@@ -13,7 +13,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     {
         parent::__construct();
         $this->setPostInformationRepository();
-        $this->fields = $this->model->getFillable();
+        // $this->fields = $this->model->getFillable();
     }
 
     /**
@@ -69,18 +69,8 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function getAllPosts($conditions = [], $orders = [], $columns = ['*'])
     {
-        if (!empty($conditions)) {
-            $posts = $this->filterSearch($conditions);
-
-            if (!empty($orders)) {
-                $posts = $this->filterSearch($conditions, $orders);
-            } elseif ($columns[0] !== '*') {
-                $posts = $this->filterSearch($conditions, [], $columns);
-            } else {
-                $posts = $this->filterSearch($conditions, $orders, $columns);
-            }
-            // dd($posts);
-            return $posts;
+        if (!empty($conditions) || !empty($orders) || $columns[0] !== '*') {
+            return $this->filterSearch($conditions, $orders, $columns);
         } else {
             return $this->model->paginate(10);
         }
@@ -91,9 +81,9 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return $this->model->withTrashed();
     }
 
-    public function getOnlyPostsSoftDelete()
+    public function getOnlyPostsSoftDelete($conditions = [], $orders = [], $columns = ['*'])
     {
-        return $this->model->onlyTrashed()->paginate(10);
+        return $this->filterOnlyTrashSearch($conditions, $orders, $columns);
     }
 
     public function restorePostSoftDelete($ids)

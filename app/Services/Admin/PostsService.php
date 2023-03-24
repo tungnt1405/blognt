@@ -115,10 +115,10 @@ class PostsService extends AbstractService implements PostsServiceInterface
             $this->loggerTry($e);
         }
     }
-    public function getOnlyPostsSoftDelete()
+    public function getOnlyPostsSoftDelete($conditions = [], $orders = [], $columns = ['*'])
     {
         try {
-            return $this->repository->getOnlyPostsSoftDelete();
+            return $this->repository->getOnlyPostsSoftDelete($conditions, $orders, $columns);
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }
