@@ -101,32 +101,35 @@ abstract class BaseRepository implements RepositoryInterface
         return false;
     }
 
-    public function filterSearch($conditions = [], $orders = [], $columns = ['*'])
+    public function filterSearch($records = 10, $conditions = [], $orders = [], $columns = ['*'])
     {
-        $search = DB::table($this->table);
+        $search = $this->model->withTrashed()->whereNull('deleted_at');
 
-        if (!empty($this->join)) {
-            foreach ($this->join as $table => $keys) {
-                $search->leftJoin($table, $table . '.' . $keys['foreign_key'], '=', $this->table . '.' . $keys['key']);
-            }
-        }
-        foreach ($conditions as $field => $value) {
-            if (is_array($value)) {
-                if (!empty($value['sql']) && !empty($value['value'])) {
-                    $search->where($field, $value['sql'], $value['value']);
-                } else {
-                    $search->where(function ($query) use ($field, $value) {
-                        $query->where($field, $value[0]);
-                        $new_values = array_slice($value, 1);
-                        if (!empty($new_values)) {
-                            foreach ($new_values as $new_value) {
-                                $query->orWhere($field, $new_value);
-                            }
-                        }
-                    });
+        if (is_array($conditions) && !empty($conditions)) {
+            if (!empty($this->join)) {
+                foreach ($this->join as $table => $keys) {
+                    $search->leftJoin($table, $table . '.' . $keys['foreign_key'], '=', $this->table . '.' . $keys['key']);
                 }
-            } else {
-                $search->where($field, $value);
+            }
+
+            foreach ($conditions as $field => $value) {
+                if (is_array($value)) {
+                    if (!empty($value['sql']) && !empty($value['value'])) {
+                        $search->where($field, $value['sql'], $value['value']);
+                    } else {
+                        $search->where(function ($query) use ($field, $value) {
+                            $query->where($field, $value[0]);
+                            $new_values = array_slice($value, 1);
+                            if (!empty($new_values)) {
+                                foreach ($new_values as $new_value) {
+                                    $query->orWhere($field, $new_value);
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    $search->where($field, $value);
+                }
             }
         }
 
@@ -146,10 +149,10 @@ abstract class BaseRepository implements RepositoryInterface
             $search->select($columns);
         }
 
-        return $search->paginate(10);
+        return $search->paginate($records);
     }
 
-    public function filterOnlyTrashSearch($conditions = [], $orders = [], $columns = ['*'])
+    public function filterOnlyTrashSearch($records = 10, $conditions = [], $orders = [], $columns = ['*'])
     {
         $search = $this->model->onlyTrashed();
 
@@ -193,6 +196,6 @@ abstract class BaseRepository implements RepositoryInterface
             $search->select($columns);
         }
 
-        return $search->paginate(10);
+        return $search->paginate($records);
     }
 }

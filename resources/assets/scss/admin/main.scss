@@ -182,6 +182,20 @@
 }
 // End Post
 
+// ====================== Hide Arrows From Input Number ===============================
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+// Hide Arrows From Input Number
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .js-input-sortNo {
     margin: 4px 0 0;
     padding: 8px 12px;

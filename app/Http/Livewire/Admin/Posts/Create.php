@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class Create extends Component
 {
-    public $post, $categories;
+    public $post, $categories, $listPosts;
     public $checkPost = false;
 
     public function render()

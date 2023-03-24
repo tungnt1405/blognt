@@ -18,7 +18,7 @@
                     <x-jet-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs(['admin.side-bar', 'admin.owner.more-info'])">
                         {{ __('Sidebar Management') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('admin.posts') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create'])">
+                    <x-jet-nav-link href="{{ route('admin.posts') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create', 'admin.posts.edit'])">
                         {{ __('Posts Management') }}
                     </x-jet-nav-link>
                 </div>
@@ -167,7 +167,7 @@
             <x-jet-responsive-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs(['admin.side-bar', 'admin.owner.more-info'])">
                 {{ __('Sidebar Management') }}
             </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('admin.posts') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create'])">
+            <x-jet-responsive-nav-link href="{{ route('admin.posts') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create', 'admin.posts.edit'])">
                 {{ __('Posts Management') }}
             </x-jet-responsive-nav-link>
         </div>

@@ -52,6 +52,10 @@ Route::prefix('admin_blog')->middleware([
         '/posts/update/{id}/status',
         [PostController::class, 'updateStatus']
     )->name('admin.posts.update.status')->whereNumber('id');
+    Route::put(
+        '/posts/update/{id}/posts',
+        [PostController::class, 'update']
+    )->name('admin.posts.update')->whereNumber('id');
     Route::delete('/posts/destroy', [PostController::class, 'destroy'])->name('admin.posts.delete');
     Route::delete('/posts/soft-delete', [PostController::class, 'softDeletePosts'])->name('admin.posts.soft.delete');
 
