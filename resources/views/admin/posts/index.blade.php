@@ -11,7 +11,22 @@
     </x-slot>
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @livewire('admin.posts.show', ['categories' => $categories])
+            {{-- @livewire('admin.posts.show', [
+                'categories' => $categories,
+                'isTrash' => $isTrash,
+                'posts' => $posts
+            ]) --}}
+            @include('livewire.admin.posts.show', [
+                'categories' => $categories,
+                'isTrash' => $isTrash,
+                'posts' => $posts,
+                'totalPosts' => $totalPosts,
+                'totalPostsSoftDelete' => $totalPostsSoftDelete,
+                'searchterm' => $searchterm,
+                'searchCategory', $searchCategory,
+                'searchStatus', $searchStatus,
+                'checkSearch', $checkSearch,
+            ])
         </div>
     </div>
 </x-app-layout>

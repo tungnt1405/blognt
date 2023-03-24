@@ -24,6 +24,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('assets/js/admin/lib/jquery-3.6.0.js') }}"></script>
+    <script src="{{ asset('assets/js/admin/user_data/functions.js') }}"></script>
     @yield('header-scripts')
     @vite(['resources/assets/scss/admin/main.scss', 'resources/assets/js/backend/admin/main.js'])
 </head>
@@ -53,7 +54,7 @@
 
     @livewireScripts
     <script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
-    <script type="text/javascript" src="{{ Vite::asset('resources/assets/js/backend/admin/common.js') }}"></script>
+    @vite('resources/assets/js/backend/admin/common.js');
     @yield('javascript')
 </body>
 

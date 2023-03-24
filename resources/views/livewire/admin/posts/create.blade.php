@@ -1,3 +1,11 @@
+@php
+if (!empty($post)) {
+    $dateDiff = \Carbon\Carbon::parse($post->postsInfomation->public_date)->diffInDays(\Carbon\Carbon::now());
+    if (time() > strtotime($post->postsInfomation->public_date)) {
+        $dateDiff = ++$dateDiff * (-1);
+    }
+}
+@endphp
 <div class="bg-white w-full">
     <div class="wrapper">
         {!! Form::open(['route' => 'admin.posts.store', 'method' => 'post']) !!}
@@ -18,10 +26,11 @@
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::text('public_date', null, [
+                    {!! Form::text('public_date', !empty($checkPost) ? \Carbon\Carbon::parse($post->postsInfomation->public_date) : null, [
                         'placeholder' => 'Pick datetime...',
                         'autocomplete' => 'off',
                         'id' => 'datepicker',
+                        'date-default' => !empty($checkPost) ? $dateDiff : 0,
                         'class' =>
                             'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
                     ]) !!}
@@ -36,7 +45,7 @@
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::select('category_id', $categories, null, [
+                    {!! Form::select('category_id', $categories, @$post->category_id, [
                         'placeholder' => 'Pick a category...',
                         'class' =>
                             'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
@@ -52,7 +61,7 @@
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::text('title', null, [
+                    {!! Form::text('title', @$post->title, [
                         'id' => 'title',
                         'autocomplete' => 'off',
                         'class' =>
@@ -69,7 +78,7 @@
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::text('slug', null, [
+                    {!! Form::text('slug', @$post->slug, [
                         'id' => 'slug',
                         'autocomplete' => 'off',
                         'class' =>
@@ -86,7 +95,7 @@
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::textarea('description', null, [
+                    {!! Form::textarea('description', @$post->description, [
                         'id' => 'description',
                         'class' =>
                             'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full',
@@ -102,7 +111,7 @@
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::textarea('content', null, [
+                    {!! Form::textarea('content', @$post->content, [
                         'id' => 'content',
                         'class' =>
                             'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full',
@@ -120,7 +129,10 @@
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
                     <div class="series-status md:py-0 py-2">
                         <input type="checkbox" id="checkbox-series" class="js-checkbox-series" name="series"
-                            value="0">
+                            @if($checkPost && $post->series == 1)
+                               checked
+                            @endif
+                            value="{{ $checkPost ? $post->series : 0 }}">
                         <label for="checkbox-series">
                             <div @class(['btn-series'])></div>
                         </label>
@@ -128,7 +140,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group hidden" id="js-post-type">
+        <div class="form-group {{ $checkPost && $post->series == 1 ? '' : 'hidden' }}" id="js-post-type">
             <div class="md:grid md:grid-cols-3 md:gap-6">
                 <x-section.section-title>
                     <x-slot:title @class(['sm:justify-between'])>{{ __('Type Post') }}</x-slot:title>
@@ -137,14 +149,14 @@
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
                     <label for="post_type_1" class="cursor-pointer">
-                        {!! Form::radio('post_type', 1, true, [
+                        {!! Form::radio('post_type', 0, true, [
                             'id' => 'post_type_1',
                         ]) !!}
                         <span>First Post</span>
                     </label>
 
                     <label for="post_type_2" class="ml-2 cursor-pointer">
-                        {!! Form::radio('post_type', 2, false, [
+                        {!! Form::radio('post_type', 1, false, [
                             'id' => 'post_type_2',
                         ]) !!}
                         <span>Add Post For Parent</span>
@@ -178,7 +190,10 @@
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
                     <div class="post-status md:py-0 py-2">
                         <input type="checkbox" id="checkbox-status" class="js-checkbox-status" name="status"
-                            value="0">
+                            @if($checkPost && $post->postsInfomation->status == 1)
+                               checked
+                            @endif
+                            value="{{ $checkPost ? $post->postsInfomation->status : 0 }}">
                         <label for="checkbox-status">
                             <div @class(['btn-status'])></div>
                         </label>
@@ -199,5 +214,5 @@
     </div>
 </div>
 @section('javascript')
-    <script type="text/javascript" src="{{ Vite::asset('resources/assets/js/backend/admin/posts.js') }}"></script>
+    @vite('resources/assets/js/backend/admin/posts.js')
 @endsection

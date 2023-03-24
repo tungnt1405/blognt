@@ -7,7 +7,6 @@ use App\Http\Requests\admin\Posts\UpdatePostRequest;
 use App\Models\Post;
 use App\Services\Interfaces\Admin\CategoryServiceInterface;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class PostController extends AdminController
@@ -35,7 +34,58 @@ class PostController extends AdminController
      */
     public function index(Request $request)
     {
-        return view('admin.posts.index');
+        $columns = ['dtb_posts.*', 'dtb_posts_infomation.status', 'dtb_posts_infomation.public_date', 'mtb_categories.name'];
+        $isTrash = false;
+        $checkSearch = false;
+        $searchterm = '';
+        $searchCategory = [];
+        $searchStatus = '1';
+        $totalPosts = $this->postsService->getAllPost()->total();
+        $totalPostsSoftDelete = $this->postsService->getOnlyPostsSoftDelete()->total();
+        $posts = $this->postsService->getAllPost();
+
+        if (!empty($request->get('posts'))) {
+            $posts = $this->postsService->getOnlyPostsSoftDelete();
+            $isTrash = true;
+        }
+
+        $search = [];
+        foreach ($request->all() as $k => $v) {
+            if ($k !== 'page' && $k !== 'posts') {
+                $field = $this->setFieldSearch($k);
+                if ($k === 'search' && isset($v) && $v !== '') {
+                    $v = [
+                        'sql' => 'Like',
+                        'value' => "%" . trim($v) . "%"
+                    ];
+                }
+                if (isset($v) && $v !== '') {
+                    $search[$field] = $v;
+                }
+            }
+        }
+
+        if (isset($search) && $search) {
+            $checkSearch = true;
+            $searchterm = $request->get('search');
+            $searchCategory = $request->get('category');
+            $searchStatus = $request->get('status');
+            if ($isTrash) {
+                $posts = $this->postsService->getOnlyPostsSoftDelete($search, ['dtb_posts.id' => 'desc', 'dtb_posts.title' => 'asc'], $columns);
+            } else {
+                $orders = ['dtb_posts.id' => 'DESC'];
+                $search['dtb_posts.deleted_at'] = NULL;
+                $posts = $this->postsService->getAllPost($search, $orders, $columns);
+            }
+        }
+        return view('admin.posts.index', compact('posts'))
+            ->with('isTrash', $isTrash)
+            ->with('checkSearch', $checkSearch)
+            ->with('searchterm', $searchterm)
+            ->with('searchStatus', $searchStatus)
+            ->with('searchCategory', $searchCategory)
+            ->with('totalPosts', $totalPosts)
+            ->with('totalPostsSoftDelete', $totalPostsSoftDelete);
     }
 
     /**
@@ -46,6 +96,7 @@ class PostController extends AdminController
     public function create()
     {
         return view('admin.posts.create')
+            ->with('checkPost', false)
             ->with('categories', $this->categoryService->listCategory());
     }
 
@@ -86,9 +137,13 @@ class PostController extends AdminController
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit($id)
     {
-        //
+        $post = $this->postsService->findPost($id);
+        return view('admin.posts.create')
+            ->with('checkPost', true)
+            ->with('post', $post)
+            ->with('categories', $this->categoryService->listCategory());
     }
 
     /**
@@ -194,5 +249,16 @@ class PostController extends AdminController
             'code' => 200,
             'message' => 'Successfully restore posts'
         ]);
+    }
+
+    private function setFieldSearch($field)
+    {
+        $fields = [
+            'search' => 'dtb_posts.title',
+            'status' => 'dtb_posts_infomation.status',
+            'category' => 'dtb_posts.category_id'
+        ];
+
+        return $fields[$field];
     }
 }

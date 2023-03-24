@@ -1,80 +1,70 @@
 @php
     $listsMenu = [
-        request()->url() => [
-            'title' => __('All (') . $posts->total() . __(')'),
+        'posts' => [
+            'title' => __('All (') . $totalPosts . __(')'),
             'posts' => '',
         ],
-        request()->getUri() . '?posts=trash' => [
-            'title' => __('Trash (') . $postsBySoftDelete->total() . __(')'),
+        'trash' => [
+            'title' => __('Trash (') . $totalPostsSoftDelete . __(')'),
             'posts' => 'trash',
         ],
     ];
-    $listPosts = $posts;
-    $showDeleteAt = false;
-    if (request()->query->get('posts') === 'trash') {
-        $listPosts = $postsBySoftDelete;
-        $showDeleteAt = true;
-    }
 @endphp
 <div class="wrapper bg-white w-full">
     <div class="bg-slate-200 posts-header p-5">
         <div class="posts-header-search mb-3">
-            {!! Form::text('search', null, [
-                'wire:model' => 'filter.search',
-                'wire:model.debounce.5000ms' => 'filter.search',
-                'placeholder' => 'Enter keywords search posts as label post, slug ',
+            {!! Form::open(['id' => 'frmSearchPosts', 'method' => 'GET', 'onsubmit' => 'return false']) !!}
+            {!! Form::text('search', isset($searchterm) ? $searchterm : null, [
+                'placeholder' => 'Enter keywords (label posts) to search posts.',
                 'class' =>
                     'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
             ]) !!}
 
-            <div class="posts-category-search my-3 {{ $showFilters ? '' : 'hidden' }}">
+            <div class="posts-category-search my-3 {{ !$checkSearch ? 'hidden' : ''}}">
                 <h2 class="font-bold text-lg">{{ __('Select Category') }}</h2>
                 @foreach ($categories as $category)
                     <label class="mr-4">
-                        <input type="checkbox" wire:model="filter.categories"
+                        <input type="checkbox"
                             {{ is_array(request()->input('category')) && in_array($category->id, request()->input('category')) ? 'checked' : '' }}
                             name="category[]" class="checkbox checkbox-sm" value="{{ $category->id }}" />
                         <span> {{ $category->name }} </span>
                     </label>
                 @endforeach
             </div>
-            <div class="posts-status-search {{ $showFilters ? '' : 'hidden' }}">
+            <div class="posts-status-search {{ !$checkSearch ? 'hidden' : ''}}">
                 <h2 class="font-bold text-lg"> {{ __('Select Status') }} </h2>
                 <label class="mr-4">
-                    <input type="radio" name="status" wire:model="filter.status" class="radio radio-sm"
-                        value="1" checked />
+                    <input type="radio" name="status" class="radio radio-sm" value="1" @checked($searchStatus == '1') />
                     <span> {{ __('Display') }} </span>
                 </label>
                 <label class="mr-4">
-                    <input type="radio" name="status" wire:model="filter.status" class="radio radio-sm"
-                        value="0" />
+                    <input type="radio" name="status" class="radio radio-sm" value="0" @checked($searchStatus == '0')/>
                     <span> {{ __('None') }} </span>
                 </label>
             </div>
+            {!! Form::close() !!}
         </div>
-        @empty($showFilters)
-            <label class="search-options cursor-pointer" wire:click="toggleFilters()">
+            @if(!$checkSearch)
+            <label class="search-options cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </label>
-        @else
-            <label class="search-options cursor-pointer" wire:click="toggleFilters()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6">
+            @else
+            <label class="search-options cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </label>
-        @endempty
+            @endif
         <div class="btn-search mt-4">
-            <button wire:click.prevent="searchPosts()"
-                class="btn btn-info btn-active text-white btn-sm js-submit-search">Search</button>
+            <button class="btn btn-info btn-active text-white btn-sm js-submit-search">{{ __('Search') }}</button>
             <label for="show-modal-delete" class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
                 {{ __('Delete') }}
             </label>
-            @if ($showDeleteAt)
+            @if ($isTrash)
                 <label for="show-modal-soft-delete"
                     class="btn btn-info btn-active text-white btn-sm hidden js-delete-post">
                     {{ __('Restore') }}
@@ -90,9 +80,10 @@
         <div class="posts-menu">
             <ul class="flex gap-[10px] mt-3">
                 @foreach ($listsMenu as $url => $item)
-                    <li><a href="{{ $url }}" @class([
-                        'text-blue-700' => request()->query->get('posts') == $item['posts'],
-                    ])>{{ $item['title'] }}</a>
+                    <li><a href="{{ $url !== 'trash' ? route('admin.posts') : route('admin.posts') . '?posts=' . $url }}"
+                            @class([
+                                'text-blue-700' => request()->query->get('posts') == $item['posts'],
+                            ])>{{ $item['title'] }}</a>
                     </li>
                 @endforeach
             </ul>
@@ -116,13 +107,13 @@
                         <th>{{ __('Status') }}</th>
                         <th>{{ __('Category') }}</th>
                         <th>{{ __('Description') }}</th>
-                        @if ($showDeleteAt)
+                        @if ($isTrash)
                             <th>{{ __('Delete At') }}</th>
                         @endif
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($listPosts as $post)
+                    @foreach ($posts as $post)
                         <tr>
                             <td>
                                 <label>
@@ -131,18 +122,18 @@
                                 </label>
                             </td>
                             <td>{{ $post->id }}</td>
-                            <td><a href=""
+                            <td><a href="{{ route('admin.posts.edit',  ['id' => $post->id]) }}"
                                     class="text-blue-700 timing-function-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] duration-[0.5s] hover:text-blue-500 hover:underline hover:text-[1.125rem]">{{ $post->title }}</a>
                             </td>
                             <td>{{ $post->slug }}</td>
                             <td>
-                                <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date }}">
-                                    {{ \Carbon\Carbon::parse($post->postsInfomation->public_date)->format('d-m-Y') }}
+                                <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
+                                    {{ \Carbon\Carbon::parse($post->postsInfomation->public_date ?? $post->public_date)->format('d-m-Y') }}
                                 <p>
                             </td>
                             <td>
-                                @if ($showDeleteAt)
-                                    {{ $post->postsInfomation->status == 0 ? 'None' : 'Display' }}
+                                @if ($isTrash)
+                                    {{ $post->postsInfomation->status == 0 && $post->status == 0 ? 'None' : 'Display' }}
                                 @else
                                     {!! Form::select(
                                         'post-status',
@@ -150,7 +141,7 @@
                                             0 => 'None',
                                             1 => 'Display',
                                         ],
-                                        $post->postsInfomation->status,
+                                        $post->postsInfomation->status ?? $post->status,
                                         [
                                             'class' =>
                                                 'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block',
@@ -161,12 +152,12 @@
                                     ) !!}
                                 @endif
                             </td>
-                            <td>{{ $post->category->name }}</td>
+                            <td>{{ $post->category->name ?? $post->name }}</td>
                             <td>{!! $post->description !!}</td>
-                            @if ($showDeleteAt)
+                            @if ($isTrash && !empty($post->deleted_at))
                                 <td>
-                                    <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date }}">
-                                        {{ \Carbon\Carbon::parse($post->delete_at)->format('d-m-Y') }}
+                                    <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
+                                        {{ \Carbon\Carbon::parse($post->deleted_at)->format('d-m-Y') }}
                                     <p>
                                 </td>
                             @endif
@@ -174,12 +165,12 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $listPosts->onEachSide(5)->links() }}
+            {{ $posts->withQueryString()->onEachSide(3)->links() }}
         </div>
     </div>
     <div class="posts-footer"></div>
     @include('livewire.admin.posts.show001')
 </div>
 @section('javascript')
-    <script type="text/javascript" src="{{ Vite::asset('resources/assets/js/backend/admin/posts.js') }}"></script>
+    @vite('resources/assets/js/backend/admin/posts.js')
 @endsection

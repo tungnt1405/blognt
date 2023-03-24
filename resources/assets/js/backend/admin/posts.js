@@ -2,7 +2,11 @@
 
 const datepicker = () => {
     if ($('#datepicker').length) {
+        let datePick = $('#datepicker').attr('date-default') ? parseInt($('#datepicker').attr('date-default')) : 0;
         $('#datepicker').datepicker({
+            defaultDate: datePick,
+            changeMonth: true,
+            changeYear: true,
             rtl: true,
             dateFormat: 'dd-mm-yy',
             showAnim: 'slide',
@@ -141,8 +145,8 @@ const btn = {
             $('#checkbox-series').val('0');
             $('#js-post-type').addClass('hidden');
             $('#js-post-addParent').addClass('hidden');
-            $('input[name="post_type"]').filter('[value=1]').prop('checked', true);
-            $('input[name="post_type"]').filter('[value=2]').prop('checked', false);
+            $('input[name="post_type"]').filter('[value=0]').prop('checked', true);
+            $('input[name="post_type"]').filter('[value=1]').prop('checked', false);
         });
     },
     changeStatusPost() {
@@ -159,7 +163,7 @@ const btn = {
         $('input[name="post_type"]').on('change', () => {
             const additional = $('input[name="post_type"]:checked').val();
 
-            if (additional === '2') {
+            if (additional === '1') {
                 $('#js-post-addParent').removeClass('hidden');
                 return;
             }
@@ -167,10 +171,12 @@ const btn = {
         });
     },
     searchOptions() {
+        //show filter search
         $('.search-options').on('click', function () {
             $('.posts-category-search').toggleClass('hidden');
             $('.posts-status-search').toggleClass('hidden');
             if ($('.posts-category-search').hasClass('hidden') && $('.posts-status-search').hasClass('hidden')) {
+                $('form#frmSearchPosts').trigger('reset');
                 const html = `
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -185,6 +191,20 @@ const btn = {
                 `;
                 $(this).html('').append(html);
             }
+        });
+        // submit search
+        $('.js-submit-search').on('click', function (e) {
+            e.preventDefault();
+            let parsedUrl = new URL(window.location.href);
+            let getParams = parsedUrl.searchParams.get('posts') || '';
+            showLoading();
+            if (getParams.length > 0) {
+                $('form#frmSearchPosts').append('<input type="hidden" name="posts" value="trash">');
+            }
+            $('form#frmSearchPosts').attr('onsubmit', 'return true;');
+            setTimeout(function () {
+                $('form#frmSearchPosts').submit();
+            }, 2000);
         });
     },
     handleBtnDelete() {
