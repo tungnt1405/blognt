@@ -34,6 +34,7 @@ class PostController extends AdminController
      */
     public function index(Request $request)
     {
+        $columns = ['dtb_posts.*', 'dtb_posts_infomation.status', 'dtb_posts_infomation.public_date', 'mtb_categories.name'];
         $isTrash = false;
         $checkSearch = false;
         $searchterm = '';
@@ -52,13 +53,15 @@ class PostController extends AdminController
         foreach ($request->all() as $k => $v) {
             if ($k !== 'page' && $k !== 'posts') {
                 $field = $this->setFieldSearch($k);
-                if ($k === 'search') {
+                if ($k === 'search' && isset($v) && $v !== '') {
                     $v = [
                         'sql' => 'Like',
                         'value' => "%" . trim($v) . "%"
                     ];
                 }
-                $search[$field] = $v;
+                if (isset($v) && $v !== '') {
+                    $search[$field] = $v;
+                }
             }
         }
 
@@ -68,10 +71,11 @@ class PostController extends AdminController
             $searchCategory = $request->get('category');
             $searchStatus = $request->get('status');
             if ($isTrash) {
+                $posts = $this->postsService->getOnlyPostsSoftDelete($search, ['dtb_posts.id' => 'desc', 'dtb_posts.title' => 'asc'], $columns);
             } else {
                 $orders = ['dtb_posts.id' => 'DESC'];
-                $search['dtb_posts.deleted_at'] = NULL; // lỗi không search đúng vẫn search cả deleted_at != null
-                $posts = $this->postsService->getAllPost($search, $orders, ['dtb_posts.*']);
+                $search['dtb_posts.deleted_at'] = NULL;
+                $posts = $this->postsService->getAllPost($search, $orders, $columns);
             }
         }
         return view('admin.posts.index', compact('posts'))

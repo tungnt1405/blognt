@@ -154,7 +154,7 @@
                             </td>
                             <td>{{ $post->category->name ?? $post->name }}</td>
                             <td>{!! $post->description !!}</td>
-                            @if (true)
+                            @if ($isTrash && !empty($post->deleted_at))
                                 <td>
                                     <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
                                         {{ \Carbon\Carbon::parse($post->deleted_at)->format('d-m-Y') }}

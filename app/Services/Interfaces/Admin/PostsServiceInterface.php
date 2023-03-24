@@ -14,6 +14,6 @@ interface PostsServiceInterface extends ServiceInterface
     public function destroyPosts($ids);
     public function updateStatusPost($postId, $postStatus);
     public function getAllPostsIncludeSoftDelete();
-    public function getOnlyPostsSoftDelete();
+    public function getOnlyPostsSoftDelete($conditions = [], $orders = [], $columns = ['*']);
     public function restorePostSoftDelete($ids);
 }
