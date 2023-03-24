@@ -122,7 +122,7 @@
                                 </label>
                             </td>
                             <td>{{ $post->id }}</td>
-                            <td><a href=""
+                            <td><a href="{{ route('admin.posts.edit',  ['id' => $post->id]) }}"
                                     class="text-blue-700 timing-function-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] duration-[0.5s] hover:text-blue-500 hover:underline hover:text-[1.125rem]">{{ $post->title }}</a>
                             </td>
                             <td>{{ $post->slug }}</td>

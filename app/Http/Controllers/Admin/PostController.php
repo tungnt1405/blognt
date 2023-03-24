@@ -96,6 +96,7 @@ class PostController extends AdminController
     public function create()
     {
         return view('admin.posts.create')
+            ->with('checkPost', false)
             ->with('categories', $this->categoryService->listCategory());
     }
 
@@ -136,9 +137,13 @@ class PostController extends AdminController
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit($id)
     {
-        //
+        $post = $this->postsService->findPost($id);
+        return view('admin.posts.create')
+            ->with('checkPost', true)
+            ->with('post', $post)
+            ->with('categories', $this->categoryService->listCategory());
     }
 
     /**

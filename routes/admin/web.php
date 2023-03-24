@@ -45,6 +45,7 @@ Route::prefix('admin_blog')->middleware([
     // ================== Posts =============================
     Route::get('/posts', [PostController::class, 'index'])->name('admin.posts');
     Route::get('/posts/create', [PostController::class, 'create'])->name('admin.posts.create');
+    Route::get('/posts/edit/{id}/post', [PostController::class, 'edit'])->name('admin.posts.edit')->whereNumber('id');
     Route::post('/posts/create', [PostController::class, 'store'])->name('admin.posts.store');
     Route::post('/posts/restore-posts', [PostController::class, 'restorePosts'])->name('admin.posts.restore');
     Route::put(

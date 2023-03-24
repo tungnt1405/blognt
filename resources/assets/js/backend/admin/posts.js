@@ -2,7 +2,11 @@
 
 const datepicker = () => {
     if ($('#datepicker').length) {
+        let datePick = $('#datepicker').attr('date-default') ? parseInt($('#datepicker').attr('date-default')) : 0;
         $('#datepicker').datepicker({
+            defaultDate: datePick,
+            changeMonth: true,
+            changeYear: true,
             rtl: true,
             dateFormat: 'dd-mm-yy',
             showAnim: 'slide',
@@ -141,8 +145,8 @@ const btn = {
             $('#checkbox-series').val('0');
             $('#js-post-type').addClass('hidden');
             $('#js-post-addParent').addClass('hidden');
-            $('input[name="post_type"]').filter('[value=1]').prop('checked', true);
-            $('input[name="post_type"]').filter('[value=2]').prop('checked', false);
+            $('input[name="post_type"]').filter('[value=0]').prop('checked', true);
+            $('input[name="post_type"]').filter('[value=1]').prop('checked', false);
         });
     },
     changeStatusPost() {
@@ -159,7 +163,7 @@ const btn = {
         $('input[name="post_type"]').on('change', () => {
             const additional = $('input[name="post_type"]:checked').val();
 
-            if (additional === '2') {
+            if (additional === '1') {
                 $('#js-post-addParent').removeClass('hidden');
                 return;
             }

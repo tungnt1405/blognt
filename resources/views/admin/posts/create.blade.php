@@ -18,7 +18,7 @@
     </x-slot>
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @livewire('admin.posts.create', ['categories' => $categories])
+            @livewire('admin.posts.create', ['categories' => $categories, 'post' => $post ?? [], 'checkPost' => $checkPost])
         </div>
     </div>
 </x-app-layout>
