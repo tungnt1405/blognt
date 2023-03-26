@@ -45,7 +45,7 @@ class PostController extends AdminController
         $searchParent = '1';
         $totalPosts = $this->postsService->getAllPost()->total();
         $totalPostsSoftDelete = $this->postsService->getOnlyPostsSoftDelete()->total();
-        $posts = $this->postsService->getAllPost($records, [], $orders); // issue not orderby
+        $posts = $this->postsService->getAllPost($records, [], $orders);
 
         if (!empty($request->get('posts'))) {
             $posts = $this->postsService->getOnlyPostsSoftDelete($records, [], $orders);
