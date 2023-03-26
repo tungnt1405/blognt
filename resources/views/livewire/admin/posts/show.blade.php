@@ -13,14 +13,25 @@
 <div class="wrapper bg-white w-full">
     <div class="bg-slate-200 posts-header p-5">
         <div class="posts-header-search mb-3">
+            @if (!$checkSearch)
+                <label class="search-options cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </label>
+            @else
+                <label class="search-options cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </label>
+            @endif
             {!! Form::open(['id' => 'frmSearchPosts', 'method' => 'GET', 'onsubmit' => 'return false']) !!}
-            {!! Form::text('search', isset($searchterm) ? $searchterm : null, [
-                'placeholder' => 'Enter keywords (label posts) to search posts.',
-                'class' =>
-                    'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
-            ]) !!}
-
-            <div class="posts-category-search my-3 {{ !$checkSearch ? 'hidden' : ''}}">
+            <div class="posts-category-search my-3 {{ !$checkSearch ? 'hidden' : '' }}">
                 <h2 class="font-bold text-lg">{{ __('Select Category') }}</h2>
                 @foreach ($categories as $category)
                     <label class="mr-4">
@@ -31,34 +42,46 @@
                     </label>
                 @endforeach
             </div>
-            <div class="posts-status-search {{ !$checkSearch ? 'hidden' : ''}}">
+            <div class="posts-status-search {{ !$checkSearch ? 'hidden' : '' }}">
                 <h2 class="font-bold text-lg"> {{ __('Select Status') }} </h2>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm" value="1" @checked($searchStatus == '1') />
+                    <input type="radio" name="status" class="radio radio-sm" value="99"
+                        @checked($searchStatus == '99') />
+                    <span> {{ __('All') }} </span>
+                </label>
+                <label class="mr-4">
+                    <input type="radio" name="status" class="radio radio-sm" value="1"
+                        @checked($searchStatus == '1') />
                     <span> {{ __('Display') }} </span>
                 </label>
                 <label class="mr-4">
-                    <input type="radio" name="status" class="radio radio-sm" value="0" @checked($searchStatus == '0')/>
+                    <input type="radio" name="status" class="radio radio-sm" value="0"
+                        @checked($searchStatus == '0') />
                     <span> {{ __('None') }} </span>
                 </label>
             </div>
+            <div class="posts-parent-search {{ !$checkSearch ? 'hidden' : '' }}">
+                <h2 class="font-bold text-lg"> {{ __('Select for') }} </h2>
+                <label class="mr-4">
+                    <input type="radio" name="parent" class="radio radio-sm js-post-parent" value="1"
+                        @checked($searchParent == '1') />
+                    <span> {{ __('Parent Post') }} </span>
+                </label>
+                <label class="mr-4">
+                    <input type="radio" name="parent" class="radio radio-sm js-post-parent" value="0"
+                        @checked($searchParent == '0') />
+                    <span> {{ __('Children Post') }} </span>
+                </label>
+            </div>
+
+            {!! Form::text('search', isset($searchTerm) ? $searchTerm : null, [
+                'placeholder' => 'Enter keywords (label posts) to search posts.',
+                'data-message' => __('Please enter id of the post you want to search'),
+                'class' =>
+                    'js-post-text border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
+            ]) !!}
             {!! Form::close() !!}
         </div>
-            @if(!$checkSearch)
-            <label class="search-options cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </label>
-            @else
-            <label class="search-options cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-            </label>
-            @endif
         <div class="btn-search mt-4">
             <button class="btn btn-info btn-active text-white btn-sm js-submit-search">{{ __('Search') }}</button>
             <label for="show-modal-delete" class="btn btn-error btn-active text-white btn-sm hidden js-delete-post">
@@ -103,6 +126,7 @@
                         <th>{{ __('ID') }}</th>
                         <th>{{ __('Label') }}</th>
                         <th>{{ __('Slug') }}</th>
+                        <th>{{ __('Parent ID') }}</th>
                         <th>{{ __('Date Publish') }}</th>
                         <th>{{ __('Status') }}</th>
                         <th>{{ __('Category') }}</th>
@@ -122,12 +146,14 @@
                                 </label>
                             </td>
                             <td>{{ $post->id }}</td>
-                            <td><a href="{{ route('admin.posts.edit',  ['id' => $post->id]) }}"
+                            <td><a href="{{ route('admin.posts.edit', ['id' => $post->id]) }}"
                                     class="text-blue-700 timing-function-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] duration-[0.5s] hover:text-blue-500 hover:underline hover:text-[1.125rem]">{{ $post->title }}</a>
                             </td>
                             <td>{{ $post->slug }}</td>
+                            <td>{{ $post->parent_id ?? '--' }}</td>
                             <td>
-                                <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
+                                <p class="cursor-pointer"
+                                    title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
                                     {{ \Carbon\Carbon::parse($post->postsInfomation->public_date ?? $post->public_date)->format('d-m-Y') }}
                                 <p>
                             </td>
@@ -156,7 +182,8 @@
                             <td>{!! $post->description !!}</td>
                             @if ($isTrash && !empty($post->deleted_at))
                                 <td>
-                                    <p class="cursor-pointer" title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
+                                    <p class="cursor-pointer"
+                                        title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
                                         {{ \Carbon\Carbon::parse($post->deleted_at)->format('d-m-Y') }}
                                     <p>
                                 </td>

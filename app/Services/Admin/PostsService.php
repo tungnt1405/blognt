@@ -24,20 +24,20 @@ class PostsService extends AbstractService implements PostsServiceInterface
         return \App\Repositories\Admin\PostRepository::class;
     }
 
-    public function getAllPost($conditions = [], $orders = [], $columns = ['*'])
+    public function getAllPost($records = 10, $conditions = [], $orders = [], $columns = ['*'])
     {
         try {
-            return $this->repository->getAllPosts($conditions, $orders, $columns);
+            return $this->repository->getAllPosts($records, $conditions, $orders, $columns);
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }
     }
 
-    public function findPost($id)
+    public function findPost($id, $isTrash = false)
     {
         try {
             $this->logger('Find Post', [$id], config('constants.LOG_INFO'));
-            return $this->find($id);
+            return $this->repository->findPost($id, $isTrash);
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }
@@ -47,12 +47,13 @@ class PostsService extends AbstractService implements PostsServiceInterface
     {
         try {
             $data = array_merge($data, [
-                'author_id' => $this->getUser()->id
+                'author_id' => $this->getUser()->id,
+                'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null
             ]);
             $this->logger('Insert Post', $data, config('constants.LOG_INFO'));
             $insertPost = $this->create($data);
             $insertPost->postsInfomation()->create([
-                'status' => $data['status'] ?? '0',
+                'status' => $data['status'] ?? 0,
                 'public_date' => Carbon::parse($data['public_date'])
             ]);
             return $insertPost;
@@ -64,7 +65,18 @@ class PostsService extends AbstractService implements PostsServiceInterface
     public function updatePost($id, $data = [])
     {
         try {
-            return $this->update($id, $data);
+            $data = array_merge($data, [
+                'series' => $data['series'] ?? 0,
+                'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
+                'update_at' => \Carbon\Carbon::now()
+            ]);
+            $updatePost = $this->update($id, $data);
+            $updatePost->postsInfomation()->update([
+                'status' => $data['status'] ?? 0,
+                'public_date' => Carbon::parse($data['public_date'])
+            ]);
+
+            return $updatePost;
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }
@@ -93,8 +105,9 @@ class PostsService extends AbstractService implements PostsServiceInterface
     public function updateStatusPost($postId, $postStatus)
     {
         try {
+            DB::beginTransaction();
             $post = $this->repository->updatePostInformation($postId, $postStatus);
-
+            DB::commit();
             if (!empty($post)) {
                 $this->logger('Update Post Information', $post->toArray(), config('constants.LOG_INFO'));
                 return true;
@@ -103,6 +116,7 @@ class PostsService extends AbstractService implements PostsServiceInterface
             $this->logger('', $post, config('constants.LOG_ERROR'));
             return false;
         } catch (\Exception $e) {
+            DB::rollBack();
             $this->loggerTry($e);
         }
     }
@@ -115,14 +129,24 @@ class PostsService extends AbstractService implements PostsServiceInterface
             $this->loggerTry($e);
         }
     }
-    public function getOnlyPostsSoftDelete($conditions = [], $orders = [], $columns = ['*'])
+    public function getOnlyPostsSoftDelete($records = 10, $conditions = [], $orders = [], $columns = ['*'])
     {
         try {
-            return $this->repository->getOnlyPostsSoftDelete($conditions, $orders, $columns);
+            return $this->repository->getOnlyPostsSoftDelete($records, $conditions, $orders, $columns);
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }
     }
+
+    public function listPosts($id = null)
+    {
+        try {
+            return $this->repository->listPosts($id);
+        } catch (\Exception $e) {
+            $this->loggerTry($e);
+        }
+    }
+
     public function restorePostSoftDelete($ids)
     {
         try {

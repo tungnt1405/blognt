@@ -175,7 +175,12 @@ const btn = {
         $('.search-options').on('click', function () {
             $('.posts-category-search').toggleClass('hidden');
             $('.posts-status-search').toggleClass('hidden');
-            if ($('.posts-category-search').hasClass('hidden') && $('.posts-status-search').hasClass('hidden')) {
+            $('.posts-parent-search').toggleClass('hidden');
+            if (
+                $('.posts-category-search').hasClass('hidden') &&
+                $('.posts-status-search').hasClass('hidden') &&
+                $('.posts-parent-search').hasClass('hidden')
+            ) {
                 $('form#frmSearchPosts').trigger('reset');
                 const html = `
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -192,9 +197,32 @@ const btn = {
                 $(this).html('').append(html);
             }
         });
+
+        //check select parent
+        $('.js-post-parent').on('change', function (index, el) {
+            const selectParent = $('.js-post-parent:checked').val();
+
+            if (selectParent == '0') {
+                $('.js-post-text').attr('placeholder', 'Enter parent id to search posts');
+                $('.js-post-text').prop('type', 'number');
+            } else {
+                $('.js-post-text').attr('placeholder', 'Enter keywords (label posts) to search posts');
+                $('.js-post-text').prop('type', 'text');
+            }
+        });
+
         // submit search
         $('.js-submit-search').on('click', function (e) {
             e.preventDefault();
+            const selectParent = $('.js-post-parent:checked').val();
+            const searchInput = $('.js-post-text').val();
+            if (
+                (selectParent == '0' && searchInput === undefined) ||
+                (selectParent == '0' && searchInput.trim() === '')
+            ) {
+                alert(`${$('.js-post-text').data('message')}`);
+                return;
+            }
             let parsedUrl = new URL(window.location.href);
             let getParams = parsedUrl.searchParams.get('posts') || '';
             showLoading();

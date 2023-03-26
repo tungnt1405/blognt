@@ -7,7 +7,10 @@
             <p class="py-4">
                 {!! nl2br(
                     __(
-                        "Mày sẽ xoá hết tất cả những gì mày đang chọn đấy. \nNghĩ kỹ vào không lại khôi phục được như cho vào trash đâu đấy.\nLúc đấy lại bảo tao không nhắc. OK",
+                        "Mày sẽ xoá hết tất cả những gì mày đang chọn đấy. 
+                                                                    \nNghĩ kỹ vào không lại khôi phục được như cho vào trash đâu đấy.
+                                                                    \nNghĩ kỹ vào nó xoá cả những bài viết con của cái này đấy. Xoá hết là xoá cả series này đấy.
+                                                                    \nLúc đấy lại bảo tao không nhắc. OK",
                     ),
                 ) !!}
             </p>
@@ -28,10 +31,14 @@
             <h3 class="font-bold text-lg">{{ __('Nhắc nhở') }}</h3>
             <p class="py-4">
                 @if ($isTrash)
-                    {!! nl2br(__("Khôi phục bài viết mày đã xoá.\nXem kỹ vào không lại phải vào lần nữa🙄")) !!}
+                    {!! nl2br(
+                        __("Khôi phục bài viết mày đã xoá và khôi phục cả series (nếu có).\nXem kỹ vào không lại phải vào lần nữa🙄"),
+                    ) !!}
                 @else
                     {!! nl2br(
-                        __("Mày sẽ xoá hết tất cả những gì mày đang chọn đấy. \nNghĩ kỹ vào không lại mất phải mất công khôi phục."),
+                        __(
+                            "Mày sẽ xoá hết tất cả những gì mày đang chọn đấy và mày sẽ xoá tất cả series vào thùng rác. \nNghĩ kỹ vào không lại mất phải mất công khôi phục.",
+                        ),
                     ) !!}
                 @endif
             </p>

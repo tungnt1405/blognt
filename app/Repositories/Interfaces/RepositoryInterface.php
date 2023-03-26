@@ -45,7 +45,7 @@ interface RepositoryInterface
      * @param array $orders
      * @param array|string $columns
      */
-    public function filterSearch($conditions = [], $orders = [], $columns = ['*']);
+    public function filterSearch($records = 10, $conditions = [], $orders = [], $columns = ['*']);
 
     /**
      * paginate
@@ -53,5 +53,5 @@ interface RepositoryInterface
      * @param array $orders
      * @param array|string $columns
      */
-    public function filterOnlyTrashSearch($conditions = [], $orders = [], $columns = ['*']);
+    public function filterOnlyTrashSearch($records = 10, $conditions = [], $orders = [], $columns = ['*']);
 }

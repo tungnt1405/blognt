@@ -35,30 +35,40 @@ class PostController extends AdminController
     public function index(Request $request)
     {
         $columns = ['dtb_posts.*', 'dtb_posts_infomation.status', 'dtb_posts_infomation.public_date', 'mtb_categories.name'];
+        $orders = ['dtb_posts.updated_at' => 'desc', 'dtb_posts.id' => 'desc', 'dtb_posts.title' => 'asc'];
+        $records = 10;
         $isTrash = false;
         $checkSearch = false;
-        $searchterm = '';
+        $searchTerm = '';
         $searchCategory = [];
-        $searchStatus = '1';
+        $searchStatus = '99';
+        $searchParent = '1';
         $totalPosts = $this->postsService->getAllPost()->total();
         $totalPostsSoftDelete = $this->postsService->getOnlyPostsSoftDelete()->total();
-        $posts = $this->postsService->getAllPost();
+        $posts = $this->postsService->getAllPost($records, [], $orders); // issue not orderby
 
         if (!empty($request->get('posts'))) {
-            $posts = $this->postsService->getOnlyPostsSoftDelete();
+            $posts = $this->postsService->getOnlyPostsSoftDelete($records, [], $orders);
             $isTrash = true;
         }
 
         $search = [];
-        foreach ($request->all() as $k => $v) {
+        $data = $request->all();
+        foreach ($data as $k => $v) {
             if ($k !== 'page' && $k !== 'posts') {
                 $field = $this->setFieldSearch($k);
-                if ($k === 'search' && isset($v) && $v !== '') {
+
+                if ($k === 'status' && $v == '99') {
+                    continue;
+                }
+
+                if ($k === 'search' && !empty($v)) {
                     $v = [
                         'sql' => 'Like',
                         'value' => "%" . trim($v) . "%"
                     ];
                 }
+
                 if (isset($v) && $v !== '') {
                     $search[$field] = $v;
                 }
@@ -66,23 +76,35 @@ class PostController extends AdminController
         }
 
         if (isset($search) && $search) {
+            if ($search[$this->setFieldSearch('parent')] == '1') {
+                $search[$this->setFieldSearch('parent')] = NULL;
+            } else {
+                $search[$this->setFieldSearch('parent')] = $data['search'];
+
+                if (!empty($search[$this->setFieldSearch('search')])) {
+                    unset($search[$this->setFieldSearch('search')]);
+                }
+            }
+
             $checkSearch = true;
-            $searchterm = $request->get('search');
+            $searchTerm = $request->get('search');
             $searchCategory = $request->get('category');
             $searchStatus = $request->get('status');
+            $searchParent = $request->get('parent');
             if ($isTrash) {
-                $posts = $this->postsService->getOnlyPostsSoftDelete($search, ['dtb_posts.id' => 'desc', 'dtb_posts.title' => 'asc'], $columns);
+                $posts = $this->postsService->getOnlyPostsSoftDelete($records, $search, $orders, $columns);
             } else {
-                $orders = ['dtb_posts.id' => 'DESC'];
                 $search['dtb_posts.deleted_at'] = NULL;
-                $posts = $this->postsService->getAllPost($search, $orders, $columns);
+                $posts = $this->postsService->getAllPost($records, $search, $orders, $columns);
             }
         }
+
         return view('admin.posts.index', compact('posts'))
             ->with('isTrash', $isTrash)
             ->with('checkSearch', $checkSearch)
-            ->with('searchterm', $searchterm)
+            ->with('searchTerm', $searchTerm)
             ->with('searchStatus', $searchStatus)
+            ->with('searchParent', $searchParent)
             ->with('searchCategory', $searchCategory)
             ->with('totalPosts', $totalPosts)
             ->with('totalPostsSoftDelete', $totalPostsSoftDelete);
@@ -97,6 +119,8 @@ class PostController extends AdminController
     {
         return view('admin.posts.create')
             ->with('checkPost', false)
+            ->with('isTrash', false)
+            ->with('listPosts', $this->postsService->listPosts())
             ->with('categories', $this->categoryService->listCategory());
     }
 
@@ -140,9 +164,17 @@ class PostController extends AdminController
     public function edit($id)
     {
         $post = $this->postsService->findPost($id);
+        $listPosts = $listPosts = $this->postsService->listPosts($id);
+        $isTrash = false;
+        if (!$post) {
+            $isTrash = true;
+            $post = $this->postsService->findPost($id, true);
+        }
         return view('admin.posts.create')
             ->with('checkPost', true)
             ->with('post', $post)
+            ->with('listPosts', $listPosts)
+            ->with('isTrash', $isTrash)
             ->with('categories', $this->categoryService->listCategory());
     }
 
@@ -150,12 +182,19 @@ class PostController extends AdminController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, $id)
     {
-        //
+        $update = $this->postsService->updatePost($id, $request->toArray());
+
+        if ($update) {
+            $this->toastrSuccess('Updated successfully', 'Success');
+        } else {
+            $this->toastrError('Updated Failed', 'Error');
+        }
+        return back();
     }
 
     /**
@@ -254,11 +293,13 @@ class PostController extends AdminController
     private function setFieldSearch($field)
     {
         $fields = [
+            'id' => 'dtb_posts.id',
             'search' => 'dtb_posts.title',
             'status' => 'dtb_posts_infomation.status',
-            'category' => 'dtb_posts.category_id'
+            'category' => 'dtb_posts.category_id',
+            'parent' => 'dtb_posts.parent_id',
         ];
 
-        return $fields[$field];
+        return $fields[$field] ?? '';
     }
 }
