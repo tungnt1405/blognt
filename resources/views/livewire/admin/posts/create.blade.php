@@ -1,14 +1,17 @@
 @php
-if (!empty($post)) {
-    $dateDiff = \Carbon\Carbon::parse($post->postsInfomation->public_date)->diffInDays(\Carbon\Carbon::now());
-    if (time() > strtotime($post->postsInfomation->public_date)) {
-        $dateDiff = ++$dateDiff * (-1);
+    if ($checkPost && !empty($post)) {
+        $dateDiff = \Carbon\Carbon::parse($post->postsInfomation->public_date)->diffInDays(\Carbon\Carbon::now());
+        if (time() > strtotime($post->postsInfomation->public_date)) {
+            $dateDiff = ++$dateDiff * -1;
+        }
     }
-}
 @endphp
 <div class="bg-white w-full">
     <div class="wrapper">
-        {!! Form::open(['route' => 'admin.posts.store', 'method' => 'post']) !!}
+        {!! Form::open([
+            'route' => $checkPost ? ['admin.posts.update', $post->id] : 'admin.posts.store',
+            'method' => $checkPost ? 'put' : 'post',
+        ]) !!}
         @if ($errors->any())
             <div class="mt-5 alert alert-error shadow-lg text-white rounded-b-lg">
                 <ul class="block">
@@ -26,14 +29,18 @@ if (!empty($post)) {
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::text('public_date', !empty($checkPost) ? \Carbon\Carbon::parse($post->postsInfomation->public_date) : null, [
-                        'placeholder' => 'Pick datetime...',
-                        'autocomplete' => 'off',
-                        'id' => 'datepicker',
-                        'date-default' => !empty($checkPost) ? $dateDiff : 0,
-                        'class' =>
-                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
-                    ]) !!}
+                    {!! Form::text(
+                        'public_date',
+                        !empty($checkPost) ? \Carbon\Carbon::parse($post->postsInfomation->public_date) : null,
+                        [
+                            'placeholder' => 'Pick datetime...',
+                            'autocomplete' => 'off',
+                            'id' => 'datepicker',
+                            'date-default' => !empty($checkPost) ? $dateDiff : 0,
+                            'class' =>
+                                'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
+                        ],
+                    ) !!}
                 </div>
             </div>
         </div>
@@ -129,9 +136,7 @@ if (!empty($post)) {
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
                     <div class="series-status md:py-0 py-2">
                         <input type="checkbox" id="checkbox-series" class="js-checkbox-series" name="series"
-                            @if($checkPost && $post->series == 1)
-                               checked
-                            @endif
+                            @if ($checkPost && $post->series == 1) checked @endif
                             value="{{ $checkPost ? $post->series : 0 }}">
                         <label for="checkbox-series">
                             <div @class(['btn-series'])></div>
@@ -149,22 +154,25 @@ if (!empty($post)) {
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
                     <label for="post_type_1" class="cursor-pointer">
-                        {!! Form::radio('post_type', 0, true, [
+                        {!! Form::radio('post_type', 0, $checkPost && $post->parent_id ? false : true, [
                             'id' => 'post_type_1',
                         ]) !!}
-                        <span>First Post</span>
+                        <span>{{ __('First Post') }}</span>
                     </label>
 
-                    <label for="post_type_2" class="ml-2 cursor-pointer">
-                        {!! Form::radio('post_type', 1, false, [
+                    <label for="post_type_2" @class([
+                        'ml-2 cursor-pointer',
+                        'hidden' => empty($listPosts->toArray()) ? true : false,
+                    ])>
+                        {!! Form::radio('post_type', 1, $checkPost && $post->parent_id ? true : false, [
                             'id' => 'post_type_2',
                         ]) !!}
-                        <span>Add Post For Parent</span>
+                        <span>{{ __('Add Post For Parent') }}</span>
                     </label>
                 </div>
             </div>
         </div>
-        <div class="form-group hidden" id="js-post-addParent">
+        <div @class(['form-group', 'hidden' => empty($post->parent_id)]) id="js-post-addParent">
             <div class="md:grid md:grid-cols-3 md:gap-6">
                 <x-section.section-title>
                     <x-slot:title @class(['sm:justify-between'])>{{ __('Parent ID') }}</x-slot:title>
@@ -172,10 +180,14 @@ if (!empty($post)) {
                     </x-slot>
                 </x-section.section-title>
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
-                    {!! Form::text('parent_id', null, [
+                    {{-- {!! Form::text('parent_id', @$post->parent_id, [
                         'autocomplete' => 'off',
                         'class' =>
                             'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-1/12',
+                    ]) !!} --}}
+                    {!! Form::select('parent_id', $listPosts, @$post->parent_id, [
+                        'class' =>
+                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
                     ]) !!}
                 </div>
             </div>
@@ -190,9 +202,7 @@ if (!empty($post)) {
                 <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
                     <div class="post-status md:py-0 py-2">
                         <input type="checkbox" id="checkbox-status" class="js-checkbox-status" name="status"
-                            @if($checkPost && $post->postsInfomation->status == 1)
-                               checked
-                            @endif
+                            @if ($checkPost && $post->postsInfomation->status == 1) checked @endif
                             value="{{ $checkPost ? $post->postsInfomation->status : 0 }}">
                         <label for="checkbox-status">
                             <div @class(['btn-status'])></div>
@@ -201,12 +211,15 @@ if (!empty($post)) {
                 </div>
             </div>
         </div>
+        @if ($checkPost)
+            <input type="hidden" name="author_id" value="{{ $post->author_id }}">
+        @endif
         <div class="md:grid md:grid-cols-3">
             <div class="md:col-span-1"></div>
             <div class="md:col-span-2 p-5">
                 <div class="flex justify-center sm:justify-end mr-4 sm:mr-auto">
-                    {{ Form::submit(__('Add'), ['class' => 'btn btn-primary btn-outline']) }}
-                    {{ Form::button(__('Back'), ['class' => 'btn btn-outline mx-2']) }}
+                    {{ Form::submit($checkPost ? __('Update') : __('Add'), ['class' => 'btn btn-primary btn-outline']) }}
+                    {{ Form::button(__('Back'), ['class' => 'btn btn-outline mx-2', 'onclick' => 'location.href = `' . route('admin.posts') . '`']) }}
                 </div>
             </div>
         </div>

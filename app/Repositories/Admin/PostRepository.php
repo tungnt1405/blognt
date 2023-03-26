@@ -64,16 +64,15 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function updatePostInformation($postId, $postStatus)
     {
+        $this->update($postId, [
+            'updated_at' => \Carbon\Carbon::now()
+        ]);
         return $this->positionInformationRepository->getInfomationByPostId($postId, $postStatus);
     }
 
-    public function getAllPosts($conditions = [], $orders = [], $columns = ['*'])
+    public function getAllPosts($records = 10, $conditions = [], $orders = [], $columns = ['*'])
     {
-        if (!empty($conditions) || !empty($orders) || $columns[0] !== '*') {
-            return $this->filterSearch($conditions, $orders, $columns);
-        } else {
-            return $this->model->paginate(10);
-        }
+        return $this->filterSearch($records, $conditions, $orders, $columns);
     }
 
     public function getAllPostsIncludeSoftDelete()
@@ -81,23 +80,59 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return $this->model->withTrashed();
     }
 
-    public function getOnlyPostsSoftDelete($conditions = [], $orders = [], $columns = ['*'])
+    public function getOnlyPostsSoftDelete($records = 10, $conditions = [], $orders = [], $columns = ['*'])
     {
-        return $this->filterOnlyTrashSearch($conditions, $orders, $columns);
+        return $this->filterOnlyTrashSearch($records, $conditions, $orders, $columns);
     }
 
     public function restorePostSoftDelete($ids)
     {
+        $checkPostChildren = $this->model->withTrashed()->whereIn('parent_id', collect($ids));
+        if ($checkPostChildren) {
+            $checkPostChildren->restore();
+        }
         return $this->model->withTrashed()->whereIn('id', collect($ids))->restore();
     }
 
     public function deletePosts($ids)
     {
+        $checkPostChildren = $this->model->whereIn('parent_id', collect($ids));
+        if ($checkPostChildren) {
+            $checkPostChildren->delete();
+        }
         return $this->model->destroy(collect($ids));
     }
 
     public function destroyPosts($ids)
     {
+        $checkPostChildren = $this->model->withTrashed()->whereIn('parent_id', collect($ids));
+        if ($checkPostChildren) {
+            $checkPostChildren->forceDelete();
+        }
         return $this->model->withTrashed()->whereIn('id', collect($ids))->forceDelete();
+    }
+
+    public function listPosts($id = null)
+    {
+        $list = $this->model
+            // ->all()
+            ->whereNull('parent_id')
+            // ->sortBy('title', SORT_NATURAL | SORT_FLAG_CASE)
+            ->orderBy('title', 'desc');
+
+        if (isset($id)) {
+            $list->where('id', '!=', $id);
+        }
+
+        return $list->pluck('title', 'id');
+    }
+
+    public function findPost($id, $isTrash = false)
+    {
+        if ($isTrash) {
+            return $this->model->withTrashed()->where('id', $id)->firstOrFail();
+        }
+
+        return $this->find($id);
     }
 }
