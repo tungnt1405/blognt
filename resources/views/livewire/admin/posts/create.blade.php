@@ -11,6 +11,7 @@
         {!! Form::open([
             'route' => $checkPost ? ['admin.posts.update', $post->id] : 'admin.posts.store',
             'method' => $checkPost ? 'put' : 'post',
+            'enctype' => 'multipart/form-data',
         ]) !!}
         @if ($errors->any())
             <div class="mt-5 alert alert-error shadow-lg text-white rounded-b-lg">
@@ -21,6 +22,36 @@
                 </ul>
             </div>
         @endif
+        <div class="post-thumb form-group">
+            <div class="md:grid md:grid-cols-3 md:gap-6">
+                <x-section.section-title>
+                    <x-slot:title @class(['sm:justify-between'])>{{ __('Thumbnail Post') }}</x-slot:title>
+                    <x-slot name="description">{{ __('Select thumbnail for') }}
+                    </x-slot>
+                </x-section.section-title>
+                <div
+                    class="mt-5 flex flex-col relative mt-0 md:col-span-2 px-4 sm:px-0 sm:rounded-tl-md sm:rounded-tr-md">
+                    <div class="post-thumb">
+                        @if (!empty($post->thumbnail_posts))
+                            <div class="thumb mb-5 pl-0">
+                                <div class="w-24 sm:w-32">
+                                    <img src="{{ $post->thumbnail_posts }}" loading="lazy" id="img__thumb"
+                                        alt="img-show">
+
+                                </div>
+                            </div>
+                        @endif
+                        <div class="thumb pre-show ma-0 pa-0 hidden">
+                            <div class="w-24 sm:w-32">
+                                <img src id="img__show" alt="img-show">
+                            </div>
+                        </div>
+                    </div>
+                    {{ Form::file('thumbnail_posts', ['class' => 'hidden file__choose', 'accept' => 'image/*']) }}
+                    {{ Form::button('Select Image', ['class' => 'w-9/12 lg:w-3/12 block btn btn-choose my-2 btn-sm md:btn-md text-white js-btn-select-img']) }}
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <div class="md:grid md:grid-cols-3 md:gap-6">
                 <x-section.section-title>
