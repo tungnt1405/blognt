@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
         "target": "es6",
-        "noImplicitAny": false,
-        "sourceMap": false
+        "module": "commonjs",
+        "outDir": "./public/js",
+        "rootDir": "./resources/assets/js/backend",
+        "strict": true,
+        "esModuleInterop": true
     },
-    "include": ["resources/assets/js/**/*"]
+    "include": [
+        "resources/assets/js/backend/**/*"
+    ]
 }
