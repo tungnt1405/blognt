@@ -21,4 +21,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/{any}', function () {
     return view('guest.app');
-})->where(['any' => '^(?!admin).*']);
+})->where(['any' => '^(?!api|admin_blog).*']);
