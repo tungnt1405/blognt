@@ -4,7 +4,7 @@ namespace App\Services\Interfaces\Api;
 
 use App\Services\Interfaces\ServiceInterface;
 
-interface OwnerServiceInterface extends ServiceInterface
+interface PostServiceInterface extends ServiceInterface
 {
-    public function getOwner();
+    public function getPostRepository();
 }

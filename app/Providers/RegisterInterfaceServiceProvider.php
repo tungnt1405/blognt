@@ -6,10 +6,12 @@ use App\Services\Admin\CategoryService;
 use App\Services\Admin\PostsService;
 use App\Services\Api\OwnerInfoService;
 use App\Services\Api\OwnerService;
+use App\Services\Api\PostService;
 use App\Services\Interfaces\Admin\CategoryServiceInterface;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
 use App\Services\Interfaces\Api\OwnerInfoServiceInterface;
 use App\Services\Interfaces\Api\OwnerServiceInterface;
+use App\Services\Interfaces\Api\PostServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class RegisterInterfaceServiceProvider extends ServiceProvider
@@ -28,6 +30,7 @@ class RegisterInterfaceServiceProvider extends ServiceProvider
         // Api
         app()->bind(OwnerServiceInterface::class, OwnerService::class);
         app()->bind(OwnerInfoServiceInterface::class, OwnerInfoService::class);
+        app()->bind(PostServiceInterface::class, PostService::class);
     }
 
     /**

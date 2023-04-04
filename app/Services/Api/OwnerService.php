@@ -20,8 +20,8 @@ class OwnerService extends AbstractService implements OwnerServiceInterface
         return \App\Repositories\Api\OwnerRepository::class;
     }
 
-    public function getOwnerRepository()
+    public function getOwner()
     {
-        return [];
+        return $this->repository->getOwner();
     }
 }
