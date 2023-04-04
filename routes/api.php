@@ -19,5 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test', fn () => response()->json(['message' => 'tested ok!']));
+Route::get('/test', function () {
+    dd(2);
+    return response()->json(['message' => 'tested ok!']);
+});
 Route::resource('/owner', SideBarController::class)->only(['index']);
