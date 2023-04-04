@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SideBarResource;
 use App\Services\Interfaces\Api\OwnerInfoServiceInterface;
 use App\Services\Interfaces\Api\OwnerServiceInterface;
 use Illuminate\Http\Request;
@@ -34,7 +35,8 @@ class SideBarController extends Controller
      */
     public function index()
     {
-        return response()->json(['code' => 200]);
+        $owner = $this->ownerService->getOwner();
+        return new SideBarResource($owner);
     }
 
     /**

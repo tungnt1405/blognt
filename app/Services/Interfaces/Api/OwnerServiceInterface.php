@@ -6,5 +6,5 @@ use App\Services\Interfaces\ServiceInterface;
 
 interface OwnerServiceInterface extends ServiceInterface
 {
-    public function getOwnerRepository();
+    public function getOwner();
 }
