@@ -1,10 +1,10 @@
 @php
     $socials = [
-        'gmail' => 'gmail_url',
+        // 'gmail' => 'gmail_url',
         'facebook' => 'fb_url',
-        'twitter' => 'twitter_url',
+        // 'twitter' => 'twitter_url',
         'linkin' => 'linkin_url',
-        'zalo' => 'zalo_url',
+        // 'zalo' => 'zalo_url',
         'github' => 'github_url',
     ];
     

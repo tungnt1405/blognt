@@ -134,6 +134,25 @@ const btn = {
         this.addPostParentId();
         this.searchOptions();
     },
+    previewImage(el) {
+        let file_upload = $(el).val();
+        $('.step').remove();
+        if (file_upload != '') {
+            const url_demo = URL.createObjectURL(event.target.files[0]);
+            $('.thumb').removeClass('hidden');
+            const url_old = $('.thumb #img__show').attr('src');
+            if (url_old != undefined || url_old.trim() != '') {
+                URL.revokeObjectURL($('.thumb #img__show').attr('src'));
+            }
+            if ($('#img__thumb').length) {
+                $('.pre-show').before('<p>Preview</p>');
+            }
+            $('.thumb #img__show').attr('src', url_demo);
+        } else {
+            $('.thumb #img__show').attr('src', '');
+            $('.thumb #img__show').addClass('hidden');
+        }
+    },
     showInputParentId() {
         $('#checkbox-series').on('change', () => {
             if ($('#checkbox-series').is(':checked')) {
@@ -299,4 +318,13 @@ $(document).ready(function () {
 
     // handle button delete posts
     $('.js-delete-handle, .js-soft-delete-handle').on('click', btn.handleBtnDelete);
+
+    // preview thumbnail post
+    $('.js-btn-select-img').on('click', function (e) {
+        e.preventDefault();
+        $('.file__choose').click();
+    });
+    $('.file__choose').on('change', function () {
+        btn.previewImage($(this));
+    });
 });

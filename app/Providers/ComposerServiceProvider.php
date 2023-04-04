@@ -25,7 +25,6 @@ class ComposerServiceProvider extends AppServiceProvider
     public function register()
     {
         $this->categoryService = new \App\Services\Admin\CategoryService();
-        $this->postsService = new \App\Services\Admin\PostsService();
     }
 
     /**
@@ -40,10 +39,6 @@ class ComposerServiceProvider extends AppServiceProvider
         view()->composer(['admin.setting.categories', 'admin.posts.index'], function ($view) {
             $categories  = $this->categoryService->all();
             $view->with('categories', $categories);
-        });
-        view()->composer(['admin.posts.create'], function ($view) {
-            // $listPosts = $this->postsService->listPosts();
-            // $view->with('listPosts', $listPosts);
         });
     }
 }

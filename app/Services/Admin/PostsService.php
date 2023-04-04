@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Services\AbstractService;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
+use App\Services\UploadFileService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -12,11 +13,18 @@ use Illuminate\Support\Facades\DB;
 class PostsService extends AbstractService implements PostsServiceInterface
 {
     /**
+     * @var UploadFileService
+     */
+    protected $_uploadFileService;
+
+    /**
      * PostsService constructor
      */
-    public function __construct()
-    {
+    public function __construct(
+        UploadFileService $uploadFileService
+    ) {
         parent::__construct();
+        $this->_uploadFileService = $uploadFileService;
     }
 
     public function getRepository()
@@ -46,9 +54,11 @@ class PostsService extends AbstractService implements PostsServiceInterface
     public function insertPost($data = [])
     {
         try {
+            $base_64  = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
             $data = array_merge($data, [
                 'author_id' => $this->getUser()->id,
-                'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null
+                'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
+                'thumbnail_posts' => $base_64
             ]);
             $this->logger('Insert Post', $data, config('constants.LOG_INFO'));
             $insertPost = $this->create($data);
@@ -65,9 +75,11 @@ class PostsService extends AbstractService implements PostsServiceInterface
     public function updatePost($id, $data = [])
     {
         try {
+            $base_64  = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
             $data = array_merge($data, [
                 'series' => $data['series'] ?? 0,
                 'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
+                'thumbnail_posts' => $base_64,
                 'update_at' => \Carbon\Carbon::now()
             ]);
             $updatePost = $this->update($id, $data);
