@@ -60,7 +60,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         }
 
         $posts->where('dtb_posts_infomation.status', 1)
-            ->where('dtb_posts_infomation.public_date', '<=', Carbon::now());
+            ->where('dtb_posts_infomation.public_date', '<=', Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s'));
 
         if (empty($columns) || is_array($columns) && in_array('*', $columns) || $columns === '*') {
             $posts->select(['dtb_posts.*']);
@@ -75,8 +75,9 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             ->orderBy('dtb_posts.id', 'DESC');
 
         return [
-            'total' => $posts->count(),
-            'posts' => $posts->get()
+            'total' => $posts->get()->count(),
+            'posts' => $posts->get(),
+            'total_post' => $posts->count()
         ];
     }
 }

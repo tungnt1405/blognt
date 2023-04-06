@@ -145,7 +145,8 @@ const btn = {
                 URL.revokeObjectURL($('.thumb #img__show').attr('src'));
             }
             if ($('#img__thumb').length) {
-                $('.pre-show').before('<p>Preview</p>');
+                $('.pre-show .preview').remove();
+                $('.pre-show').before('<p class="preview">Preview</p>');
             }
             $('.thumb #img__show').attr('src', url_demo);
         } else {
