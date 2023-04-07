@@ -4,6 +4,7 @@ namespace App\Repositories\Api;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\Api\PostRepositoryInterface;
+use Carbon\Carbon;
 
 class PostRepository extends BaseRepository implements PostRepositoryInterface
 {
@@ -32,17 +33,51 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
      */
     public function getJoinTable()
     {
-        return [];
+        return [
+            'dtb_posts_infomation' => [
+                'foreign_key' => 'post_id',
+                'key' => 'id'
+            ],
+            'mtb_categories' => [
+                'foreign_key' => 'id',
+                'key' => 'category_id'
+            ],
+            'users' => [
+                'foreign_key' => 'id',
+                'key' => 'author_id'
+            ],
+        ];
     }
 
-    public function getPosts($limit = 10, $offset = 0)
+    public function getPosts($columns = ['*'], $limit = 10, $offset = 0)
     {
-        // inprogess get post
-        return $this->model
+        $posts = $this->model
             ->withTrashed()
-            ->whereNull('deleted_at')
+            ->whereNull('dtb_posts.deleted_at');
+
+        foreach ($this->join as $table => $keys) {
+            $posts->join($table, $table . '.' . $keys['foreign_key'], '=', $this->table . '.' . $keys['key']);
+        }
+
+        $posts->where('dtb_posts_infomation.status', 1)
+            ->where('dtb_posts_infomation.public_date', '<=', Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s'));
+
+        if (empty($columns) || is_array($columns) && in_array('*', $columns) || $columns === '*') {
+            $posts->select(['dtb_posts.*']);
+        } else {
+            $posts->select($columns);
+        }
+
+        $posts
             ->skip($offset * $limit)
             ->take($limit)
-            ->get();
+            ->orderBy('dtb_posts.updated_at', 'DESC')
+            ->orderBy('dtb_posts.id', 'DESC');
+
+        return [
+            'total' => $posts->get()->count(),
+            'posts' => $posts->get(),
+            'total_post' => $this->all()->count()
+        ];
     }
 }

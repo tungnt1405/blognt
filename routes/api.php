@@ -25,5 +25,6 @@ Route::apiResource('/owner', SideBarController::class)
     ->only(['index'])
     ->except(['create', 'edit']);
 Route::apiResource('/posts', PostController::class)
-    ->only(['index'])
+    ->only(['index', 'show'])
     ->except(['create', 'edit']);
+Route::get('more-posts', [PostController::class, 'morePosts']);

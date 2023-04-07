@@ -12,8 +12,18 @@ class PostService extends AbstractService implements PostServiceInterface
         return \App\Repositories\Api\PostRepository::class;
     }
 
-    public function getPostRepository()
+    public function getPosts($columns = ['*'], $limit = 10, $offset = 0)
     {
-        return [];
+        try {
+            return $this->repository->getPosts($columns, $limit, $offset);
+        } catch (\Exception $ex) {
+            $this->loggerTry($ex);
+            return $ex->getMessage();
+        }
+    }
+
+    private function loggerTry($exception)
+    {
+        $this->logger('', $exception->getMessage(), config('constants.LOG_ERROR'));
     }
 }
