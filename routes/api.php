@@ -28,3 +28,4 @@ Route::apiResource('/posts', PostController::class)
     ->only(['index', 'show'])
     ->except(['create', 'edit']);
 Route::get('more-posts', [PostController::class, 'morePosts']);
+Route::get('about-me', [SideBarController::class, 'about']);
