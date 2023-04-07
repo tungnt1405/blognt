@@ -47,7 +47,7 @@ class PostController extends Controller
             'total_post' => $posts['total'],
             'data'  => PostResource::collection($posts['posts']),
             'pagination' => [
-                'per_page' => $limit,
+                'per_page' => (int) $limit,
                 'current_page' => 1,
                 'total_page' => ceil($posts['total_post'] / $limit),
                 'next_page' => 2,
@@ -93,15 +93,11 @@ class PostController extends Controller
             'total_page' => $total_page,
         ];
         if ($prev_page >= 1) {
-            array_push($pagination, [
-                'prev_page' => $prev_page
-            ]);
+            $pagination['prev_page'] = $prev_page;
         }
 
         if ($next_page < $total_page) {
-            array_push($pagination, [
-                'next_page' => $next_page
-            ]);
+            $pagination['next_page'] = $next_page;
         }
 
         return response()
@@ -109,7 +105,7 @@ class PostController extends Controller
                 'code' => Response::HTTP_OK,
                 'total_post' => $posts['total'],
                 'data' => PostResource::collection($posts['posts']),
-                'pagination' => $pagination
+                'pagination' => $pagination,
             ], Response::HTTP_OK);
     }
 }

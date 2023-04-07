@@ -77,7 +77,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return [
             'total' => $posts->get()->count(),
             'posts' => $posts->get(),
-            'total_post' => $posts->count()
+            'total_post' => $this->all()->count()
         ];
     }
 }
