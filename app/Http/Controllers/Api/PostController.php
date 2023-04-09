@@ -59,8 +59,41 @@ class PostController extends Controller
      * 
      * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
-    public function show(Post $post)
+    public function show(Request $request, $id)
     {
+        if (isset($id) && empty($this->postService->getPost($id, $request->get('post')))) {
+            return response()->json([
+                'code' => Response::HTTP_NOT_FOUND,
+                'message' => 'Not Found Post',
+                'data' => []
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $post = $this->postService->getPost($id, $request->get('post'));
+        return response()->json([
+            'code' => Response::HTTP_OK,
+            'data' => new PostResource($post)
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * 
+     * @return \Illuminate\Contracts\Routing\ResponseFactory
+     */
+    public function findSlug($slug)
+    {
+        if (isset($id) && empty($this->postService->getPost(null, $slug))) {
+            return response()->json([
+                'code' => Response::HTTP_NOT_FOUND,
+                'message' => 'Not Found Post',
+                'data' => []
+            ], Response::HTTP_NOT_FOUND);
+        }
+        $post = $this->postService->getPost(null, $slug);
+        return response()->json([
+            'code' => Response::HTTP_OK,
+            'data' => new PostResource($post)
+        ], Response::HTTP_OK);
     }
 
     /**
