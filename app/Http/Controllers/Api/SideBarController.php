@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AboutResource;
 use App\Http\Resources\SideBarResource;
 use App\Services\Interfaces\Api\OwnerInfoServiceInterface;
 use App\Services\Interfaces\Api\OwnerServiceInterface;
@@ -32,7 +33,7 @@ class SideBarController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
     public function index()
     {
@@ -40,9 +41,32 @@ class SideBarController extends Controller
         if (gettype($owner) === 'string') {
             return response()->json([
                 'code' => 500,
-                'message' => $owner
+                'message' => 'Internal Server Error',
+                'data' => $owner
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return new SideBarResource($owner);
+    }
+
+    /**
+     * Display about me.
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory
+     */
+    public function about()
+    {
+        $owner = $this->ownerService->getOwner();
+        if (gettype($owner) === 'string') {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Internal Server Error',
+                'data' => $owner
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json([
+            'code' => Response::HTTP_OK,
+            'data' => new AboutResource($owner)
+        ], Response::HTTP_OK);
     }
 }

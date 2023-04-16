@@ -75,13 +75,16 @@ class PostsService extends AbstractService implements PostsServiceInterface
     public function updatePost($id, $data = [])
     {
         try {
-            $base_64  = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
             $data = array_merge($data, [
                 'series' => $data['series'] ?? 0,
                 'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
-                'thumbnail_posts' => $base_64,
                 'update_at' => \Carbon\Carbon::now()
             ]);
+
+            $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
+            if ($base_64 && isset($base_64)) {
+                $data['thumbnail_posts'] = $base_64;
+            }
             $updatePost = $this->update($id, $data);
             $updatePost->postsInfomation()->update([
                 'status' => $data['status'] ?? 0,
