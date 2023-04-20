@@ -124,6 +124,7 @@
                             </label>
                         </th>
                         <th>{{ __('ID') }}</th>
+                        <th>{{ __('Thumb') }}</th>
                         <th>{{ __('Label') }}</th>
                         <th>{{ __('Slug') }}</th>
                         <th>{{ __('Parent ID') }}</th>
@@ -144,6 +145,10 @@
                                     <input type="checkbox" class="checkbox js-checkbox-post" name="post_ids[]"
                                         value="{{ $post->id }}" />
                                 </label>
+                            </td>
+                            <td class="max-h-[80px]">
+                                <div class="flex justify-center items-center"><img src="{{ $post->thumbnail_posts }}"
+                                        lazy="loading" width="80" height="80" /></div>
                             </td>
                             <td>{{ $post->id }}</td>
                             <td><a href="{{ route('admin.posts.edit', ['id' => $post->id]) }}"

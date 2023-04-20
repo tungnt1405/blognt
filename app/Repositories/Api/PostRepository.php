@@ -86,17 +86,13 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         $post = $this->model->withTrashed()
             ->whereNull('dtb_posts.deleted_at');
 
-        foreach ($this->join as $table => $keys) {
-            $post->join($table, $table . '.' . $keys['foreign_key'], '=', $this->table . '.' . $keys['key']);
-        }
-
         if (!empty($id)) {
-            $post->where('dtb_posts.id', $id);
+            $post->where('id', $id);
         }
 
         if (!empty($slug)) {
-            $post->where('dtb_posts.slug', $slug);
+            $post->where('slug', $slug);
         }
-        return $post->first();
+        return $post->firstOrFail();
     }
 }

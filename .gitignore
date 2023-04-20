@@ -17,3 +17,7 @@ yarn-error.log
 /.idea
 /storage
 blognt.code-workspace*
+
+vite.config.js
+*.lock
+
