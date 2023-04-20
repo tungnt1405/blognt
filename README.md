@@ -7,6 +7,12 @@
     cp .env.example .env
 ```
 
+copy file vite.config.js.example to vite.config.js or run bash
+
+```
+cp vite.config.js.example vite.config.js
+```
+
 3. Edit information DATABASE in file .env:
 
 -   DB_DATABASE
@@ -37,4 +43,23 @@ php artisan migrate
 
 ```
 php artisan key:generate
+```
+
+## other configuration
+
+1. vite.config.js
+
+```
+laravel({
+    input: [
+        'resources/assets/js/frontend/app.js',
+        'resources/assets/js/backend/admin/main.js',
+        'resources/assets/js/backend/admin/common.js',
+        'resources/assets/js/backend/admin/onwer.js',
+        'resources/assets/js/backend/admin/posts.js',
+        'resources/assets/scss/admin/main.scss',
+        'resources/assets/scss/main.scss',
+    ],
+    refresh: [...refreshPaths, 'app/Http/Livewire/**'],
+}),
 ```
