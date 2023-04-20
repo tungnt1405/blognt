@@ -22,6 +22,20 @@ class PostService extends AbstractService implements PostServiceInterface
         }
     }
 
+    public function getPost($id = null, $slug = '')
+    {
+        try {
+            if (empty($id) && empty($slug)) {
+                return [];
+            }
+
+            return $this->repository->getPost($id, $slug);
+        } catch (\Exception $ex) {
+            $this->loggerTry($ex);
+            return $ex->getMessage();
+        }
+    }
+
     private function loggerTry($exception)
     {
         $this->logger('', $exception->getMessage(), config('constants.LOG_ERROR'));
