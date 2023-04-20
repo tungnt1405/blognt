@@ -47,7 +47,7 @@ php artisan key:generate
 
 ## other configuration
 
-1. vite.config.js
+1. copy the following code and replace laravel input in file vite.config.js
 
 ```
 laravel({
