@@ -15,7 +15,7 @@ class PostInfomationResource extends JsonResource
      */
     public function toArray($request)
     {
-        // parent::toArray($request);
+        parent::toArray($request);
 
         return [
             'post_information_id' => $this->id,
