@@ -80,4 +80,19 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             'total_post' => $this->all()->count()
         ];
     }
+
+    public function getPost($id = null, $slug = '')
+    {
+        $post = $this->model->withTrashed()
+            ->whereNull('dtb_posts.deleted_at');
+
+        if (!empty($id)) {
+            $post->where('id', $id);
+        }
+
+        if (!empty($slug)) {
+            $post->where('slug', $slug);
+        }
+        return $post->firstOrFail();
+    }
 }
