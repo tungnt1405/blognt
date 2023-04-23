@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SideBarController;
 use Illuminate\Http\Request;
@@ -30,4 +31,6 @@ Route::apiResource('/posts', PostController::class)
 Route::get('more-posts', [PostController::class, 'morePosts']);
 Route::get('{id}/post', [PostController::class, 'show']);
 Route::get('post/{slug}', [PostController::class, 'findSlug']);
+Route::get('post-search', [PostController::class, 'postSearch']);
 Route::get('about-me', [SideBarController::class, 'about']);
+Route::get('categories', [CategoriesController::class, 'index']);

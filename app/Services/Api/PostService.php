@@ -12,10 +12,14 @@ class PostService extends AbstractService implements PostServiceInterface
         return \App\Repositories\Api\PostRepository::class;
     }
 
-    public function getPosts($columns = ['*'], $limit = 10, $offset = 0)
+    public function getPosts($columns = ['*'], $limit = 10, $offset = 0, $filterSearch = [])
     {
         try {
-            return $this->repository->getPosts($columns, $limit, $offset);
+            if (!empty($filterSearch['categories'])) {
+                $filterSearch['categories'] = explode(',', $filterSearch['categories']);
+            }
+
+            return $this->repository->getPosts($columns, $limit, $offset, $filterSearch);
         } catch (\Exception $ex) {
             $this->loggerTry($ex);
             return $ex->getMessage();

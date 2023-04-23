@@ -141,4 +141,39 @@ class PostController extends Controller
                 'pagination' => $pagination,
             ], Response::HTTP_OK);
     }
+
+    public function postSearch(Request $request)
+    {
+        $limit = $request->get('limit');
+        $offset = $request->get('offset');
+        $data = [
+            'keywords' => $request->get('search'),
+            'categories' => $request->get('categories'),
+        ];
+        if (empty($request->get('search')) && empty($request->get('categories'))) {
+            return response()->json([
+                'code' => Response::HTTP_OK,
+                'total_post' => 0,
+                'data'  => [],
+                'pagination' => [
+                    'limit' => 10,
+                    'offset' => 0,
+                    'offset_next' => 0,
+                    'total_page' => 0,
+                ]
+            ], Response::HTTP_OK);
+        }
+        $posts = $this->postService->getPosts([], $limit, $offset, $data);
+        return response()->json([
+            'code' => Response::HTTP_OK,
+            'total_post' => $posts['total'],
+            'data'  => PostResource::collection($posts['posts']),
+            'pagination' => [
+                'limit' => (int) $limit,
+                'offset' => (int) $offset,
+                'offset_next' => ((int) $offset) + 1,
+                'total_page' => ceil($posts['total_post'] / $limit),
+            ]
+        ], Response::HTTP_OK);
+    }
 }
