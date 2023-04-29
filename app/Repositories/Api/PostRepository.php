@@ -71,7 +71,6 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                 });
             }
             if (!empty($filterSearch['categories'])) {
-                dd($filterSearch['categories']);
                 $posts->whereIn('dtb_posts.category_id', $filterSearch['categories']);
             }
         }
