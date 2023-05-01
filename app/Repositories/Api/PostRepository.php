@@ -49,7 +49,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         ];
     }
 
-    public function getPosts($columns = ['*'], $limit = 10, $offset = 0)
+    public function getPosts($columns = ['*'], $limit = 10, $offset = 0, $filterSearch = [])
     {
         $posts = $this->model
             ->withTrashed()
@@ -61,6 +61,19 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
         $posts->where('dtb_posts_infomation.status', 1)
             ->where('dtb_posts_infomation.public_date', '<=', Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s'));
+
+        if (!empty($filterSearch)) {
+
+            if ($filterSearch['keywords']) {
+                $posts->where(function ($query) use ($filterSearch) {
+                    $query->where('dtb_posts.title', 'like', '%' . trim($filterSearch['keywords']) . '%')
+                        ->orWhere('dtb_posts.slug', 'like', '%' . trim($filterSearch['keywords']) . '%');
+                });
+            }
+            if (!empty($filterSearch['categories'])) {
+                $posts->whereIn('dtb_posts.category_id', $filterSearch['categories']);
+            }
+        }
 
         if (empty($columns) || is_array($columns) && in_array('*', $columns) || $columns === '*') {
             $posts->select(['dtb_posts.*']);
@@ -77,7 +90,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return [
             'total' => $posts->get()->count(),
             'posts' => $posts->get(),
-            'total_post' => $this->all()->count()
+            'total_post' => $this->all()->count(),
         ];
     }
 
