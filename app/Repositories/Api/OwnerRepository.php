@@ -38,6 +38,10 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
 
     public function getOwner()
     {
-        return $this->model->all()->first();
+        if ($this->model->all()->count() > 0) {
+            return $this->model->all()->first();
+        }
+
+        return [];
     }
 }
