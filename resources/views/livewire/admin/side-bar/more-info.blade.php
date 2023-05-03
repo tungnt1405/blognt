@@ -113,8 +113,17 @@
 @section('javascript')
     @vite('resources/assets/js/backend/admin/onwer.js')
     <script>
-        CKEDITOR.replace('textarea__more-exp');
-        CKEDITOR.replace('textarea__more-pj');
-        CKEDITOR.replace('textarea__more-career');
+        CKEDITOR.replace('textarea__more-exp', {
+            enterMode: CKEDITOR.ENTER_BR,
+            shiftEnterMode: CKEDITOR.ENTER_P,
+        });
+        CKEDITOR.replace('textarea__more-pj', {
+            enterMode: CKEDITOR.ENTER_BR,
+            shiftEnterMode: CKEDITOR.ENTER_P,
+        });
+        CKEDITOR.replace('textarea__more-career', {
+            enterMode: CKEDITOR.ENTER_BR,
+            shiftEnterMode: CKEDITOR.ENTER_P,
+        });
     </script>
 @endsection

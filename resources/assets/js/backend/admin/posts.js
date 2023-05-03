@@ -310,9 +310,13 @@ $(document).ready(function () {
     if ($('#description').length && $('#content').length) {
         CKEDITOR.replace('description', {
             width: '100%',
+            enterMode: CKEDITOR.ENTER_BR,
+            shiftEnterMode: CKEDITOR.ENTER_P,
         });
         CKEDITOR.replace('content', {
             width: '100%',
+            enterMode: CKEDITOR.ENTER_BR,
+            shiftEnterMode: CKEDITOR.ENTER_P,
         });
     }
 
