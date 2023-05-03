@@ -22,4 +22,5 @@ blognt.code-workspace*
 vite.config.js
 package-lock.json*
 *.lock
+**/.DS_Store
 
