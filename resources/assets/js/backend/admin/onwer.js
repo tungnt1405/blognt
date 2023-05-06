@@ -10,6 +10,8 @@ $(function () {
         filebrowserBrowseUrl: 'ckfinder/ckfinder.html',
         filebrowserUploadUrl: 'ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
         filebrowserUploadMethod: 'form',
+        enterMode: CKEDITOR.ENTER_BR,
+        shiftEnterMode: CKEDITOR.ENTER_P,
     });
     const preview_image = function () {
         let file_upload = $(this).val();
