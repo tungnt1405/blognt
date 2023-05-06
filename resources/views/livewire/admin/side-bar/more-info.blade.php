@@ -33,14 +33,14 @@
                             href="{{ route('admin.side-bar') }}">@lang('admin/common.watch_more_details')</a></td>
                     <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->fb_url ?: 'javascript:void(-1)' !!}"
                             target="{{ $owner->fb_url ? '_blank' : '_self' }}">@lang('Facebook')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->gmail_url ?: 'javascript:void(-1)' !!}"
-                            target="{{ $owner->gmail_url ? '_blank' : '_self' }}">@lang('Gmail')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->twitter_url ?: 'javascript:void(-1)' !!}"
-                            target="{{ $owner->twitter_url ? '_blank' : '_self' }}">@lang('Twitter')</a></td>
+                    {{-- <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->gmail_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->gmail_url ? '_blank' : '_self' }}">@lang('Gmail')</a></td> --}}
+                    {{-- <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->twitter_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->twitter_url ? '_blank' : '_self' }}">@lang('Twitter')</a></td> --}}
                     <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->linkin_url ?: 'javascript:void(-1)' !!}"
                             target="{{ $owner->linkin_url ? '_blank' : '_self' }}">@lang('Linkin')</a></td>
-                    <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->zalo_url ?: 'javascript:void(-1)' !!}"
-                            target="{{ $owner->zalo_url ? '_blank' : '_self' }}">@lang('Zalo')</a></td>
+                    {{-- <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->zalo_url ?: 'javascript:void(-1)' !!}"
+                            target="{{ $owner->zalo_url ? '_blank' : '_self' }}">@lang('Zalo')</a></td> --}}
                     <td><a class="text-blue-700 hover:text-blue-700/50" href="{!! $owner->github_url ?: 'javascript:void(-1)' !!}"
                             target="{{ $owner->github_url ? '_blank' : '_self' }}">@lang('Github')</a>
                     </td>
