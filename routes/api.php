@@ -22,6 +22,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/test', fn () => response()->json(['message' => 'tested ok!']));
+// Route::prefix("{locale}")
+//     ->where(['locale' => '[a-zA-Z]{2}'])
+//     ->middleware('setlocale')
+//     ->group(function () {
+
+//     });
 Route::apiResource('/owner', SideBarController::class)
     ->only(['index'])
     ->except(['create', 'edit']);
@@ -34,3 +40,4 @@ Route::get('post/{slug}', [PostController::class, 'findSlug']);
 Route::get('post-search', [PostController::class, 'postSearch']);
 Route::get('about-me', [SideBarController::class, 'about']);
 Route::get('categories', [CategoriesController::class, 'index']);
+Route::post('/suggest/posts', [PostController::class, 'suggest']);

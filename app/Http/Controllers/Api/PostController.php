@@ -176,4 +176,18 @@ class PostController extends Controller
             ]
         ], Response::HTTP_OK);
     }
+    public function suggest(Request $request)
+    {
+        $data = $request->all();
+        if (empty($data)) {
+            return response()->json([
+                'messge' => trans('client/validation.suggest.not_found')
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $suggest = $this->postService->suggestPosts($data);
+        return response()->json([
+            'data' => $request->all()
+        ]);
+    }
 }
