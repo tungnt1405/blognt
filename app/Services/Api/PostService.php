@@ -40,6 +40,15 @@ class PostService extends AbstractService implements PostServiceInterface
         }
     }
 
+    public function suggestPosts($data)
+    {
+        try {
+            return $data;
+        } catch (\Exception $ex) {
+            $this->loggerTry($ex);
+        }
+    }
+
     private function loggerTry($exception)
     {
         $this->logger('', $exception->getMessage(), config('constants.LOG_ERROR'));
