@@ -17,9 +17,17 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        $lang = in_array($request->segment(2), config('constants.available_locales')) ? $request->segment(2) : env("APP_LANG", 'en');
-        app()->setLocale($lang);
-        URL::defaults(['locale' => $lang]);
+        // $lang = in_array($request->segment(2), config('constants.available_locales')) ? $request->segment(2) : env("APP_LANG", 'en');
+        // app()->setLocale($lang);
+        // URL::defaults(['locale' => $lang]);
+
+        // Nếu có, chúng ta đặt locale này làm mặc định cho ứng dụng (app()->setLocale($locale)) 
+        // và nếu không, chúng ta đặt locale mặc định
+        if ($locale = $request->route('locale')) {
+            app()->setLocale($locale);
+        } else {
+            app()->setLocale(config('app.locale'));
+        }
         return $next($request);
     }
 }
