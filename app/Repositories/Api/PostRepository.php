@@ -108,4 +108,13 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         }
         return $post->firstOrFail();
     }
+
+    public function suggestPosts($category_id, $post_id)
+    {
+        $post = $this->model->withTrashed()
+            ->where('category_id', $category_id)
+            ->whereNot('id', $post_id)
+            ->whereNull('dtb_posts.deleted_at');
+        return $post->get();
+    }
 }

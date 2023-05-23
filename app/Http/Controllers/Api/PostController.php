@@ -178,16 +178,38 @@ class PostController extends Controller
     }
     public function suggest(Request $request)
     {
+        // sửa lại phần controller chuyển về xử lý bên service bên controller nhận các giá trị cần thiết để return
         $data = $request->all();
+        $message = '';
+        $isError = false;
+        $code = Response::HTTP_OK;
+
         if (empty($data)) {
-            return response()->json([
-                'messge' => trans('client/validation.suggest.not_found')
-            ], Response::HTTP_NOT_FOUND);
+            $isError = true;
+            $message = trans('client/validation.server_error');
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } elseif (empty($data['category_id'])) {
+            $isError = true;
+            $message = trans('client/validation.suggest.not_eligible', ['value' => 'category_id']);
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } elseif (empty($data['post_id'])) {
+            $isError = true;
+            $message = trans('client/validation.suggest.not_eligible', ['value' => 'post_id']);
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        $suggest = $this->postService->suggestPosts($data);
+        if (!$isError) {
+            $suggest = $this->postService->suggestPosts($data);
+            if (empty($suggest)) {
+                $message = trans('client/validation.suggest.not_found');
+                $code = Response::HTTP_NOT_FOUND;
+            } else {
+                $message = PostResource::collection($suggest);
+            }
+        }
+
         return response()->json([
-            'data' => $request->all()
-        ]);
+            'data' => $message,
+        ], $code);
     }
 }
