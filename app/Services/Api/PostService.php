@@ -43,7 +43,7 @@ class PostService extends AbstractService implements PostServiceInterface
     public function suggestPosts($data)
     {
         try {
-            return $data;
+            return $this->repository->suggestPosts($data['category_id'], $data['post_id']);
         } catch (\Exception $ex) {
             $this->loggerTry($ex);
         }
