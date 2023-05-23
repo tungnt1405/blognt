@@ -17,8 +17,12 @@ class SetDefaultLocale
     public function handle(Request $request, Closure $next)
     {
         $locale = $request->route('locale');
-        if (!$locale) {
-            $url = str_ireplace('/api/', '/api/' . config('app.locale') . '/', $request->getRequestUri());
+        // if (!$locale) {
+        //     $url = str_ireplace('/api/', '/api/' . config('app.locale') . '/', $request->getRequestUri());
+        //     return redirect($url);
+        // }
+        if (isset($locale) && !in_array($locale, config('constants.available_locales'))) {
+            $url = str_ireplace("/api/{$locale}", '/api/' . config('app.locale'), $request->getRequestUri());
             return redirect($url);
         }
         return $next($request);
