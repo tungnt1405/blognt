@@ -27,11 +27,11 @@ class Owner extends Model
         'avatar',
         'name',
         'introduce',
-        'gmail_url',
+        // 'gmail_url',
         'fb_url',
-        'twitter_url',
+        // 'twitter_url',
         'linkin_url',
-        'zalo_url',
+        // 'zalo_url',
         'github_url',
     ];
 

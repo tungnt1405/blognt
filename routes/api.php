@@ -22,15 +22,39 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/test', fn () => response()->json(['message' => 'tested ok!']));
-Route::apiResource('/owner', SideBarController::class)
-    ->only(['index'])
-    ->except(['create', 'edit']);
-Route::apiResource('/posts', PostController::class)
-    ->only(['index', 'show'])
-    ->except(['create', 'edit']);
-Route::get('more-posts', [PostController::class, 'morePosts']);
-Route::get('{id}/post', [PostController::class, 'show']);
-Route::get('post/{slug}', [PostController::class, 'findSlug']);
-Route::get('post-search', [PostController::class, 'postSearch']);
-Route::get('about-me', [SideBarController::class, 'about']);
-Route::get('categories', [CategoriesController::class, 'index']);
+Route::middleware(['setDefaultLocale', 'setlocale'])
+    ->group(function () {
+        // locale default setting in env
+        Route::apiResource('/owner', SideBarController::class)
+            ->only(['index'])
+            ->except(['create', 'edit']);
+        Route::apiResource('/posts', PostController::class)
+            ->only(['index', 'show'])
+            ->except(['create', 'edit']);
+        Route::get('more-posts', [PostController::class, 'morePosts']);
+        Route::get('{id}/post-id', [PostController::class, 'show'])->where('id', '[0-9]+');
+        Route::get('post/{slug}', [PostController::class, 'findSlug']);
+        Route::get('post-search', [PostController::class, 'postSearch']);
+        Route::get('about-me', [SideBarController::class, 'about']);
+        Route::get('categories', [CategoriesController::class, 'index']);
+        Route::post('/suggest/posts', [PostController::class, 'suggest']);
+
+        // set language for api
+        Route::prefix("{locale?}")
+            ->where(['locale' => '[a-zA-Z]{2}'])
+            ->group(function () {
+                Route::apiResource('/owner', SideBarController::class)
+                    ->only(['index'])
+                    ->except(['create', 'edit']);
+                Route::apiResource('/posts', PostController::class)
+                    ->only(['index', 'show'])
+                    ->except(['create', 'edit']);
+                Route::get('more-posts', [PostController::class, 'morePosts']);
+                Route::get('{id}/post-id', [PostController::class, 'show'])->where('id', '[0-9]+');
+                Route::get('post/{slug}', [PostController::class, 'findSlug']);
+                Route::get('post-search', [PostController::class, 'postSearch']);
+                Route::get('about-me', [SideBarController::class, 'about']);
+                Route::get('categories', [CategoriesController::class, 'index']);
+                Route::post('/suggest/posts', [PostController::class, 'suggest']);
+            });
+    });

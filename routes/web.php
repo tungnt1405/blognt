@@ -20,5 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/{any}', function () {
+    // return redirect(app()->getLocale());
+    // abort(404);
     return view('guest.app');
 })->where(['any' => '^(?!api|admin_blog).*']);
