@@ -22,6 +22,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/test', fn () => response()->json(['message' => 'tested ok!']));
+Route::get('/test-redis', function () {
+    try {
+        $redis = \Illuminate\Support\Facades\Redis::connect(env('REDIS_HOST'), env('REDIS_PORT'));
+        return response('redis working');
+    } catch (\Exception $e) {
+        return response($e->getMessage());
+    }
+});
 Route::middleware(['setDefaultLocale', 'setlocale'])
     ->group(function () {
         // locale default setting in env
