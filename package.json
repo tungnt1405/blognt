@@ -2,7 +2,11 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "dcup": "./vendor/bin/sail up -d",
+        "dcdown": "./vendor/bin/sail down",
+        "dcbuild": "./vendor/bin/sail build",
+        "dcshell": "./vendor/bin/sail shell"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
