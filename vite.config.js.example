@@ -8,6 +8,7 @@ import fs from 'fs';
 // let host = '';
 
 // tham khảo thêm :https://vitejs.dev/config/#using-environment-variables-in-config
+// ssl: https://laravel.com/docs/10.x/vite ==> Working With A Secure Development Server
 export default ({ mode }) => {
     process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
