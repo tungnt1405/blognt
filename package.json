@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "daisyui": "^2.41.0",
+        "laravel-echo": "^1.15.1",
         "ts-loader": "^9.4.2",
         "typescript": "^5.0.2",
         "vue": "^3.2.36",
