@@ -36,6 +36,11 @@ class PostsEvent extends ShouldBroadcast
         return new PresenceChannel('posts-get');
     }
 
+    public function broadcastAs()
+    {
+        return "PostsEvent";
+    }
+
     public function broadcastWith()
     {
         return [
