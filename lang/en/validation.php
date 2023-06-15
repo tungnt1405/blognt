@@ -178,5 +178,8 @@ return [
                 'symbol_required' => 'Please enter name symbol',
             ]
         ],
+    ],
+    'exception' => [
+        'sorted_invalid_error' => '$sort must be an array consisting of [key => number] or a number. If $sort is a number, please enter $key.'
     ]
 ];

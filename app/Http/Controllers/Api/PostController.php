@@ -7,6 +7,7 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\Api\PostServiceInterface;
+use App\Utils\RedisUtil;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
@@ -116,10 +117,13 @@ class PostController extends Controller
                 'data' => $posts
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+        if (empty(RedisUtil::getKey('posts'))) {
+            RedisUtil::setKey('posts', json_encode(PostResource::collection($posts['posts'])));
+        }
         return response()->json([
             'code' => Response::HTTP_OK,
             'total_post' => $posts['total'],
-            'data'  => PostResource::collection($posts['posts']),
+            'data'  => json_decode(RedisUtil::getKey('posts')) ?? PostResource::collection($posts['posts']),
             'pagination' => [
                 'per_page' => (int) $limit,
                 'current_page' => 1,
