@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SideBarController;
+use App\Utils\RedisUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,17 @@ Route::get('/test-redis', function () {
     } catch (\Exception $e) {
         return response($e->getMessage());
     }
+});
+Route::get('/test-redis-utils', function () {
+    // if (empty(RedisUtil::getKey('test'))) {
+    //     RedisUtil::setKey('test', 'datatest', 60);
+    // }
+    // RedisUtil::deleteKey('test');
+
+    return response()->json([
+        // 'data' => RedisUtil::getKey('test')
+        'data' => json_decode(RedisUtil::getKey('posts'))
+    ]);
 });
 Route::middleware(['setDefaultLocale', 'setlocale'])
     ->group(function () {
