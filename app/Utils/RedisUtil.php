@@ -20,14 +20,53 @@ if (!class_exists('\App\Utils\RedisUtil')) {
             }
         }
 
-        public function setCacheForRedis($key, $content)
+        public static function setKey($key, $data)
         {
-            return Redis::set($key, $content);
+            return Redis::set($key, $data);
         }
 
-        public function getCacheFromRedis($key)
+        public static function getKey($key)
         {
             return Redis::get($key);
+        }
+
+        public static function addOrUpdateForKey($key, $data)
+        {
+            return Redis::sadd($key, $data);
+        }
+
+        public static function allValueOfKey($key)
+        {
+            return Redis::smember($key);
+        }
+
+        public static function setMultipleForHashList($key, $data)
+        {
+            return Redis::hmset($key, $data);
+        }
+
+        public static function getAllOfHashList($key)
+        {
+            return Redis::hgetall($key);
+        }
+
+        public static function addValueToFirstForList($key, $value)
+        {
+            return Redis::lpush($key, $value);
+        }
+
+        public static function addValueToLastedForList($key, $value)
+        {
+            return Redis::rpush($key, $value);
+        }
+
+        public static function scopeRangeInList($key, $start, $stop)
+        {
+            return Redis::lrange($key, $start, $stop);
+        }
+
+        public static function sortedKey($key, $va)
+        {
         }
     }
 }
