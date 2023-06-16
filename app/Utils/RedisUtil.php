@@ -12,6 +12,9 @@ if (!class_exists('\App\Utils\RedisUtil')) {
     {
         protected $redis;
 
+        /**
+         * cache laravel: https://laravel.com/docs/10.x/cache#retrieve-store
+         */
         public function __invoke()
         {
             try {
@@ -31,10 +34,11 @@ if (!class_exists('\App\Utils\RedisUtil')) {
          */
         public static function setKey($key, $data, $time = 0)
         {
+            $json_data = json_encode($data);
             if (isset($time)) {
-                return Redis::set($key, $data, $time);
+                return Redis::set($key, $json_data, $time);
             }
-            return Redis::set($key, $data);
+            return Redis::set($key, $json_data);
         }
 
         /**
@@ -45,7 +49,19 @@ if (!class_exists('\App\Utils\RedisUtil')) {
          */
         public static function getKey($key)
         {
-            return Redis::get($key);
+            return json_decode(Redis::get($key));
+        }
+
+
+        /**
+         * Used to retrieve the value of a key.
+         * 
+         * @param string $key
+         * @return mixed
+         */
+        public static function checkKey($key)
+        {
+            return Redis::exists($key);
         }
 
         /**

@@ -7,6 +7,7 @@ use App\Http\Requests\admin\Posts\UpdatePostRequest;
 use App\Models\Post;
 use App\Services\Interfaces\Admin\CategoryServiceInterface;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
+use App\Utils\RedisUtil;
 use Illuminate\Http\Request;
 
 class PostController extends AdminController
@@ -215,7 +216,7 @@ class PostController extends AdminController
                     'message' => 'Sorry! Delete posts failed.',
                 ]);
         }
-
+        RedisUtil::deleteKey('posts');
         $this->toastrSuccess('Successfully delete posts', 'Success');
         return response()->json([
             'code' => 200,
@@ -241,7 +242,7 @@ class PostController extends AdminController
                     'message' => 'Sorry! Delete posts failed.',
                 ]);
         }
-
+        RedisUtil::deleteKey('posts');
         $this->toastrSuccess('Successfully delete posts', 'Success');
         return response()->json([
             'code' => 200,
@@ -282,7 +283,7 @@ class PostController extends AdminController
                     'message' => 'Sorry! Restore failed',
                 ]);
         }
-
+        RedisUtil::deleteKey('posts');
         $this->toastrSuccess('Successfully restore posts', 'Success');
         return response()->json([
             'code' => 200,
