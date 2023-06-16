@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Services\AbstractService;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
 use App\Services\UploadFileService;
+use App\Utils\RedisUtil;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -66,6 +67,9 @@ class PostsService extends AbstractService implements PostsServiceInterface
                 'status' => $data['status'] ?? 0,
                 'public_date' => Carbon::parse($data['public_date'])
             ]);
+            if ($insertPost) {
+                $this->clearCachePosts();
+            }
             return $insertPost;
         } catch (\Exception  $e) {
             $this->loggerTry($e);
@@ -90,6 +94,10 @@ class PostsService extends AbstractService implements PostsServiceInterface
                 'status' => $data['status'] ?? 0,
                 'public_date' => Carbon::parse($data['public_date'])
             ]);
+
+            if ($updatePost) {
+                $this->clearCachePosts();
+            }
 
             return $updatePost;
         } catch (\Exception $e) {
@@ -125,6 +133,7 @@ class PostsService extends AbstractService implements PostsServiceInterface
             DB::commit();
             if (!empty($post)) {
                 $this->logger('Update Post Information', $post->toArray(), config('constants.LOG_INFO'));
+                $this->clearCachePosts();
                 return true;
             }
 
@@ -175,6 +184,11 @@ class PostsService extends AbstractService implements PostsServiceInterface
     private function getUser()
     {
         return Auth::user();
+    }
+
+    private function clearCachePosts()
+    {
+        return RedisUtil::deleteKey('posts');
     }
 
     private function loggerTry($exception)

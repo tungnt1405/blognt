@@ -117,13 +117,13 @@ class PostController extends Controller
                 'data' => $posts
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        if (empty(RedisUtil::getKey('posts'))) {
-            RedisUtil::setKey('posts', json_encode(PostResource::collection($posts['posts'])));
+        if (empty(RedisUtil::checkKey('posts'))) {
+            RedisUtil::setKey('posts', PostResource::collection($posts['posts']), 24 * 60 * 60);
         }
         return response()->json([
             'code' => Response::HTTP_OK,
             'total_post' => $posts['total'],
-            'data'  => json_decode(RedisUtil::getKey('posts')) ?? PostResource::collection($posts['posts']),
+            'data'  => RedisUtil::getKey('posts'),
             'pagination' => [
                 'per_page' => (int) $limit,
                 'current_page' => 1,

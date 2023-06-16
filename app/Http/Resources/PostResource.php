@@ -28,8 +28,8 @@ class PostResource extends JsonResource
             'is_serires' => $this->series ? true : false,
             'other_information' => new PostInfomationResource($this->postsInfomation),
             'post_thumb' => $this->thumbnail_posts,
-            'created_at' => Carbon::parse($this->created_at),
-            'updated_at' => Carbon::parse($this->updated_at),
+            'created_at' => Carbon::parse($this->created_at)->format("Y-m-d"),
+            'updated_at' => Carbon::parse($this->updated_at)->format("Y-m-d"),
         ];
     }
 }
