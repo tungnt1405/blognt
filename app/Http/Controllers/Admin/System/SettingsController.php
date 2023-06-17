@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\System;
 
+use App\Helpers\ToastrHelper;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
 
@@ -55,7 +56,7 @@ class SettingsController extends AdminController
         if (empty($data['setting'])) {
             // return back()->withError('error', trans('validation.admin.setting.error'));
             // return back()->withErrors(['error' => trans('validation.admin.setting.error')]);
-            $this->toastrError(trans('validation.admin.setting.error'));
+            ToastrHelper::toastrError(trans('validation.admin.setting.error'));
             return back();
         }
 

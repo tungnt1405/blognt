@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\ToastrHelper;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\SideBarController;
 use App\Http\Controllers\Admin\System\CountryController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Admin\System\SettingsController;
 use App\Http\Controllers\Admin\System\CategoryController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\TeamInvitationController;
+use App\Utils\RedisUtil;
 use Laravel\Jetstream\Jetstream;
 
 Route::prefix('admin_blog')->middleware([
@@ -114,4 +116,12 @@ Route::prefix('admin_blog')->middleware([
     });
 
     Route::get('/change-language/{language}', [SystemController::class, 'changeLanguage'])->name('admin-change-language');
+    Route::get('/clear-cache-posts', function () {
+        if (RedisUtil::deleteKey('posts')) {
+            ToastrHelper::toastrSuccess('Clear cache success!', 'Success');
+        } else {
+            ToastrHelper::toastrWarning('Not found cache posts.', 'Warning');
+        }
+        return redirect()->back();
+    })->name('admin-clear-cache-posts');
 });

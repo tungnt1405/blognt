@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ToastrHelper;
 use App\Http\Requests\admin\Posts\StorePostRequest;
 use App\Http\Requests\admin\Posts\UpdatePostRequest;
 use App\Models\Post;
@@ -137,11 +138,11 @@ class PostController extends AdminController
         $insert = $this->postsService->insertPost($input);
 
         if ($insert) {
-            $this->toastrSuccess('Inserted successfully', 'Success');
+            ToastrHelper::toastrSuccess('Inserted successfully', 'Success');
             return redirect()->route('admin.posts');
         }
 
-        $this->toastrError('Insert Failed', 'Error');
+        ToastrHelper::toastrError('Insert Failed', 'Error');
         return back();
     }
 
@@ -191,9 +192,9 @@ class PostController extends AdminController
         $update = $this->postsService->updatePost($id, $request->toArray());
 
         if ($update) {
-            $this->toastrSuccess('Updated successfully', 'Success');
+            ToastrHelper::toastrSuccess('Updated successfully', 'Success');
         } else {
-            $this->toastrError('Updated Failed', 'Error');
+            ToastrHelper::toastrError('Updated Failed', 'Error');
         }
         return back();
     }
@@ -209,7 +210,7 @@ class PostController extends AdminController
         $post = $this->postsService->destroyPosts($request->get('ids'));
 
         if (!$post) {
-            $this->toastrError('Sorry! Delete failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Delete failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
@@ -217,7 +218,7 @@ class PostController extends AdminController
                 ]);
         }
         RedisUtil::deleteKey('posts');
-        $this->toastrSuccess('Successfully delete posts', 'Success');
+        ToastrHelper::toastrSuccess('Successfully delete posts', 'Success');
         return response()->json([
             'code' => 200,
             'message' => 'Successfully delete posts'
@@ -235,7 +236,7 @@ class PostController extends AdminController
         $post = $this->postsService->deletePosts($request->get('ids'));
 
         if (!$post) {
-            $this->toastrError('Sorry! Delete failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Delete failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
@@ -243,7 +244,7 @@ class PostController extends AdminController
                 ]);
         }
         RedisUtil::deleteKey('posts');
-        $this->toastrSuccess('Successfully delete posts', 'Success');
+        ToastrHelper::toastrSuccess('Successfully delete posts', 'Success');
         return response()->json([
             'code' => 200,
             'message' => 'Successfully delete posts'
@@ -255,7 +256,7 @@ class PostController extends AdminController
         $updatePost = $this->postsService->updateStatusPost($id, $request->get('status'));
 
         if ($updatePost === false) {
-            $this->toastrError('Sorry! Updating status failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Updating status failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
@@ -263,7 +264,7 @@ class PostController extends AdminController
                 ]);
         }
 
-        $this->toastrSuccess('Successfully change post status', 'Success');
+        ToastrHelper::toastrSuccess('Successfully change post status', 'Success');
         return response()
             ->json([
                 'code' => 200,
@@ -276,7 +277,7 @@ class PostController extends AdminController
         $restorePosts = $this->postsService->restorePostSoftDelete($request->get('ids'));
 
         if (!$restorePosts) {
-            $this->toastrError('Sorry! Restore failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Restore failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
@@ -284,7 +285,7 @@ class PostController extends AdminController
                 ]);
         }
         RedisUtil::deleteKey('posts');
-        $this->toastrSuccess('Successfully restore posts', 'Success');
+        ToastrHelper::toastrSuccess('Successfully restore posts', 'Success');
         return response()->json([
             'code' => 200,
             'message' => 'Successfully restore posts'

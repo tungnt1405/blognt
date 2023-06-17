@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ToastrHelper;
 use App\Http\Requests\admin\Owner\StoreOwnerInfoRequest;
 use App\Http\Requests\admin\Owner\UpdateOwnerInfoRequest;
 use App\Http\Requests\StoreSideBarRequest;
@@ -71,11 +72,11 @@ class SideBarController extends AdminController
         $datas = $req->all();
         $owner = $this->ownerRepository->setOwnerAttributes($datas);
         if ($owner instanceof Model) {
-            $this->toastrSuccess('Create successfully!');
+            ToastrHelper::toastrSuccess('Create successfully!');
             return redirect()->route('admin.side-bar');
         }
 
-        $this->toastrError('Oops! Create failed.', 'Oops!');
+        ToastrHelper::toastrError('Oops! Create failed.', 'Oops!');
         return back();
     }
 
@@ -114,10 +115,10 @@ class SideBarController extends AdminController
         $updateOwner = $this->ownerRepository->update($side_bar->id, $data);
 
         if ($updateOwner instanceof Model) {
-            $this->toastrSuccess('Update successfully!');
+            ToastrHelper::toastrSuccess('Update successfully!');
             return redirect()->route('admin.side-bar');
         }
-        $this->toastrError('An error has occurred please try again later.', 'Oops!');
+        ToastrHelper::toastrError('An error has occurred please try again later.', 'Oops!');
         return back();
     }
 
@@ -163,11 +164,11 @@ class SideBarController extends AdminController
 
         $results = $this->ownerInfoService->create($attributes);
         if ($results) {
-            $this->toastrSuccess('Create more info successfully!');
+            ToastrHelper::toastrSuccess('Create more info successfully!');
             return redirect()->route('admin.side-bar');
         }
 
-        $this->toastrError('An error has occurred please try again later.', 'Oops!');
+        ToastrHelper::toastrError('An error has occurred please try again later.', 'Oops!');
         return redirect()->route('admin.side-bar');
     }
 
@@ -189,11 +190,11 @@ class SideBarController extends AdminController
 
         $results = $this->ownerInfoService->update($id, $attributes);
         if ($results) {
-            $this->toastrSuccess('Update more info successfully!');
+            ToastrHelper::toastrSuccess('Update more info successfully!');
             return redirect()->route('admin.side-bar');
         }
 
-        $this->toastrError('An error has occurred please try again later.', 'Oops!');
+        ToastrHelper::toastrError('An error has occurred please try again later.', 'Oops!');
         return redirect()->route('admin.side-bar');
     }
 }
