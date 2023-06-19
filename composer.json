@@ -15,6 +15,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravelcollective/html": "^6.3",
+        "laraveldaily/laravel-charts": "^0.2.1",
         "livewire/livewire": "^2.5",
         "nesbot/carbon": "^2.63",
         "yoeunes/toastr": "^2.0"
