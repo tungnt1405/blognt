@@ -1,5 +1,5 @@
 <div class="dashbroad-wrapper text-center py-4">
-    <div class="stats stats-vertical md:stats-horizontal shadow">
+    <div class="stats stats-vertical sm:stats-horizontal shadow">
         <div class="stat place-items-center">
             <div class="stat-title">{{ __('Tổng danh mục') }}</div>
             <div class="stat-value">40</div>
@@ -37,12 +37,12 @@
         </div>
     </div>
     <div class="dashbroad-chart">
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            <div class="md:grid md:grid-cols-3 md:gap-6">{!! $chartUsers->renderHtml() !!}</div>
+        <div class="grid grid-cols md:grid-cols-2 gap-4 m-4">
+            <div>{!! $chart->container() !!}</div>
         </div>
     </div>
 </div>
 @section('javascript')
-    {!! $chartUsers->renderChartJsLibrary() !!}
-    {!! $chartUsers->renderJs() !!}
+    <script src="{{ $chart->cdn() }}"></script>
+    {{ $chart->script() }}
 @endsection

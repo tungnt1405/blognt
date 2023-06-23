@@ -27,3 +27,34 @@ Artisan::command('logs:clear', function () {
 
     $this->info('Logs have been cleared!');
 })->describe('Clear log files');
+
+Artisan::command('blognt:optimize-clear', function () {
+    try {
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
+        Artisan::call('route:clear');
+        Artisan::call('config:clear');
+
+        $this->info('Blognt optimize clear: Clear all cache, view, route, config!');
+    } catch (\Exception $ex) {
+        $this->error('Blognt optimize clear: ' . $ex->getMessage());
+        echo "Blognt optimize clear:\n" . $ex->getMessage();
+    }
+})->describe('Clear all cache as cache, view, route, config');
+
+Artisan::command('blognt:optimize', function () {
+    try {
+        $this->info('Blognt the cached bootstrap files');
+        Artisan::call('config:clear');
+        Artisan::call('config:cache');
+        Artisan::call('view:clear');
+        Artisan::call('route:clear');
+        Artisan::call('route:cache');
+        Artisan::call('cache:clear');
+
+        echo "Optimzie cached";
+    } catch (\Exception $ex) {
+        $this->error('Blognt optimize: ' . $ex->getMessage());
+        echo "Blognt optimize:\n" . $ex->getMessage();
+    }
+})->describe('Blognt the cached bootstrap files');
