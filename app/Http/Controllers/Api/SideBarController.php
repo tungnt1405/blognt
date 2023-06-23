@@ -46,10 +46,14 @@ class SideBarController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         if (empty($owner)) {
-            return response()->json([
-                'code' => Response::HTTP_NOT_FOUND,
-                'data' => $owner
-            ], Response::HTTP_OK);
+            return response()
+                ->withHeaders([
+                    'Content-Type' => 'application/json'
+                ])
+                ->json([
+                    'code' => Response::HTTP_NOT_FOUND,
+                    'data' => $owner
+                ], Response::HTTP_OK);
         }
 
         return new SideBarResource($owner);

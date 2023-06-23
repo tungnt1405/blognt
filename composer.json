@@ -9,13 +9,13 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0.2",
+        "arielmejiadev/larapex-charts": "^6.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.12",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "laravelcollective/html": "^6.3",
-        "laraveldaily/laravel-charts": "^0.2.1",
         "livewire/livewire": "^2.5",
         "nesbot/carbon": "^2.63",
         "yoeunes/toastr": "^2.0"

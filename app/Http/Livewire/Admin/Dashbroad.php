@@ -2,30 +2,39 @@
 
 namespace App\Http\Livewire\Admin;
 
-use LaravelDaily\LaravelCharts\Classes\LaravelChart;
+use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Livewire\Component;
 
 class Dashbroad extends Component
 {
     public function render()
     {
-        $chartUsers = $this->chart();
-        return view('livewire.admin.dashbroad', compact('chartUsers'));
+        $chart = $this->chart();
+        return view('livewire.admin.dashbroad', compact('chart'));
     }
 
-    private function chart($options = [])
+    private function chart()
     {
-        //doc: https://github.com/LaravelDaily/laravel-charts
-        if (empty($options)) {
-            $options  = [
-                'chart_title' => 'Posts by months',
-                'report_type' => 'group_by_date',
-                'model' => 'App\Models\Post',
-                'group_by_field' => 'created_at',
-                'group_by_period' => 'month',
-                'chart_type' => 'bar',
-            ];
-        }
-        return new LaravelChart($options);
+        // doc: https://larapex-charts.netlify.app/
+        $chart = new LarapexChart();
+        return $chart->barChart()
+            ->setTitle('San Francisco vs Boston.')
+            ->setSubtitle('Wins during season 2021.')
+            ->addData('San Francisco', [6, 9, 3, 4, 10, 8, 9])
+            ->addData('Boston', [7, 3, 8, 2, 6, 4])
+            ->setXAxis([
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December'
+            ]);
     }
 }
