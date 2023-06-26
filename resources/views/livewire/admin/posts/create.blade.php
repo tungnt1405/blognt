@@ -250,7 +250,7 @@
             <div class="md:col-span-2 p-5">
                 <div class="flex justify-center sm:justify-end mr-4 sm:mr-auto">
                     {{ Form::submit($checkPost ? __('Update') : __('Add'), ['class' => 'btn btn-primary btn-outline']) }}
-                    {{ Form::button(__('Back'), ['class' => 'btn btn-outline mx-2', 'onclick' => 'location.href = `' . route('admin.posts') . '`']) }}
+                    {{ Form::button(__('Back'), ['class' => 'btn btn-outline mx-2', 'onclick' => 'location.href = `' . route('admin.posts.index') . '`']) }}
                 </div>
             </div>
         </div>

@@ -63,3 +63,14 @@ laravel({
     refresh: [...refreshPaths, 'app/Http/Livewire/**'],
 }),
 ```
+
+## fix permission denied
+
+cd /var/www/laravelfolder
+sudo chown apache:apache -R /var/www/laravelfolder
+find . -type f -exec chmod 0644 {} \;
+find . -type d -exec chmod 0755 {} \;
+sudo chcon -t httpd_sys_content_t /var/www/laravelfolder -R
+sudo chcon -t httpd_sys_rw_content_t /var/www/laravelfolder/storage -R
+sudo chcon -t httpd_sys_rw_content_t /var/www/laravelfolder/bootstrap/cache -R
+tham khảo: https://stackoverflow.com/questions/44533090/laravel-failed-to-open-stream-permission-denied

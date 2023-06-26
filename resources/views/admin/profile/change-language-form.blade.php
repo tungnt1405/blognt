@@ -7,7 +7,7 @@
                 @if (count($countries) > 0)
                     <div class="form-control">
                         @foreach ($countries as $country)
-                            {!! Form::open(['route' => ['admin-change-language', $country->symbol], 'method' => 'get']) !!}
+                            {!! Form::open(['route' => ['admin.change-language', $country->symbol], 'method' => 'get']) !!}
                             <label class="cursor-pointer label capitalize circle js-click-btn"
                                 data-id="{{ $country->id }}">
                                 <span class="label-text text-lg text-left font-semibold">{{ $country->language }}</span>

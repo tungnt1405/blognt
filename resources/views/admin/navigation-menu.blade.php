@@ -18,8 +18,11 @@
                     <x-jet-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs(['admin.side-bar', 'admin.owner.more-info'])">
                         {{ __('Sidebar Management') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('admin.posts') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create', 'admin.posts.edit'])">
+                    <x-jet-nav-link href="{{ route('admin.posts.index') }}" :active="request()->routeIs(['admin.posts.index', 'admin.posts.create', 'admin.posts.edit'])">
                         {{ __('Posts Management') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('admin.cache.index') }}" :active="request()->routeIs(['admin.cache.index'])">
+                        {{ __('Cache Management') }}
                     </x-jet-nav-link>
                 </div>
             </div>
@@ -117,8 +120,12 @@
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
 
-                            <x-jet-dropdown-link href="{{ route('admin.setting') }}">
+                            <x-jet-dropdown-link href="{{ route('admin.setting.index') }}">
                                 {{ __('Setting Master Data') }}
+                            </x-jet-dropdown-link>
+
+                            <x-jet-dropdown-link href="{{ route('admin.toggle.maintain') }}">
+                                {{ __('Setting Maintain') }}
                             </x-jet-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
@@ -167,8 +174,11 @@
             <x-jet-responsive-nav-link href="{{ route('admin.side-bar') }}" :active="request()->routeIs(['admin.side-bar', 'admin.owner.more-info'])">
                 {{ __('Sidebar Management') }}
             </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('admin.posts') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create', 'admin.posts.edit'])">
+            <x-jet-responsive-nav-link href="{{ route('admin.posts.index') }}" :active="request()->routeIs(['admin.posts', 'admin.posts.create', 'admin.posts.edit'])">
                 {{ __('Posts Management') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('admin.cache.index') }}" :active="request()->routeIs(['admin.cache.index'])">
+                {{ __('Cache Management') }}
             </x-jet-responsive-nav-link>
         </div>
 
@@ -192,6 +202,14 @@
                 <!-- Account Management -->
                 <x-jet-responsive-nav-link href="{{ route('admin.profile.show') }}" :active="request()->routeIs('admin.profile.show')">
                     {{ __('Profile') }}
+                </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('admin.setting.index') }}" :active="request()->routeIs('admin.setting.index')">
+                    {{ __('Setting Master Data') }}
+                </x-jet-responsive-nav-link>
+
+                <x-jet-responsive-nav-link href="{{ route('admin.toggle.maintain') }}" :active="request()->routeIs('admin.toggle.maintain')">
+                    {{ __('Setting Maintain') }}
                 </x-jet-responsive-nav-link>
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())

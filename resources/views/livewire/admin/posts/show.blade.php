@@ -103,7 +103,7 @@
         <div class="posts-menu">
             <ul class="flex gap-[10px] mt-3">
                 @foreach ($listsMenu as $url => $item)
-                    <li><a href="{{ $url !== 'trash' ? route('admin.posts') : route('admin.posts') . '?posts=' . $url }}"
+                    <li><a href="{{ $url !== 'trash' ? route('admin.posts.index') : route('admin.posts.index') . '?posts=' . $url }}"
                             @class([
                                 'text-blue-700' => request()->query->get('posts') == $item['posts'],
                             ])>{{ $item['title'] }}</a>

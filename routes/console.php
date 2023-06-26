@@ -1,5 +1,6 @@
 <?php
 
+use App\Utils\CommonUtil;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -30,12 +31,8 @@ Artisan::command('logs:clear', function () {
 
 Artisan::command('blognt:optimize-clear', function () {
     try {
-        Artisan::call('cache:clear');
-        Artisan::call('view:clear');
-        Artisan::call('route:clear');
-        Artisan::call('config:clear');
-
         $this->info('Blognt optimize clear: Clear all cache, view, route, config!');
+        CommonUtil::clearOptimizeCache();
     } catch (\Exception $ex) {
         $this->error('Blognt optimize clear: ' . $ex->getMessage());
         echo "Blognt optimize clear:\n" . $ex->getMessage();
@@ -45,14 +42,7 @@ Artisan::command('blognt:optimize-clear', function () {
 Artisan::command('blognt:optimize', function () {
     try {
         $this->info('Blognt the cached bootstrap files');
-        Artisan::call('config:clear');
-        Artisan::call('config:cache');
-        Artisan::call('view:clear');
-        Artisan::call('route:clear');
-        Artisan::call('route:cache');
-        Artisan::call('cache:clear');
-
-        echo "Optimzie cached";
+        CommonUtil::newCache();
     } catch (\Exception $ex) {
         $this->error('Blognt optimize: ' . $ex->getMessage());
         echo "Blognt optimize:\n" . $ex->getMessage();
