@@ -4,7 +4,7 @@
         <div class="flex flex-col md:flex-row items-center justify-between">
             <h2 class="font-semibold text-xl capitalize text-gray-800 leading-tight">
                 {{ __('Posts Management') }}
-                <br><a href="{{ route('admin-clear-cache-posts') }}"><small>{{ __('Clear cache') }}</small></a>
+                <br><a href="{{ route('admin.clear-cache-posts') }}"><small>{{ __('Clear cache') }}</small></a>
             </h2>
             <a href="{{ route('admin.posts.create') }}"
                 class="btn btn-outline btn-primary mt-5 md:mt-auto ">@lang('Add new')</a>

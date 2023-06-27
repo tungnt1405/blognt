@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
-use ArielMejiaDev\LarapexCharts\LarapexChart;
+use App\Helpers\LarapexChartHelper;
 use Livewire\Component;
 
 class Dashbroad extends Component
@@ -15,26 +15,30 @@ class Dashbroad extends Component
 
     private function chart()
     {
-        // doc: https://larapex-charts.netlify.app/
-        $chart = new LarapexChart();
-        return $chart->barChart()
-            ->setTitle('San Francisco vs Boston.')
-            ->setSubtitle('Wins during season 2021.')
-            ->addData('San Francisco', [6, 9, 3, 4, 10, 8, 9])
-            ->addData('Boston', [7, 3, 8, 2, 6, 4])
-            ->setXAxis([
-                'January',
-                'February',
-                'March',
-                'April',
-                'May',
-                'June',
-                'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December'
-            ]);
+        $xAxis = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+        ];
+
+        $data = [
+            'San Francisco' => [6, 9, 3, 4, 10, 8, 9],
+            'Boston' => [7, 3, 8, 2, 6, 4]
+        ];
+        return LarapexChartHelper::barChart(
+            'San Francisco vs Boston.',
+            'Wins during season 2021.',
+            $data,
+            $xAxis
+        );
     }
 }

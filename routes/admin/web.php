@@ -1,10 +1,8 @@
 <?php
 
-use App\Helpers\ToastrHelper;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\SideBarController;
 use App\Http\Controllers\Admin\System\CountryController;
-use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CurrentTeamController;
 use App\Http\Controllers\Livewire\ApiTokenController;
@@ -16,112 +14,133 @@ use App\Http\Controllers\Admin\System\SettingsController;
 use App\Http\Controllers\Admin\System\CategoryController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\TeamInvitationController;
-use App\Utils\RedisUtil;
 use Laravel\Jetstream\Jetstream;
 
-Route::prefix('admin_blog')->middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-    'localization'
-])->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('admin.dashboard');
-    })->name('admin.home');
+Route::prefix('admin_blog')
+    ->name('admin.')
+    ->middleware([
+        'auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified',
+        'localization'
+    ])->group(function () {
+        Route::get('/', function () {
+            return redirect()->route('admin.dashboard');
+        })->name('home');
 
-    // ================== Dashboard =================
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+        // ================== Dashboard =================
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
 
-    // ================== Owner Information =================
-    Route::resource('side-bar', SideBarController::class)->names([
-        'index' => 'admin.side-bar',
-        'store' => 'admin.side-bar.new',
-        'update' => 'admin.side-bar.update',
-    ]);
-    Route::get('/owner/more-info', [SideBarController::class, 'getMoreInfo'])->name('admin.owner.more-info');
-    Route::post('/owner/more-info/create', [SideBarController::class, 'postMoreInfo'])->name('admin.owner.more-info.create');
-    Route::put('/owner/more-info/{id}/update', [SideBarController::class, 'putMoreInfo'])->name('admin.owner.more-info.update');
+        // ================== Owner Information =================
+        Route::resource('side-bar', SideBarController::class)->names([
+            'index' => 'side-bar',
+            'store' => 'side-bar.new',
+            'update' => 'side-bar.update',
+        ]);
 
-    // ================== Posts =============================
-    Route::get('/posts', [PostController::class, 'index'])->name('admin.posts');
-    Route::get('/posts/create', [PostController::class, 'create'])->name('admin.posts.create');
-    Route::get('/posts/edit/{id}/post', [PostController::class, 'edit'])->name('admin.posts.edit')->whereNumber('id');
-    Route::post('/posts/create', [PostController::class, 'store'])->name('admin.posts.store');
-    Route::post('/posts/restore-posts', [PostController::class, 'restorePosts'])->name('admin.posts.restore');
-    Route::put(
-        '/posts/update/{id}/status',
-        [PostController::class, 'updateStatus']
-    )->name('admin.posts.update.status')->whereNumber('id');
-    Route::put(
-        '/posts/update/{id}/posts',
-        [PostController::class, 'update']
-    )->name('admin.posts.update')->whereNumber('id');
-    Route::delete('/posts/destroy', [PostController::class, 'destroy'])->name('admin.posts.delete');
-    Route::delete('/posts/soft-delete', [PostController::class, 'softDeletePosts'])->name('admin.posts.soft.delete');
+        Route::prefix('owner')->name('owner.')
+            ->group(function () {
+                Route::get('/more-info', [SideBarController::class, 'getMoreInfo'])->name('more-info');
+                Route::post('/more-info/create', [SideBarController::class, 'postMoreInfo'])->name('more-info.create');
+                Route::put('/more-info/{id}/update', [SideBarController::class, 'putMoreInfo'])->name('more-info.update');
+            });
 
-    // ================== Master Data ========================
-    Route::controller(SettingsController::class)->group(function () {
-        Route::get('/system', 'index')->name('admin.setting');
-        Route::post('/system/redirect-to', 'redirectToSelected')->name('admin.setting.redirect');
-        Route::get('/system/{view}', 'show')->name('admin.setting.show')
-            ->where('view', '^([a-zA-Z]+)');
-    });
-    Route::post('/system/countries/create', [CountryController::class, 'create'])->name('admin.setting.countries.create');
-    Route::put('/system/countries/{id}/update', [CountryController::class, 'update'])->name('admin.setting.countries.update');
-    Route::delete('/system/countries/{id}/delete', [CountryController::class, 'delete'])->name('admin.setting.countries.delete');
+        // ================== Posts =============================
+        Route::prefix('posts')->name('posts.')
+            ->group(function () {
+                Route::get('/', [PostController::class, 'index'])->name('index');
+                Route::get('/create', [PostController::class, 'create'])->name('create');
+                Route::get('/edit/{id}/post', [PostController::class, 'edit'])->name('edit')->whereNumber('id');
+                Route::post('/create', [PostController::class, 'store'])->name('store');
+                Route::post('/restore-posts', [PostController::class, 'restorePosts'])->name('restore');
+                Route::put('/update/{id}/status', [PostController::class, 'updateStatus'])->name('update.status')->whereNumber('id');
+                Route::put('/update/{id}/posts', [PostController::class, 'update'])->name('update')->whereNumber('id');
+                Route::delete('/posts/destroy', [PostController::class, 'destroy'])->name('delete');
+                Route::delete('/posts/soft-delete', [PostController::class, 'softDeletePosts'])->name('soft.delete');
+            });
 
-    Route::post('/system/categories/create', [CategoryController::class, 'create'])->name('admin.setting.category.create');
-    Route::put('/system/categories/{id}/update', [CategoryController::class, 'update'])->name('admin.setting.category.update');
-    Route::delete('/system/categories/{id}/delete', [CategoryController::class, 'delete'])->name('admin.setting.category.delete');
+        // ================== Master Data ========================
+        Route::prefix('system')->name("setting.")
+            ->group(function () {
+                Route::controller(SettingsController::class)->group(function () {
+                    Route::get('/', 'index')->name('index');
+                    Route::post('/redirect-to', 'redirectToSelected')->name('redirect');
+                    Route::get('/{view}', 'show')->name('show')
+                        ->where('view', '^([a-zA-Z]+)');
+                });
 
-    // ================== Jetstream ========================
-    Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
-        if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {
-            Route::get('/terms-of-service', [TermsOfServiceController::class, 'show'])->name('terms.show');
-            Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('policy.show');
-        }
+                Route::prefix('countries')->name('countries.')->group(function () {
+                    Route::post('/create', [CountryController::class, 'create'])->name('create');
+                    Route::put('/{id}/update', [CountryController::class, 'update'])->name('update');
+                    Route::delete('/{id}/delete', [CountryController::class, 'delete'])->name('delete');
+                });
 
-        $authMiddleware = config('jetstream.guard')
-            ? 'auth:' . config('jetstream.guard')
-            : 'auth';
+                Route::prefix('categories')->name('category.')
+                    ->group(function () {
+                        Route::post('/create', [CategoryController::class, 'create'])->name('create');
+                        Route::put('/{id}/update', [CategoryController::class, 'update'])->name('update');
+                        Route::delete('/{id}/delete', [CategoryController::class, 'delete'])->name('delete');
+                    });
+            });
 
-        $authSessionMiddleware = config('jetstream.auth_session', false)
-            ? config('jetstream.auth_session')
-            : null;
+        // ================== Setting systems ========================
+        Route::prefix('settings')->group(function () {
+            Route::controller(SettingsController::class)->group(function () {
+                Route::match(['get', 'post'], '/maintain', 'toggleMaintain')->name('toggle.maintain');
+            });
+        });
 
-        Route::group(['middleware' => array_values(array_filter([$authMiddleware, $authSessionMiddleware]))], function () {
-            // User & Profile...
-            Route::get('/user/profile', [UserProfileController::class, 'show'])->name('admin.profile.show');
+        // ================== Jetstream ========================
+        Route::group(['middleware' => config('jetstream.middleware', ['web'])], function () {
+            if (Jetstream::hasTermsAndPrivacyPolicyFeature()) {
+                Route::get('/terms-of-service', [TermsOfServiceController::class, 'show'])->name('terms.show');
+                Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('policy.show');
+            }
 
-            Route::group(['middleware' => 'verified'], function () {
-                // API...
-                if (Jetstream::hasApiFeatures()) {
-                    Route::get('/user/api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
-                }
+            $authMiddleware = config('jetstream.guard')
+                ? 'auth:' . config('jetstream.guard')
+                : 'auth';
 
-                // Teams...
-                if (Jetstream::hasTeamFeatures()) {
-                    Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
-                    Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
-                    Route::put('/current-team', [CurrentTeamController::class, 'update'])->name('current-team.update');
+            $authSessionMiddleware = config('jetstream.auth_session', false)
+                ? config('jetstream.auth_session')
+                : null;
 
-                    Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
-                        ->middleware(['signed'])
-                        ->name('team-invitations.accept');
-                }
+            Route::group(['middleware' => array_values(array_filter([$authMiddleware, $authSessionMiddleware]))], function () {
+                // User & Profile...
+                Route::get('/user/profile', [UserProfileController::class, 'show'])->name('profile.show');
+
+                Route::group(['middleware' => 'verified'], function () {
+                    // API...
+                    if (Jetstream::hasApiFeatures()) {
+                        Route::get('/user/api-tokens', [ApiTokenController::class, 'index'])->name('api-tokens.index');
+                    }
+
+                    // Teams...
+                    if (Jetstream::hasTeamFeatures()) {
+                        Route::get('/teams/create', [TeamController::class, 'create'])->name('teams.create');
+                        Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+                        Route::put('/current-team', [CurrentTeamController::class, 'update'])->name('current-team.update');
+
+                        Route::get('/team-invitations/{invitation}', [TeamInvitationController::class, 'accept'])
+                            ->middleware(['signed'])
+                            ->name('team-invitations.accept');
+                    }
+                });
+            });
+        });
+
+        // ================== Other ========================
+        Route::get('/change-language/{language}', [SystemController::class, 'changeLanguage'])->name('change-language');
+        Route::prefix('cache')->group(function () {
+            Route::controller(App\Http\Controllers\Admin\AdminController::class)->group(function () {
+                Route::get('/', 'cache')->name('cache.index');
+                Route::prefix('optimize')->name('cache.optimize.')->group(function () {
+                    Route::get('/', 'cacheOptimize')->name('index');
+                    Route::get('/clear', 'cacheOptimizeClear')->name('clear');
+                });
+                Route::get('/clear-posts', 'clearCachePosts')->name('clear-cache-posts');
             });
         });
     });
-
-    Route::get('/change-language/{language}', [SystemController::class, 'changeLanguage'])->name('admin-change-language');
-    Route::get('/clear-cache-posts', function () {
-        if (RedisUtil::deleteKey('posts')) {
-            ToastrHelper::toastrSuccess('Clear cache success!', 'Success');
-        } else {
-            ToastrHelper::toastrWarning('Not found cache posts.', 'Warning');
-        }
-        return redirect()->back();
-    })->name('admin-clear-cache-posts');
-});

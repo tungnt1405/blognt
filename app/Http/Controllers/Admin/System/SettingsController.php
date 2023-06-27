@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\System;
 use App\Helpers\ToastrHelper;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Yoeunes\Toastr\Facades\Toastr;
 
 class SettingsController extends AdminController
 {
@@ -17,7 +19,7 @@ class SettingsController extends AdminController
     {
         $this->__masterData = $this->getAllMasterTable();
 
-        //tham khảo các cách share all dât cho view
+        //tham khảo các cách share all data cho view
         //https://chungnguyen.xyz/posts/truyen-du-lieu-ra-view-trong-laravel
         view()->share('masterTables', $this->__masterData);
     }
@@ -61,5 +63,22 @@ class SettingsController extends AdminController
         }
 
         return redirect()->route('admin.setting.show', ['view' => $data['setting']]);
+    }
+
+    public function toggleMaintain(Request $request)
+    {
+        if ($request->getMethod() === 'POST') {
+            if (app()->isDownForMaintenance()) {
+                Artisan::call('up');
+                Toastr::success('admin/common.maintain.up');
+            } else {
+                Artisan::call('down');
+                Toastr::success(__('admin/common.maintain.down'));
+            }
+
+            return redirect()->back();
+        }
+
+        return view('admin.setting.maintain.index');
     }
 }

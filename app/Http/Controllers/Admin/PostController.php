@@ -139,7 +139,7 @@ class PostController extends AdminController
 
         if ($insert) {
             ToastrHelper::toastrSuccess('Inserted successfully', 'Success');
-            return redirect()->route('admin.posts');
+            return redirect()->route('admin.posts.index');
         }
 
         ToastrHelper::toastrError('Insert Failed', 'Error');
