@@ -21,7 +21,7 @@ class SetDefaultLocale
         //     $url = str_ireplace('/api/', '/api/' . config('app.locale') . '/', $request->getRequestUri());
         //     return redirect($url);
         // }
-        if (isset($locale) && !in_array($locale, config('constants.available_locales'))) {
+        if (isset($locale) && !in_array($locale, config('constants.AVAILABLE_LOCALES'))) {
             $url = str_ireplace("/api/{$locale}", '/api/' . config('app.locale'), $request->getRequestUri());
             return redirect($url);
         }

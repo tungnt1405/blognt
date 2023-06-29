@@ -15,30 +15,19 @@ class Dashbroad extends Component
 
     private function chart()
     {
-        $xAxis = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-        ];
-
         $data = [
             'San Francisco' => [6, 9, 3, 4, 10, 8, 9],
             'Boston' => [7, 3, 8, 2, 6, 4]
         ];
         return LarapexChartHelper::barChart(
-            'San Francisco vs Boston.',
-            'Wins during season 2021.',
+            __('admin/title.dashboard.chart.post_tile'),
+            __('admin/title.dashboard.common.month'),
             $data,
-            $xAxis
+            config('constants.DAILY_MONTH')
         );
+    }
+
+    private function getPost()
+    {
     }
 }

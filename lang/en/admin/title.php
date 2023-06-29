@@ -7,6 +7,15 @@ return [
     'info_exp' => 'Experience',
     'info_project' => 'Project',
     'info_goals' => 'Career goals',
-
+    'dashboard' => [
+        'chart' => [
+            'post_tile' => 'Post statistics in the month',
+        ],
+        'common' => [
+            'week' => 'Week',
+            'month' => 'Month',
+            'year' => 'Year'
+        ]
+    ]
     //
 ];

@@ -143,7 +143,7 @@ class PostController extends AdminController
         }
 
         ToastrHelper::toastrError('Insert Failed', 'Error');
-        return back();
+        return back()->withInput();
     }
 
     /**
