@@ -25,6 +25,7 @@ class RegisterInterfaceServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // Tham khảo: https://freetuts.net/service-container-trong-laravel-5734.html
         // Admin
         $this->app->bind(CategoryServiceInterface::class, CategoryService::class);
         app()->bind(PostsServiceInterface::class, PostsService::class);

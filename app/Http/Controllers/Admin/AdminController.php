@@ -8,11 +8,11 @@ use App\Utils\RedisUtil;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 
 class AdminController extends BaseController
 {
@@ -46,8 +46,11 @@ class AdminController extends BaseController
         return redirect()->back();
     }
 
-    public function cache()
+    public function cache(Request $request)
     {
+        if ($request->has('clear')) {
+            ToastrHelper::toastrSuccess('Cached successfully', 'Success');
+        }
         return view('admin.cache.index');
     }
 
@@ -56,8 +59,7 @@ class AdminController extends BaseController
         try {
             Log::info('Blognt: Cache optimize');
             CommonUtil::newCache();
-            ToastrHelper::toastrSuccess('Cached successfully', 'Success');
-            return redirect()->route('admin.cache.index', ['success' => 'success']);
+            return to_route('admin.cache.index', ['clear' => 'success']);
         } catch (\Exception $ex) {
             CommonUtil::displayError($ex->getMessage(), get_class());
         }
@@ -68,8 +70,7 @@ class AdminController extends BaseController
         try {
             Log::info('Blognt: Clear optimze cache');
             CommonUtil::newCache();
-            ToastrHelper::toastrSuccess('Cached successfully', 'Success');
-            return redirect()->route('admin.cache.index', ['success' => 'success']);
+            return to_route('admin.cache.index', ['clear' => 'success']);
         } catch (\Exception $ex) {
             CommonUtil::displayError($ex->getMessage(), get_class());
         }
