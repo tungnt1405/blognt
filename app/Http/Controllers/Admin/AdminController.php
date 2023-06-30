@@ -12,6 +12,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends BaseController
 {
@@ -54,9 +55,9 @@ class AdminController extends BaseController
     {
         try {
             Log::info('Blognt: Cache optimize');
-            ToastrHelper::toastrSuccess('Cached successfully', 'Success');
             CommonUtil::newCache();
-            return redirect()->route('admin.cache.index');
+            ToastrHelper::toastrSuccess('Cached successfully', 'Success');
+            return redirect()->route('admin.cache.index', ['success' => 'success']);
         } catch (\Exception $ex) {
             CommonUtil::displayError($ex->getMessage(), get_class());
         }
@@ -66,9 +67,9 @@ class AdminController extends BaseController
     {
         try {
             Log::info('Blognt: Clear optimze cache');
-            ToastrHelper::toastrSuccess('Clear cached successfully', 'Success');
             CommonUtil::newCache();
-            return redirect()->route('admin.cache.index');
+            ToastrHelper::toastrSuccess('Cached successfully', 'Success');
+            return redirect()->route('admin.cache.index', ['success' => 'success']);
         } catch (\Exception $ex) {
             CommonUtil::displayError($ex->getMessage(), get_class());
         }

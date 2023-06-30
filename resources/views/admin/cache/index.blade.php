@@ -9,8 +9,8 @@
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <div>
                 <h1>@lang('admin/common.cache.index')</h1>
-                <a href="#" class="hover:!text-white btn btn-outline btn-md btn-info mt-2"
-                    onclick="location.href = `{{ route('admin.cache.optimize.index') }}`">
+                <a href="{{ route('admin.cache.optimize.index') }}"
+                    class="hover:!text-white btn btn-outline btn-md btn-info mt-2">
                     @lang('Cache')
                 </a>
             </div>
@@ -18,8 +18,8 @@
             <div class="mt-2">
                 <h1>@lang('admin/common.cache.clear')
                 </h1>
-                <a href="#" class="hover:!text-white btn btn-outline btn-md btn-info mt-2"
-                    onclick="location.href = `{{ route('admin.cache.optimize.clear') }}`">
+                <a href="{{ route('admin.cache.optimize.clear') }}"
+                    class="hover:!text-white btn btn-outline btn-md btn-info mt-2">
                     @lang('Clear cache')
                 </a>
             </div>

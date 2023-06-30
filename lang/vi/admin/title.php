@@ -7,6 +7,15 @@ return [
     'info_exp' => 'Kinh nghiệm',
     'info_project' => 'Dự án',
     'info_goals' => 'Mục tiêu',
-
+    'dashboard' => [
+        'chart' => [
+            'post_tile' => 'Thống kê bài đăng trong tháng',
+        ],
+        'common' => [
+            'week' => 'Tuần',
+            'month' => 'Tháng',
+            'year' => 'Năm'
+        ]
+    ]
     // 
 ];

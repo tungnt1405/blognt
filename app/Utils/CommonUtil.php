@@ -6,6 +6,7 @@ namespace App\Utils;
 
 use Exception;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 if (!class_exists('\App\Utils\CommonUtil')) {
@@ -34,6 +35,7 @@ if (!class_exists('\App\Utils\CommonUtil')) {
             Artisan::call('route:clear');
             Artisan::call('route:cache');
             Artisan::call('cache:clear');
+            Cache::flush();
         }
 
         public static function clearOptimizeCache()
@@ -42,6 +44,7 @@ if (!class_exists('\App\Utils\CommonUtil')) {
             Artisan::call('view:clear');
             Artisan::call('route:clear');
             Artisan::call('config:clear');
+            Cache::flush();
         }
 
         public static function displayError($message, $title = 'Error')
