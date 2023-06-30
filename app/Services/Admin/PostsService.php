@@ -17,6 +17,7 @@ class PostsService extends AbstractService implements PostsServiceInterface
      * @var UploadFileService
      */
     protected $_uploadFileService;
+    private static $instance;
 
     /**
      * PostsService constructor
@@ -28,6 +29,16 @@ class PostsService extends AbstractService implements PostsServiceInterface
         $this->_uploadFileService = $uploadFileService;
     }
 
+    public static function singleton()
+    {
+        if (!self::$instance) {
+            $upload = new UploadFileService();
+            self::$instance = new PostsService($upload);
+        }
+
+        return self::$instance;
+    }
+
     public function getRepository()
     {
         return \App\Repositories\Admin\PostRepository::class;
@@ -37,6 +48,15 @@ class PostsService extends AbstractService implements PostsServiceInterface
     {
         try {
             return $this->repository->getAllPosts($records, $conditions, $orders, $columns);
+        } catch (\Exception $e) {
+            $this->loggerTry($e);
+        }
+    }
+
+    public function countPostByMonth()
+    {
+        try {
+            return $this->repository->countPostByMonth();
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }

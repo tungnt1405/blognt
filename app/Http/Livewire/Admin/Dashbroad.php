@@ -16,9 +16,10 @@ class Dashbroad extends Component
     private function chart()
     {
         $data = [
-            'San Francisco' => [6, 9, 3, 4, 10, 8, 9],
-            'Boston' => [7, 3, 8, 2, 6, 4]
+            'posts' => [6, 9, 3, 4, 10, 8, 9],
+            // 'Boston' => [7, 3, 8, 2, 6, 4]
         ];
+
         return LarapexChartHelper::barChart(
             __('admin/title.dashboard.chart.post_tile'),
             __('admin/title.dashboard.common.month'),
@@ -29,5 +30,6 @@ class Dashbroad extends Component
 
     private function getPost()
     {
+        return \App\Services\Admin\PostsService::singleton()->getAllPost()->count();
     }
 }
