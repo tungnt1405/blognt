@@ -4,6 +4,8 @@ namespace App\Repositories\Admin;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\Admin\PostRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PostRepository extends BaseRepository implements PostRepositoryInterface
 {
@@ -134,5 +136,22 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         }
 
         return $this->find($id);
+    }
+
+    public function getPerPostByYear($year)
+    {
+        $query = $this->model
+            ->whereYear('created_at', strval($year))
+            ->whereBetween(DB::raw('MONTH(created_at)'), [1, 12])
+            ->select(DB::raw('MONTH(created_at) as month , COUNT(*) AS per_of_month'))
+            ->groupBy(DB::raw('MONTH(created_at)'));
+
+        Log::info('Query: ', [
+            'query' => $query->toSql(),
+            'year' => $year,
+            'month' => [1, 12],
+        ]);
+
+        return $query->get();
     }
 }

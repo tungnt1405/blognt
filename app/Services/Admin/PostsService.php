@@ -201,6 +201,15 @@ class PostsService extends AbstractService implements PostsServiceInterface
         }
     }
 
+    public function getPerPostByYear($year)
+    {
+        try {
+            return $this->repository->getPerPostByYear($year);
+        } catch (\Exception $e) {
+            $this->loggerTry($e);
+        }
+    }
+
     private function getUser()
     {
         return Auth::user();
