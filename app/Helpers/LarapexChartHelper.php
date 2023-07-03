@@ -30,7 +30,7 @@ class LarapexChartHelper
     {
         self::displayError($data, $xAxis, self::TYPE_ERROR_CHART);
 
-        Log::info('Create bar chart:', $data);
+        Log::info('Create bar chart:', [$data]);
         $barChart = self::createLarapex()->barChart()
             ->setTitle($title)
             ->setSubtitle($subTitle)

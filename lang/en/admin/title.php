@@ -10,6 +10,7 @@ return [
     'dashboard' => [
         'chart' => [
             'post_tile' => 'Post statistics in the month',
+            'post' => 'Posts'
         ],
         'common' => [
             'week' => 'Week',

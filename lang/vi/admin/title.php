@@ -10,6 +10,7 @@ return [
     'dashboard' => [
         'chart' => [
             'post_tile' => 'Thống kê bài đăng trong tháng',
+            'post' => 'Bài viết'
         ],
         'common' => [
             'week' => 'Tuần',
