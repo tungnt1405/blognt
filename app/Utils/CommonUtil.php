@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Utils;
 
 use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -58,6 +59,21 @@ if (!class_exists('\App\Utils\CommonUtil')) {
                 throw new Exception("$title: $message");
             }
             abort(500);
+        }
+
+        public static function responeJson($content, $status = Response::HTTP_OK, $headers = [])
+        {
+            return response()
+                ->json([
+                    'code' => $content['code'] ?? Response::HTTP_NOT_FOUND,
+                    'data' => $content['data'] ?? $content,
+                    ...$content // xem giải thích bên readme
+                ], $status)
+                ->header(
+                    'Content-Type',
+                    'application/json'
+                )
+                ->withHeaders($headers);
         }
     }
 }

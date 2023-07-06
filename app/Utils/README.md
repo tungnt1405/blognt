@@ -15,3 +15,10 @@
 13.smembers: Lấy tất cả các giá trị trong một set.
 14.zadd: Thêm một giá trị vào một sorted set.
 15.zrange: Lấy một phạm vi các giá trị từ một sorted set.
+
+
+## ...$args
+...$args: các phần tử khác trong mảng $content được truyền vào dưới dạng các phần tử riêng biệt trong mảng này bằng cách sử dụng toán tử ..., giúp đảm bảo rằng các phần tử này cũng sẽ được bao gồm trong nội dung JSON của phản hồi HTTP.
+
+ví dụ: CommonUtil::responeJson
+Với cách viết trong json(), nếu mảng $content chứa các phần tử khác ngoài 'code' và 'data', chúng sẽ được tự động đưa vào nội dung JSON của phản hồi HTTP.
