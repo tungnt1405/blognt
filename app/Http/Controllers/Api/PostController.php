@@ -7,6 +7,7 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\Api\PostServiceInterface;
+use App\Utils\CommonUtil;
 use App\Utils\RedisUtil;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
@@ -111,8 +112,8 @@ class PostController extends Controller
         $posts = $this->postService->getPosts([], $limit, 0);
 
         if (gettype($posts) === 'string') {
-            return response()->json([
-                'code' => 500,
+            return CommonUtil::responeJson([
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
                 'data' => $posts
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -120,7 +121,8 @@ class PostController extends Controller
         if (empty(RedisUtil::checkKey('posts'))) {
             RedisUtil::setKey('posts', PostResource::collection($posts['posts']), 24 * 60 * 60);
         }
-        return response()->json([
+
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'total_post' => $posts['total'],
             'data'  => RedisUtil::getKey('posts'),
@@ -130,7 +132,7 @@ class PostController extends Controller
                 'total_page' => ceil($posts['total_post'] / $limit),
                 'next_page' => 2,
             ]
-        ], Response::HTTP_OK);
+        ]);
     }
 
     /**
@@ -140,18 +142,19 @@ class PostController extends Controller
     public function show(Request $request, $id)
     {
         if (isset($id) && empty($this->postService->getPost($id, $request->get('post')))) {
-            return response()->json([
+            return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
-                'message' => 'Not Found Post',
+                'message' => 'Internal Server Error',
                 'data' => []
             ], Response::HTTP_NOT_FOUND);
         }
 
         $post = $this->postService->getPost($id, $request->get('post'));
-        return response()->json([
+
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'data' => new PostResource($post)
-        ], Response::HTTP_OK);
+        ]);
     }
 
     /**
@@ -161,17 +164,17 @@ class PostController extends Controller
     public function findSlug($slug)
     {
         if (isset($id) && empty($this->postService->getPost(null, $slug))) {
-            return response()->json([
+            return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
-                'message' => 'Not Found Post',
+                'message' => 'Internal Server Error',
                 'data' => []
             ], Response::HTTP_NOT_FOUND);
         }
         $post = $this->postService->getPost(null, $slug);
-        return response()->json([
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'data' => new PostResource($post)
-        ], Response::HTTP_OK);
+        ]);
     }
 
     /**
@@ -186,8 +189,8 @@ class PostController extends Controller
         $posts = $this->postService->getPosts([], $data['limit'], --$data['offset']);
 
         if (gettype($posts) === 'string') {
-            return response()->json([
-                'code' => 500,
+            return CommonUtil::responeJson([
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
                 'data' => $posts
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -211,13 +214,12 @@ class PostController extends Controller
             $pagination['next_page'] = $next_page;
         }
 
-        return response()
-            ->json([
-                'code' => Response::HTTP_OK,
-                'total_post' => $posts['total'],
-                'data' => PostResource::collection($posts['posts']),
-                'pagination' => $pagination,
-            ], Response::HTTP_OK);
+        return CommonUtil::responeJson([
+            'code' => Response::HTTP_OK,
+            'total_post' => $posts['total'],
+            'data' => PostResource::collection($posts['posts']),
+            'pagination' => $pagination,
+        ]);
     }
 
     public function postSearch(Request $request)
@@ -229,7 +231,7 @@ class PostController extends Controller
             'categories' => $request->get('categories'),
         ];
         if (empty($request->get('search')) && empty($request->get('categories'))) {
-            return response()->json([
+            return CommonUtil::responeJson([
                 'code' => Response::HTTP_OK,
                 'total_post' => 0,
                 'data'  => [],
@@ -239,10 +241,10 @@ class PostController extends Controller
                     'offset_next' => 0,
                     'total_page' => 0,
                 ]
-            ], Response::HTTP_OK);
+            ]);
         }
         $posts = $this->postService->getPosts([], $limit, $offset, $data);
-        return response()->json([
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'total_post' => $posts['total'],
             'data'  => PostResource::collection($posts['posts']),
@@ -252,11 +254,10 @@ class PostController extends Controller
                 'offset_next' => ((int) $offset) + 1,
                 'total_page' => ceil($posts['total_post'] / $limit),
             ]
-        ], Response::HTTP_OK);
+        ]);
     }
     public function suggest(Request $request)
     {
-        // sửa lại phần controller chuyển về xử lý bên service bên controller nhận các giá trị cần thiết để return
         $data = $request->all();
         $message = '';
         $isError = false;
@@ -286,8 +287,9 @@ class PostController extends Controller
             }
         }
 
-        return response()->json([
-            'data' => $message,
+        return CommonUtil::responeJson([
+            'code' => $code,
+            'data' => $message
         ], $code);
     }
 }

@@ -26,9 +26,7 @@ class SideBarResource extends JsonResource
             // 'owner_twitter' => $this->twitter_url,
             'owner_linkin' => @$this->linkin_url,
             // 'owner_zalo' => $this->zalo_url,
-            'owner_github' => @$this->github_url,
-            'created_at' => @$this->created_at,
-            'updated_at' => @$this->updated_at,
+            'owner_github' => @$this->github_url
         ];
     }
 }
