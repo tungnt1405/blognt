@@ -11,14 +11,8 @@
         "sourceMap": true,
         "baseUrl": ".",
         "paths": {
-            "*": [
-                "node_modules/",
-                "socketio/*"
-            ]
+            "*": ["node_modules/"]
         }
     },
-    "include": [
-        "resources/assets/js/backend/**/*",
-        "socketio/*"
-    ]
+    "include": ["resources/assets/js/backend/**/*"]
 }
