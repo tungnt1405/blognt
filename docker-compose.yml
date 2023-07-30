@@ -64,6 +64,7 @@ services:
             - 'sail-redis:/data'
         networks:
             - sail
+            - blognt
         healthcheck:
             test:
                 - CMD
@@ -87,6 +88,9 @@ services:
 networks:
     sail:
         driver: bridge
+    blognt:
+        name: blognt
+        external: true
 volumes:
     sail-mariadb:
         driver: local
