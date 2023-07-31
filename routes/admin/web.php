@@ -143,4 +143,6 @@ Route::prefix('admin_blog')
                 Route::get('/clear-posts', 'clearCachePosts')->name('clear-cache-posts');
             });
         });
+
+        Route::get('test-socket', fn () => view('admin.test-socket.test'));
     });

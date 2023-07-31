@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\CategoriesController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SideBarController;
-use App\Utils\RedisUtil;
 use App\Utils\TestUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
