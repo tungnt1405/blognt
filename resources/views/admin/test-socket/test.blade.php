@@ -71,7 +71,9 @@
 <script src="http://localhost:3002/socket.io/socket.io.js"></script>
 <script>
     var socket = io('http://localhost:3002');
-
+    socket.on("connect_error", (err) => {
+        console.log(`connect_error due to ${err.message}`);
+    });
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
