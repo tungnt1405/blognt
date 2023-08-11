@@ -297,6 +297,22 @@ const btn = {
     },
 };
 
+const socket = {
+    init: function () {
+        this.error();
+    },
+    error: () => {
+        socketio.on('connect_error', (err) => {
+            console.log(`connect_error due to ${err.message}`);
+        });
+    },
+    emit: (subscribe, content) => {
+        socketio.emit(subscribe, JSON.stringify(content));
+    },
+    listen: (channel, fn) => {
+        socketio.on(channel, fn);
+    },
+};
 $(document).ready(function () {
     datepicker();
 
@@ -305,6 +321,8 @@ $(document).ready(function () {
 
     // handle button
     btn.init();
+
+    socket.init();
 
     // CKEDITOR
     if ($('#description').length && $('#content').length) {

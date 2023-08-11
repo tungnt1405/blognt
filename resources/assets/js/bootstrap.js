@@ -32,3 +32,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+
+// import socketio from 'socket.io-client';
+// window.socketio = socketio(import.meta.env.VITE_SOCKET_SERVER);
