@@ -260,6 +260,7 @@
 @section('javascript')
     <script type="text/javascript" src="{{ env('VITE_SOCKET_SERVER') }}/socket.io/socket.io.js"></script>
     <script type="text/javascript">
+        const indexPost = false;
         const server = `{{ env('VITE_SOCKET_SERVER') }}`;
         const socketio = io(server);
 

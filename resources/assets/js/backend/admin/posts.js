@@ -322,7 +322,9 @@ $(document).ready(function () {
     // handle button
     btn.init();
 
-    socket.init();
+    if (typeof indexPost !== 'undefined' && !indexPost) {
+        socket.init();
+    }
 
     // CKEDITOR
     if ($('#description').length && $('#content').length) {
