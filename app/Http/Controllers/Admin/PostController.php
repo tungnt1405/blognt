@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\Posts\PostDetailProcessed;
 use App\Helpers\ToastrHelper;
 use App\Http\Requests\admin\Posts\StorePostRequest;
 use App\Http\Requests\admin\Posts\UpdatePostRequest;
@@ -193,6 +194,7 @@ class PostController extends AdminController
 
         if ($update) {
             ToastrHelper::toastrSuccess('Updated successfully', 'Success');
+            broadcast(new PostDetailProcessed($this->postsService->findPost($id)))->toOthers();
         } else {
             ToastrHelper::toastrError('Updated Failed', 'Error');
         }
