@@ -166,7 +166,7 @@ class PostController extends AdminController
     public function edit($id)
     {
         $post = $this->postsService->findPost($id);
-        $listPosts = $listPosts = $this->postsService->listPosts($id);
+        $listPosts = $this->postsService->listPosts($id);
         $isTrash = false;
         if (!$post) {
             $isTrash = true;
