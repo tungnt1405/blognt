@@ -47,9 +47,9 @@ php artisan key:generate
 
 ## other configuration
 
-1. copy the following code and replace laravel input in file vite.config.js
+1. Copy file vite.config.js
 
-```
+```javascript
 laravel({
     input: [
         'resources/assets/js/frontend/app.js',
@@ -62,4 +62,17 @@ laravel({
     ],
     refresh: [...refreshPaths, 'app/Http/Livewire/**'],
 }),
+vue(),
+{
+    name: 'blade',
+    handleHotUpdate({ file, server }) {
+        if (file.endsWith('.blade.php')) {
+            server.ws.send({
+                type: 'full-reload',
+                path: '*',
+            });
+        }
+    },
+},
+
 ```

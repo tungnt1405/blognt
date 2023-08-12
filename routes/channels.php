@@ -1,5 +1,6 @@
 <?php
 
+use App\Broadcasting\Posts\PostDetailChannel;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -16,3 +17,12 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+/**
+ * replace PostChannel
+//  function ($id) {
+//     Log::debug('broadcase channel post.{id}== ' . $id);
+//     return (int) $id == Post::findOrFail($id)->id;
+// }
+ */
+Broadcast::channel('post.{id}', PostDetailChannel::class);

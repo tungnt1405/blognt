@@ -258,5 +258,23 @@
     </div>
 </div>
 @section('javascript')
+    <script type="text/javascript" src="{{ env('VITE_SOCKET_SERVER') }}/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        const indexPost = false;
+        const server = `{{ env('VITE_SOCKET_SERVER') }}`;
+        const socketio = io(server);
+
+        // convert echo to socket (Tham khảo)
+        // const socket = io('http://your-socketio-server-url');
+
+        // socket.on('connect', () => {
+        //     const channel = `orders.${orderId}`;
+        //     socket.emit('subscribe', channel);
+        // });
+
+        // socket.on('OrderShipmentStatusUpdated', (e) => {
+        //     console.log(e.order);
+        // });
+    </script>
     @vite('resources/assets/js/backend/admin/posts.js')
 @endsection
