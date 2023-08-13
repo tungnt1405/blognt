@@ -9,9 +9,11 @@ use Illuminate\Http\Request;
 use App\Services\Interfaces\Api\PostServiceInterface;
 use App\Utils\CommonUtil;
 use App\Utils\RedisUtil;
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
@@ -38,10 +40,11 @@ class PostController extends Controller
         $posts = $this->postService->getPosts([], $limit, 0);
 
         if (gettype($posts) === 'string') {
+            Log::error('Get all posts', [$posts]);
             return CommonUtil::responeJson([
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
-                'data' => $posts
+                'data' => []
             ], Response::HTTP_OK);
         }
         if (empty(RedisUtil::checkKey('posts'))) {
@@ -55,7 +58,7 @@ class PostController extends Controller
             'pagination' => [
                 'per_page' => (int) $limit,
                 'current_page' => 1,
-                'total_page' => ceil($posts['total_post'] / $limit),
+                'total_page' => ceil($posts['total'] / $limit),
                 'next_page' => 2,
             ]
         ]);
@@ -71,7 +74,7 @@ class PostController extends Controller
         if (isset($id) && (empty($post) || empty($post->postsInfomation))) {
             return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
-                'message' => 'Internal Server Error',
+                'message' => 'Post not found.',
                 'data' => []
             ], Response::HTTP_OK);
         }
@@ -89,10 +92,10 @@ class PostController extends Controller
     public function findSlug($slug)
     {
         $post = $this->postService->getPost(null, $slug);
-        if (isset($slug) && (empty($post) || empty($post->postsInfomation))) {
+        if (isset($slug) && empty($post)) {
             return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
-                'message' => 'Internal Server Error',
+                'message' => 'Post not found.',
                 'data' => []
             ], Response::HTTP_OK);
         }
@@ -115,14 +118,15 @@ class PostController extends Controller
         $posts = $this->postService->getPosts([], $data['limit'], --$data['offset']);
 
         if (gettype($posts) === 'string') {
+            Log::error('Get all posts', [$posts]);
             return CommonUtil::responeJson([
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
-                'data' => $posts
+                'data' => []
             ], Response::HTTP_OK);
         }
 
-        $total_page = ceil($posts['total_post'] / $data['limit']);
+        $total_page = ceil($posts['total'] / $data['limit']);
         $per_page = (int) $data['limit'];
         $current_page = ++$data['offset'];
         $next_page = $current_page + 1;
@@ -178,7 +182,7 @@ class PostController extends Controller
                 'limit' => (int) $limit,
                 'offset' => (int) $offset,
                 'offset_next' => ((int) $offset) + 1,
-                'total_page' => ceil($posts['total_post'] / $limit),
+                'total_page' => ceil($posts['total'] / $limit),
             ]
         ]);
     }

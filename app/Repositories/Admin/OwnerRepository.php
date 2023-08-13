@@ -69,7 +69,7 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
 
     public function getFirstRecord()
     {
-        return $this->model->all()->first();
+        return $this->model::with('ownerInfo')->first();
     }
 
     public function update($id, $attributes = [])

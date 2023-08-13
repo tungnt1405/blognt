@@ -36,7 +36,7 @@ class PostService extends AbstractService implements PostServiceInterface
             return $post;
         } catch (\Exception $ex) {
             $this->loggerTry($ex);
-            return $ex->getMessage();
+            return [];
         }
     }
 
@@ -46,6 +46,7 @@ class PostService extends AbstractService implements PostServiceInterface
             return $this->repository->suggestPosts($data['category_id'], $data['post_id']);
         } catch (\Exception $ex) {
             $this->loggerTry($ex);
+            return [];
         }
     }
 
