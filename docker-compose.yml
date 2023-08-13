@@ -23,6 +23,28 @@ services:
             - sail
         depends_on:
             - mariadb
+    queue:
+        build:
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.1/app
+        container_name: blognt-queue
+        restart: always
+        working_dir: /var/www/html
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+        command: >
+            sh -c "echo 'INFO  Processing jobs from the [default] queue' &&
+                  php artisan queue:work --verbose --tries=3 --timeout=120"
+        depends_on:
+            - blognt.local
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - sail
     mariadb:
         image: 'mariadb:10'
         ports:
