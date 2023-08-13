@@ -42,7 +42,7 @@ class PostController extends Controller
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
                 'data' => $posts
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], Response::HTTP_OK);
         }
         if (empty(RedisUtil::checkKey('posts'))) {
             RedisUtil::setKey('posts', PostResource::collection($posts['posts']), 24 * 60 * 60);
@@ -67,15 +67,14 @@ class PostController extends Controller
      */
     public function show(Request $request, $id)
     {
-        if (isset($id) && empty($this->postService->getPost($id, $request->get('post')))) {
+        $post = $this->postService->getPost($id, $request->get('post'));
+        if (isset($id) && (empty($post) || empty($post->postsInfomation))) {
             return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
                 'message' => 'Internal Server Error',
                 'data' => []
-            ], Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_OK);
         }
-
-        $post = $this->postService->getPost($id, $request->get('post'));
 
         return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
@@ -89,14 +88,15 @@ class PostController extends Controller
      */
     public function findSlug($slug)
     {
-        if (isset($id) && empty($this->postService->getPost(null, $slug))) {
+        $post = $this->postService->getPost(null, $slug);
+        if (isset($slug) && (empty($post) || empty($post->postsInfomation))) {
             return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
                 'message' => 'Internal Server Error',
                 'data' => []
-            ], Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_OK);
         }
-        $post = $this->postService->getPost(null, $slug);
+
         return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'data' => new PostResource($post)
@@ -119,7 +119,7 @@ class PostController extends Controller
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
                 'data' => $posts
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], Response::HTTP_OK);
         }
 
         $total_page = ceil($posts['total_post'] / $data['limit']);

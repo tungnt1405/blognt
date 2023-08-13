@@ -5,6 +5,7 @@ namespace App\Repositories\Api;
 use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\Api\PostRepositoryInterface;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class PostRepository extends BaseRepository implements PostRepositoryInterface
 {
@@ -96,7 +97,11 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function getPost($id = null, $slug = '')
     {
-        $post = $this->model->withTrashed()
+        $post = $this->model::with(['user', 'category', 'postsInfomation' => function (Builder $query) {
+            $date = Carbon::now()->format('Y-m-d H:i:s');
+            $query->where('public_date', '<=', $date);
+        }])
+            ->withTrashed()
             ->whereNull('dtb_posts.deleted_at');
 
         if (!empty($id)) {
