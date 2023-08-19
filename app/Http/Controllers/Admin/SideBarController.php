@@ -46,9 +46,7 @@ class SideBarController extends AdminController
      */
     public function index()
     {
-        $owner = $this->ownerRepository->getFirstRecord();
-
-        return view('admin.side-bar.show')->with(['owner' => $owner]);
+        return view('admin.side-bar.show');
     }
 
     /**
@@ -141,8 +139,7 @@ class SideBarController extends AdminController
      */
     public function getMoreInfo()
     {
-        $infoOwner = $this->ownerInfoService->all()->first();
-        return view('admin.side-bar.more-info', compact('infoOwner'));
+        return view('admin.side-bar.more-info');
     }
 
     /**

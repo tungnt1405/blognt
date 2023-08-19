@@ -11,7 +11,7 @@
     </x-slot>
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @livewire('admin.side-bar', ['owner' => $owner])
+            @livewire('admin.side-bar', ['owner' => $allOwner])
         </div>
     </div>
 </x-app-layout>

@@ -43,7 +43,7 @@ class SideBarController extends Controller
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
                 'data' => $owner
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], Response::HTTP_OK);
         }
         if (empty($owner)) {
             return CommonUtil::responeJson($owner);
@@ -68,7 +68,7 @@ class SideBarController extends Controller
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
                 'data' => $owner
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], Response::HTTP_OK);
         }
 
         if (empty($owner)) {

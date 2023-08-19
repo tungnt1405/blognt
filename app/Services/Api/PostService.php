@@ -32,11 +32,11 @@ class PostService extends AbstractService implements PostServiceInterface
             if (empty($id) && empty($slug)) {
                 return [];
             }
-
-            return $this->repository->getPost($id, $slug);
+            $post = $this->repository->getPost($id, $slug);
+            return $post;
         } catch (\Exception $ex) {
             $this->loggerTry($ex);
-            return $ex->getMessage();
+            return [];
         }
     }
 
@@ -46,6 +46,7 @@ class PostService extends AbstractService implements PostServiceInterface
             return $this->repository->suggestPosts($data['category_id'], $data['post_id']);
         } catch (\Exception $ex) {
             $this->loggerTry($ex);
+            return [];
         }
     }
 
