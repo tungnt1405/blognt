@@ -124,8 +124,8 @@
                                 {{ __('Setting Master Data') }}
                             </x-jet-dropdown-link>
 
-                            <x-jet-dropdown-link href="{{ route('admin.toggle.maintain') }}">
-                                {{ __('Setting Maintain') }}
+                            <x-jet-dropdown-link href="{{ route('admin.system.config') }}">
+                                {{ __('Config Website') }}
                             </x-jet-dropdown-link>
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
@@ -208,8 +208,8 @@
                     {{ __('Setting Master Data') }}
                 </x-jet-responsive-nav-link>
 
-                <x-jet-responsive-nav-link href="{{ route('admin.toggle.maintain') }}" :active="request()->routeIs('admin.toggle.maintain')">
-                    {{ __('Setting Maintain') }}
+                <x-jet-responsive-nav-link href="{{ route('admin.system.config') }}" :active="request()->routeIs('admin.system.config')">
+                    {{ __('Config Website') }}
                 </x-jet-responsive-nav-link>
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
