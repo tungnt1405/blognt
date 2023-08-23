@@ -88,7 +88,9 @@ Route::prefix('admin_blog')
         // ================== Setting systems ========================
         Route::prefix('settings')->group(function () {
             Route::controller(SettingsController::class)->group(function () {
-                Route::match(['get', 'post'], '/maintain', 'toggleMaintain')->name('toggle.maintain');
+                Route::get('/config-website', 'configWebsite')->name('system.config');
+                Route::match(['post'], '/maintain', 'toggleMaintain')->name('toggle.maintain');
+                Route::put('/config-website/update/{uuid?}', 'updateConfig')->name('config.update');
             });
         });
 

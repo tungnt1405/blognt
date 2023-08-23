@@ -76,7 +76,7 @@ class SendPostDetailNotification implements ShouldQueue
      */
     public function handle(PostDetailProcessed $event)
     {
-        Log::debug('debug listen send', ['id' => $event->post->id, 'title' => $event->post->title]);
+        Log::debug('debug listen send', [$event->post->title]);
     }
 
     /**

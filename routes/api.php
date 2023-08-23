@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoriesController;
+use App\Http\Controllers\Api\CommonController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SideBarController;
 use App\Utils\TestUtil;
@@ -62,6 +63,7 @@ Route::middleware(['setDefaultLocale', 'setlocale'])
         Route::get('about-me', [SideBarController::class, 'about']);
         Route::get('categories', [CategoriesController::class, 'index']);
         Route::post('/suggest/posts', [PostController::class, 'suggest']);
+        Route::get('website-info', [CommonController::class, 'common']);
 
         // set language for api: where(['locale' => '[a-zA-Z]{2}'])
     });

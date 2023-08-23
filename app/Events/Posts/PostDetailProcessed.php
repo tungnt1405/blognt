@@ -2,6 +2,7 @@
 
 namespace App\Events\Posts;
 
+use App\Http\Resources\PostResource;
 use App\Services\Interfaces\Api\PostServiceInterface;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -94,11 +95,7 @@ class PostDetailProcessed implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            "id" => $this->post->id,
-            "author_id" => $this->post->id,
-            "category_id" => $this->post->category_id,
-            "title" => $this->post->title,
-            "slug" => $this->post->slug
+            'post' => new PostResource($this->post),
         ];
     }
 }

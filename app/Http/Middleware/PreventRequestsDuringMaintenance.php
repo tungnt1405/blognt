@@ -21,6 +21,7 @@ class PreventRequestsDuringMaintenance extends Middleware
         "build/*",
         "livewire",
         "livewire/*",
+        "api/website-info"
         // "_debugbar/assets/*" // chỉ sử dụng trên local và test nên cần debug hay phát triển thì open
     ];
 }
