@@ -35,8 +35,8 @@
                         @if (!empty($post->thumbnail_posts))
                             <div class="thumb mb-5 pl-0">
                                 <div class="w-24 sm:w-32">
-                                    <img src="{{ $post->thumbnail_posts }}" loading="lazy" id="img__thumb"
-                                        alt="img-show">
+                                    <img src="{{ asset('images/' . $post->thumbnail_posts) }}" loading="lazy"
+                                        id="img__thumb" alt="img-show">
 
                                 </div>
                             </div>

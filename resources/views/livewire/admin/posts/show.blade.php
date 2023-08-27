@@ -147,7 +147,7 @@
                                 </label>
                             </td>
                             <td class="max-h-[80px]">
-                                <div class="flex justify-center items-center"><img src="{{ $post->thumbnail_posts }}"
+                                <div class="flex justify-center items-center"><img src="{{ asset('images/' . $post->thumbnail_posts) }}"
                                         lazy="loading" width="80" height="80" /></div>
                             </td>
                             <td>{{ $post->id }}</td>

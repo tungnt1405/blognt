@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 if (!class_exists('\App\Utils\CommonUtil')) {
     class CommonUtil
@@ -74,6 +75,52 @@ if (!class_exists('\App\Utils\CommonUtil')) {
                     'application/json'
                 )
                 ->withHeaders($headers);
+        }
+
+        public static function getDateNow()
+        {
+            return \Carbon\Carbon::now('Asia/Ho_Chi_Minh');
+        }
+
+        public static function getYear()
+        {
+            return self::getDateNow()->format('Y');
+        }
+
+        public static function getMonth()
+        {
+            return self::getDateNow()->format('m');
+        }
+
+        public static function getDate()
+        {
+            return self::getDateNow()->format('d');
+        }
+
+        public static function createFolderByDate()
+        {
+            return self::getYear() . "/" . self::getMonth() . "/" . self::getDate() .  "/";
+        }
+
+        public static function createFolderInPublicByDate($folder)
+        {
+            $path = public_path("/assets/$folder/" . self::getYear() . "/" . self::getMonth() . "/" . self::getDate() .  "/");
+            !file_exists($path) && mkdir($path, 0755, true);
+
+            return $path;
+        }
+
+        public static function createFolder($folder)
+        {
+            return "$folder/";
+        }
+
+        public static function createFolderPublic($folder)
+        {
+            $path = public_path("/assets/$folder/");
+            !file_exists($path) && mkdir($path, 0755, true);
+
+            return $path;
         }
     }
 }

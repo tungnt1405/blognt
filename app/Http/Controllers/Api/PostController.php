@@ -65,7 +65,7 @@ class PostController extends Controller
     }
 
     /**
-     * 
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
     public function show(Request $request, $id)
@@ -86,7 +86,7 @@ class PostController extends Controller
     }
 
     /**
-     * 
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
     public function findSlug($slug)
@@ -113,7 +113,7 @@ class PostController extends Controller
     public function morePosts(Request $request)
     {
         $data = $request->all();
-        // vì offset truyền vào luôn lớn hơn giá trị cần lớn nên cần trừ đi 1 
+        // vì offset truyền vào luôn lớn hơn giá trị cần lớn nên cần trừ đi 1
         // ví dụ offset cần lấy là 2 thì request truyền vào đang là 3 vì thế cần trừ đi 1
         $posts = $this->postService->getPosts([], $data['limit'], --$data['offset']);
 

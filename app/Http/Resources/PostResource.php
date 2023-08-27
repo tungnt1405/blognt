@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class PostResource extends JsonResource
 {
@@ -27,7 +28,7 @@ class PostResource extends JsonResource
             'post_content' => $this->content,
             'is_serires' => $this->series ? true : false,
             'other_information' => new PostInfomationResource($this->postsInfomation),
-            'post_thumb' => $this->thumbnail_posts,
+            'post_thumb' => asset('images/'.$this->thumbnail_posts),
         ];
     }
 }

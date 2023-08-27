@@ -9,7 +9,7 @@ use App\Utils\RedisUtil;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Storage;
 
 class PostsService extends AbstractService implements PostsServiceInterface
 {
@@ -75,7 +75,7 @@ class PostsService extends AbstractService implements PostsServiceInterface
     public function insertPost($data = [])
     {
         try {
-            $base_64  = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
+            $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->moveFileImage($data['thumbnail_posts']) : null;
             $data = array_merge($data, [
                 'author_id' => $this->getUser()->id,
                 'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
@@ -104,9 +104,10 @@ class PostsService extends AbstractService implements PostsServiceInterface
                 'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
                 'update_at' => \Carbon\Carbon::now()
             ]);
-
-            $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
-            if ($base_64 && isset($base_64)) {
+            $post = $this->find($id);
+            $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->moveFileImage($data['thumbnail_posts']) : null;
+            if ($post->count() > 0 && isset($base_64)) {
+                Storage::disk('public')->delete('images/' . $post->thumbnail_posts);
                 $data['thumbnail_posts'] = $base_64;
             }
             $updatePost = $this->update($id, $data);
@@ -139,6 +140,12 @@ class PostsService extends AbstractService implements PostsServiceInterface
     {
         try {
             $this->logger('Delete Posts', $ids, config('constants.LOG_INFO'));
+            foreach ($ids as $id) {
+                $post = $this->findPost($id, true);
+                if ($post->count() > 0) {
+                    Storage::disk('public')->delete('images/' . $post->thumbnail_posts);
+                }
+            };
             return $this->repository->destroyPosts($ids);
         } catch (\Exception $e) {
             $this->loggerTry($e);
