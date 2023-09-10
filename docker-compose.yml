@@ -23,6 +23,7 @@ services:
             - sail
         depends_on:
             - mariadb
+            - redis
     queue:
         build:
             args:
