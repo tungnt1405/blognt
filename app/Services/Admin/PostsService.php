@@ -76,17 +76,24 @@ class PostsService extends AbstractService implements PostsServiceInterface
     {
         try {
             $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->moveFileImage($data['thumbnail_posts']) : null;
+            if (!empty($data['thumbnail_posts_copy']) && empty($data['thumbnail_posts'])) {
+                $base_64 = $this->_uploadFileService->copyImage($data['thumbnail_posts_copy']);
+            }
             $data = array_merge($data, [
                 'author_id' => $this->getUser()->id,
                 'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
                 'thumbnail_posts' => $base_64
             ]);
+
             $this->logger('Insert Post', $data, config('constants.LOG_INFO'));
             $insertPost = $this->create($data);
-            $insertPost->postsInfomation()->create([
+            $dataInfo = [
                 'status' => $data['status'] ?? 0,
-                'public_date' => Carbon::parse($data['public_date'])
-            ]);
+                'public_date' => Carbon::parse($data['public_date']),
+                'meta_content' => $data['meta_content']
+            ];
+            $this->logger('Insert Post info', $dataInfo, config('constants.LOG_INFO'));
+            $insertPost->postsInfomation()->create($dataInfo);
             if ($insertPost) {
                 $this->clearCachePosts();
             }
@@ -110,11 +117,15 @@ class PostsService extends AbstractService implements PostsServiceInterface
                 Storage::disk('public')->delete('images/' . $post->thumbnail_posts);
                 $data['thumbnail_posts'] = $base_64;
             }
+            $this->logger('Update Post: ' . $id, $data, config('constants.LOG_INFO'));
             $updatePost = $this->update($id, $data);
-            $updatePost->postsInfomation()->update([
+            $dataInfo = [
                 'status' => $data['status'] ?? 0,
-                'public_date' => Carbon::parse($data['public_date'])
-            ]);
+                'public_date' => Carbon::parse($data['public_date']),
+                'meta_content' => $data['meta_content'] ?? null
+            ];
+            $this->logger('Update Post info', $dataInfo, config('constants.LOG_INFO'));
+            $updatePost->postsInfomation()->update($dataInfo);
 
             if ($updatePost) {
                 $this->clearCachePosts();

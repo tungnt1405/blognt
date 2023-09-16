@@ -118,13 +118,21 @@ class PostController extends AdminController
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
+        $copy = $request->get('copy_post');
+        $checkPost = false;
+        if (isset($copy)) {
+            $post = $this->postsService->findPost($copy);
+            $checkPost = true;
+        }
+
         return view('admin.posts.create')
-            ->with('checkPost', false)
+            ->with('checkPost', $checkPost)
             ->with('isTrash', false)
             ->with('listPosts', $this->postsService->listPosts())
-            ->with('categories', $this->categoryService->listCategory());
+            ->with('categories', $this->categoryService->listCategory())
+            ->with('post', $post ?? []);
     }
 
     /**
@@ -174,6 +182,7 @@ class PostController extends AdminController
             $post = $this->postsService->findPost($id, true);
         }
         return view('admin.posts.create')
+            ->with('edit', true)
             ->with('checkPost', true)
             ->with('post', $post)
             ->with('listPosts', $listPosts)

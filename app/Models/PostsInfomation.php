@@ -17,6 +17,7 @@ class PostsInfomation extends Model
     protected $fillable = [
         'status',
         'public_date',
+        'meta_content'
     ];
 
 

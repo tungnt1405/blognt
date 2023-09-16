@@ -9,8 +9,8 @@
 <div class="bg-white w-full">
     <div class="wrapper">
         {!! Form::open([
-            'route' => $checkPost ? ['admin.posts.update', $post->id] : 'admin.posts.store',
-            'method' => $checkPost ? 'put' : 'post',
+            'route' => !empty($edit) ? ['admin.posts.update', $post->id] : 'admin.posts.store',
+            'method' => !empty($edit) ? 'put' : 'post',
             'enctype' => 'multipart/form-data',
         ]) !!}
         @if ($errors->any())
@@ -47,6 +47,9 @@
                             </div>
                         </div>
                     </div>
+                    {{ Form::text('thumbnail_posts_copy', empty($post->thumbnail_posts) ? '' : $post->thumbnail_posts, [
+                        'class' => 'hidden',
+                    ]) }}
                     {{ Form::file('thumbnail_posts', ['class' => 'hidden file__choose', 'accept' => 'image/*']) }}
                     {{ Form::button('Select Image', ['class' => 'w-9/12 lg:w-3/12 block btn btn-choose my-2 btn-sm md:btn-md text-white js-btn-select-img']) }}
                 </div>
@@ -69,7 +72,7 @@
                             'id' => 'datepicker',
                             'date-default' => !empty($checkPost) ? $dateDiff : 0,
                             'class' =>
-                                'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
+                                'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full',
                         ],
                     ) !!}
                 </div>
@@ -86,7 +89,7 @@
                     {!! Form::select('category_id', $categories, @$post->category_id, [
                         'placeholder' => 'Pick a category...',
                         'class' =>
-                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
+                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full ',
                     ]) !!}
                 </div>
             </div>
@@ -103,7 +106,7 @@
                         'id' => 'title',
                         'autocomplete' => 'off',
                         'class' =>
-                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
+                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full',
                     ]) !!}
                 </div>
             </div>
@@ -120,7 +123,7 @@
                         'id' => 'slug',
                         'autocomplete' => 'off',
                         'class' =>
-                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
+                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full',
                     ]) !!}
                 </div>
             </div>
@@ -218,7 +221,7 @@
                     ]) !!} --}}
                     {!! Form::select('parent_id', $listPosts, @$post->parent_id, [
                         'class' =>
-                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-9/12',
+                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full',
                     ]) !!}
                 </div>
             </div>
@@ -242,6 +245,27 @@
                 </div>
             </div>
         </div>
+        {{-- SEO post --}}
+        <div class="form-group">
+            <div class="md:grid md:grid-cols-3 md:gap-6">
+                <x-section.section-title>
+                    <x-slot:title @class(['sm:justify-between'])>{{ __('SEO content') }}</x-slot:title>
+                    <x-slot name="description">{{ __('SEO post content') }}
+                    </x-slot>
+                </x-section.section-title>
+                <div class="mt-5 flex items-center md mt-0 md:col-span-2 px-4 sm:px-0">
+                    {!! Form::textarea('meta_content', @$post->postsInfomation->meta_content, [
+                        'id' => 'title',
+                        'autocomplete' => 'off',
+                        'rows' => '1',
+                        'maxlength' => '1000',
+                        'class' =>
+                            'border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm mt-1 block w-full resize-none',
+                    ]) !!}
+                </div>
+            </div>
+        </div>
+        {{-- end SEO --}}
         @if ($checkPost)
             <input type="hidden" name="author_id" value="{{ $post->author_id }}">
         @endif
