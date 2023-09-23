@@ -28,7 +28,7 @@ class PostResource extends JsonResource
             'post_content' => $this->content,
             'is_serires' => $this->series ? true : false,
             'other_information' => new PostInfomationResource($this->postsInfomation),
-            'post_thumb' => asset('images/'.$this->thumbnail_posts),
+            'post_thumb' => asset('images/' . $this->thumbnail_posts),
         ];
     }
 }

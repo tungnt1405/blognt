@@ -111,4 +111,20 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             ->whereNot('id', $post_id)
             ->get();
     }
+
+    public function generateFileBySlugOfPost()
+    {
+        return $this->model::with(['postsInfomation' => function ($query) {
+            $query->select('post_id', 'meta_content as seo_content');
+        }])
+            ->whereHas('postsInfomation', function ($query) {
+                $date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');
+                $query->where('public_date', '<=', $date)
+                    ->where('status', true);
+            })
+            ->withTrashed()
+            ->whereNull('deleted_at')->select('id', 'title as post_name', 'slug as post_slug')
+            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')->get();
+    }
 }

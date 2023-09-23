@@ -4,15 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
-use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\Api\PostServiceInterface;
 use App\Utils\CommonUtil;
 use App\Utils\RedisUtil;
-use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
@@ -221,5 +218,14 @@ class PostController extends Controller
             'code' => $code,
             'data' => $message
         ], $code);
+    }
+
+    public function generateFileBySlug()
+    {
+        $data = $this->postService->generateFileBySlugOfPost();
+        return CommonUtil::responeJson([
+            'code' => Response::HTTP_OK,
+            'data' => $data
+        ]);
     }
 }
