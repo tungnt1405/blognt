@@ -24,6 +24,6 @@ class ApiCategoryService extends AbstractService implements ApiCategoryServiceIn
 
     private function loggerTry($exception)
     {
-        $this->logger('', $exception->getMessage(), config('constants.LOG_ERROR'));
+        $this->logger('', 'Category API >>>' . $exception->getMessage(), config('constants.LOG_ERROR'));
     }
 }

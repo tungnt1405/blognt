@@ -103,7 +103,7 @@
         <div class="posts-menu">
             <ul class="flex gap-[10px] mt-3">
                 @foreach ($listsMenu as $url => $item)
-                    <li><a href="{{ $url !== 'trash' ? route('admin.posts') : route('admin.posts') . '?posts=' . $url }}"
+                    <li><a href="{{ $url !== 'trash' ? route('admin.posts.index') : route('admin.posts.index') . '?posts=' . $url }}"
                             @class([
                                 'text-blue-700' => request()->query->get('posts') == $item['posts'],
                             ])>{{ $item['title'] }}</a>
@@ -127,11 +127,11 @@
                         <th>{{ __('Thumb') }}</th>
                         <th>{{ __('Label') }}</th>
                         <th>{{ __('Slug') }}</th>
-                        <th>{{ __('Parent ID') }}</th>
+                        {{-- <th>{{ __('Parent ID') }}</th> --}}
                         <th>{{ __('Date Publish') }}</th>
                         <th>{{ __('Status') }}</th>
                         <th>{{ __('Category') }}</th>
-                        <th>{{ __('Description') }}</th>
+                        <th>&nbsp;</th>
                         @if ($isTrash)
                             <th>{{ __('Delete At') }}</th>
                         @endif
@@ -146,16 +146,17 @@
                                         value="{{ $post->id }}" />
                                 </label>
                             </td>
-                            <td class="max-h-[80px]">
-                                <div class="flex justify-center items-center"><img src="{{ $post->thumbnail_posts }}"
-                                        lazy="loading" width="80" height="80" /></div>
-                            </td>
                             <td>{{ $post->id }}</td>
+                            <td class="max-h-[80px]">
+                                <div class="flex justify-center items-center"><img
+                                        src="{{ asset('images/' . $post->thumbnail_posts) }}" lazy="loading"
+                                        width="80" height="80" /></div>
+                            </td>
                             <td><a href="{{ route('admin.posts.edit', ['id' => $post->id]) }}"
                                     class="text-blue-700 timing-function-[cubic-bezier(0.175, 0.885, 0.32, 1.275)] duration-[0.5s] hover:text-blue-500 hover:underline hover:text-[1.125rem]">{{ $post->title }}</a>
                             </td>
                             <td>{{ $post->slug }}</td>
-                            <td>{{ $post->parent_id ?? '--' }}</td>
+                            {{-- <td>{{ $post->parent_id ?? '--' }}</td> --}}
                             <td>
                                 <p class="cursor-pointer"
                                     title="{{ $post->postsInfomation->public_date ?? $post->public_date }}">
@@ -184,7 +185,24 @@
                                 @endif
                             </td>
                             <td>{{ $post->category->name ?? $post->name }}</td>
-                            <td>{!! $post->description !!}</td>
+                            <td>
+                                <div class="dropdown dropdown-end">
+                                    <label tabindex="0" class="cursor-pointer">
+                                        <img src="{{ asset('/assets/images/common/ellipsis-vertical.svg') }}"
+                                            alt="ellipsis-vertical">
+                                    </label>
+                                    <ul tabindex="0"
+                                        class="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                                        <li><a href="{{ route('admin.posts.create', ['copy_post' => $post->id]) }}">
+                                                <span>
+                                                    <img src="{{ asset('/assets/images/common/copy.svg') }}"
+                                                        alt="copy">
+                                                </span>
+                                                @lang('Copy')
+                                            </a></li>
+                                    </ul>
+                                </div>
+                            </td>
                             @if ($isTrash && !empty($post->deleted_at))
                                 <td>
                                     <p class="cursor-pointer"

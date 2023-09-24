@@ -2,63 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ToastrHelper;
+use App\Utils\CommonUtil;
+use App\Utils\RedisUtil;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-    /**
-     * @param string $message
-     * @param string $title
-     * @param array $options
-     * 
-     * @return Toastr
-     */
-    public function toastrSuccess($message, $title = '', array $option = array())
-    {
-        return toastr()->success($message, $title, $option);
-    }
-
-    /**
-     * @param string $message
-     * @param string $title
-     * @param array $options
-     * 
-     * @return Toastr
-     */
-    public function toastrInfo($message, $title = '', array $option = array())
-    {
-        return toastr()->info($message, $title, $option);
-    }
-
-    /**
-     * @param string $message
-     * @param string $title
-     * @param array $options
-     * 
-     * @return Toastr
-     */
-    public function toastrWarning($message, $title = '', array $option = array())
-    {
-        return toastr()->warning($message, $title, $option);
-    }
-
-    /**
-     * @param string $message
-     * @param string $title
-     * @param array $options
-     * 
-     * @return Toastr
-     */
-    public function toastrError($message, $title = '', array $option = array())
-    {
-        return toastr()->error($message, $title, $option);
-    }
 
     /**
      * get all master data tables
@@ -76,5 +34,45 @@ class AdminController extends BaseController
         }
 
         return $masterTable;
+    }
+
+    public function clearCachePosts()
+    {
+        if (RedisUtil::deleteKey('posts')) {
+            ToastrHelper::toastrSuccess('Clear cache success!', 'Success');
+        } else {
+            ToastrHelper::toastrWarning('Not found cache posts.', 'Warning');
+        }
+        return redirect()->back();
+    }
+
+    public function cache(Request $request)
+    {
+        if ($request->has('clear')) {
+            ToastrHelper::toastrSuccess('Cached successfully', 'Success');
+        }
+        return view('admin.cache.index');
+    }
+
+    public function cacheOptimize()
+    {
+        try {
+            Log::info('Blognt: Cache optimize');
+            CommonUtil::newCache();
+            return to_route('admin.cache.index', ['clear' => 'success']);
+        } catch (\Exception $ex) {
+            CommonUtil::displayError($ex->getMessage(), get_class());
+        }
+    }
+
+    public function cacheOptimizeClear()
+    {
+        try {
+            Log::info('Blognt: Clear optimze cache');
+            CommonUtil::newCache();
+            return to_route('admin.cache.index', ['clear' => 'success']);
+        } catch (\Exception $ex) {
+            CommonUtil::displayError($ex->getMessage(), get_class());
+        }
     }
 }

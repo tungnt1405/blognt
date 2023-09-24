@@ -145,9 +145,7 @@ const btn = {
                 URL.revokeObjectURL($('.thumb #img__show').attr('src'));
             }
             if ($('#img__thumb').length) {
-                console.log(1111);
                 if ($('.preview').text.length > 0) {
-                    console.log(2222);
                     $('.preview').remove();
                 }
                 $('.pre-show').before('<p class="preview">Preview</p>');
@@ -297,6 +295,22 @@ const btn = {
     },
 };
 
+const socket = {
+    init: function () {
+        this.error();
+    },
+    error: () => {
+        socketio.on('connect_error', (err) => {
+            console.log(`connect_error due to ${err.message}`);
+        });
+    },
+    emit: (subscribe, content) => {
+        socketio.emit(subscribe, JSON.stringify(content));
+    },
+    listen: (channel, fn) => {
+        socketio.on(channel, fn);
+    },
+};
 $(document).ready(function () {
     datepicker();
 
@@ -305,6 +319,10 @@ $(document).ready(function () {
 
     // handle button
     btn.init();
+
+    if (typeof indexPost !== 'undefined' && !indexPost) {
+        socket.init();
+    }
 
     // CKEDITOR
     if ($('#description').length && $('#content').length) {

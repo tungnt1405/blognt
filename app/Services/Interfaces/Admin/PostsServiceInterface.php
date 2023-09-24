@@ -17,4 +17,5 @@ interface PostsServiceInterface extends ServiceInterface
     public function getOnlyPostsSoftDelete($records = 10, $conditions = [], $orders = [], $columns = ['*']);
     public function restorePostSoftDelete($ids);
     public function listPosts($id = null);
+    public function getPerPostByYear($year);
 }

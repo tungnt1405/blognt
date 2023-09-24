@@ -21,7 +21,8 @@ class PostInfomationResource extends JsonResource
             'post_information_id' => $this->id,
             'post_id' => $this->post_id,
             'post_status' => $this->status ? true : false,
-            'post_publish' => Carbon::parse($this->public_date),
+            'post_publish' => Carbon::parse($this->public_date)->format('Y-m-d H:i:s'),
+            'seo_content' => $this->meta_content
         ];
     }
 }

@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
-use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\Api\PostServiceInterface;
+use App\Utils\CommonUtil;
+use App\Utils\RedisUtil;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
@@ -36,64 +37,70 @@ class PostController extends Controller
         $posts = $this->postService->getPosts([], $limit, 0);
 
         if (gettype($posts) === 'string') {
-            return response()->json([
-                'code' => 500,
+            Log::error('Get all posts', [$posts]);
+            return CommonUtil::responeJson([
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
-                'data' => $posts
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'data' => []
+            ], Response::HTTP_OK);
         }
-        return response()->json([
+        if (empty(RedisUtil::checkKey('posts'))) {
+            RedisUtil::setKey('posts', PostResource::collection($posts['posts']), 24 * 60 * 60);
+        }
+
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'total_post' => $posts['total'],
-            'data'  => PostResource::collection($posts['posts']),
+            'data'  => RedisUtil::getKey('posts'),
             'pagination' => [
                 'per_page' => (int) $limit,
                 'current_page' => 1,
-                'total_page' => ceil($posts['total_post'] / $limit),
+                'total_page' => ceil($posts['total'] / $limit),
                 'next_page' => 2,
             ]
-        ], Response::HTTP_OK);
+        ]);
     }
 
     /**
-     * 
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
     public function show(Request $request, $id)
     {
-        if (isset($id) && empty($this->postService->getPost($id, $request->get('post')))) {
-            return response()->json([
+        $post = $this->postService->getPost($id, $request->get('post'));
+        if (isset($id) && (empty($post) || empty($post->postsInfomation))) {
+            return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
-                'message' => 'Not Found Post',
+                'message' => 'Post not found.',
                 'data' => []
-            ], Response::HTTP_NOT_FOUND);
+            ], Response::HTTP_OK);
         }
 
-        $post = $this->postService->getPost($id, $request->get('post'));
-        return response()->json([
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'data' => new PostResource($post)
-        ], Response::HTTP_OK);
+        ]);
     }
 
     /**
-     * 
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
     public function findSlug($slug)
     {
-        if (isset($id) && empty($this->postService->getPost(null, $slug))) {
-            return response()->json([
-                'code' => Response::HTTP_NOT_FOUND,
-                'message' => 'Not Found Post',
-                'data' => []
-            ], Response::HTTP_NOT_FOUND);
-        }
         $post = $this->postService->getPost(null, $slug);
-        return response()->json([
+        if (isset($slug) && empty($post)) {
+            return CommonUtil::responeJson([
+                'code' => Response::HTTP_NOT_FOUND,
+                'message' => 'Post not found.',
+                'data' => []
+            ], Response::HTTP_OK);
+        }
+
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'data' => new PostResource($post)
-        ], Response::HTTP_OK);
+        ]);
     }
 
     /**
@@ -103,19 +110,20 @@ class PostController extends Controller
     public function morePosts(Request $request)
     {
         $data = $request->all();
-        // vì offset truyền vào luôn lớn hơn giá trị cần lớn nên cần trừ đi 1 
+        // vì offset truyền vào luôn lớn hơn giá trị cần lớn nên cần trừ đi 1
         // ví dụ offset cần lấy là 2 thì request truyền vào đang là 3 vì thế cần trừ đi 1
         $posts = $this->postService->getPosts([], $data['limit'], --$data['offset']);
 
         if (gettype($posts) === 'string') {
-            return response()->json([
-                'code' => 500,
+            Log::error('Get all posts', [$posts]);
+            return CommonUtil::responeJson([
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => 'Internal Server Error',
-                'data' => $posts
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'data' => []
+            ], Response::HTTP_OK);
         }
 
-        $total_page = ceil($posts['total_post'] / $data['limit']);
+        $total_page = ceil($posts['total'] / $data['limit']);
         $per_page = (int) $data['limit'];
         $current_page = ++$data['offset'];
         $next_page = $current_page + 1;
@@ -133,13 +141,12 @@ class PostController extends Controller
             $pagination['next_page'] = $next_page;
         }
 
-        return response()
-            ->json([
-                'code' => Response::HTTP_OK,
-                'total_post' => $posts['total'],
-                'data' => PostResource::collection($posts['posts']),
-                'pagination' => $pagination,
-            ], Response::HTTP_OK);
+        return CommonUtil::responeJson([
+            'code' => Response::HTTP_OK,
+            'total_post' => $posts['total'],
+            'data' => PostResource::collection($posts['posts']),
+            'pagination' => $pagination,
+        ]);
     }
 
     public function postSearch(Request $request)
@@ -151,7 +158,7 @@ class PostController extends Controller
             'categories' => $request->get('categories'),
         ];
         if (empty($request->get('search')) && empty($request->get('categories'))) {
-            return response()->json([
+            return CommonUtil::responeJson([
                 'code' => Response::HTTP_OK,
                 'total_post' => 0,
                 'data'  => [],
@@ -161,10 +168,10 @@ class PostController extends Controller
                     'offset_next' => 0,
                     'total_page' => 0,
                 ]
-            ], Response::HTTP_OK);
+            ]);
         }
         $posts = $this->postService->getPosts([], $limit, $offset, $data);
-        return response()->json([
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'total_post' => $posts['total'],
             'data'  => PostResource::collection($posts['posts']),
@@ -172,8 +179,53 @@ class PostController extends Controller
                 'limit' => (int) $limit,
                 'offset' => (int) $offset,
                 'offset_next' => ((int) $offset) + 1,
-                'total_page' => ceil($posts['total_post'] / $limit),
+                'total_page' => ceil($posts['total'] / $limit),
             ]
-        ], Response::HTTP_OK);
+        ]);
+    }
+    public function suggest(Request $request)
+    {
+        $data = $request->all();
+        $message = '';
+        $isError = false;
+        $code = Response::HTTP_OK;
+
+        if (empty($data)) {
+            $isError = true;
+            $message = trans('client/validation.server_error');
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } elseif (empty($data['category_id'])) {
+            $isError = true;
+            $message = trans('client/validation.suggest.not_eligible', ['value' => 'category_id']);
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } elseif (empty($data['post_id'])) {
+            $isError = true;
+            $message = trans('client/validation.suggest.not_eligible', ['value' => 'post_id']);
+            $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        if (!$isError) {
+            $suggest = $this->postService->suggestPosts($data);
+            if (empty($suggest)) {
+                $message = trans('client/validation.suggest.not_found');
+                $code = Response::HTTP_NOT_FOUND;
+            } else {
+                $message = PostResource::collection($suggest);
+            }
+        }
+
+        return CommonUtil::responeJson([
+            'code' => $code,
+            'data' => $message
+        ], $code);
+    }
+
+    public function generateFileBySlug()
+    {
+        $data = $this->postService->generateFileBySlugOfPost();
+        return CommonUtil::responeJson([
+            'code' => Response::HTTP_OK,
+            'data' => $data
+        ]);
     }
 }

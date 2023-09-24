@@ -19,12 +19,12 @@ cp vite.config.js.example vite.config.js
 -   DB_USERNAME
 -   DB_PASSWORD
 
-4. Create folder storage/framework (recommended)
+4. Create folder storage/ và storage/framework (recommended)
 5. In storage/framework create folder
 
--   cache
--   sessions
--   views
+-   storage/framework/cache
+-   storage/framework/sessions
+-   storage/framework/views
 
 6. Create folder storage/logs (recommended)
 
@@ -47,9 +47,9 @@ php artisan key:generate
 
 ## other configuration
 
-1. copy the following code and replace laravel input in file vite.config.js
+1. Copy file vite.config.js
 
-```
+```javascript
 laravel({
     input: [
         'resources/assets/js/frontend/app.js',
@@ -62,4 +62,23 @@ laravel({
     ],
     refresh: [...refreshPaths, 'app/Http/Livewire/**'],
 }),
+vue(),
+{
+    name: 'blade',
+    handleHotUpdate({ file, server }) {
+        if (file.endsWith('.blade.php')) {
+            server.ws.send({
+                type: 'full-reload',
+                path: '*',
+            });
+        }
+    },
+},
+
 ```
+
+2. Do lưu trữ file img upload của post ở storage nên cần run 
+```
+php artisan storage:link
+``` 
+để có thể tạo liên kết giữa `public/storage` và `storage/app/public`.

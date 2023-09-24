@@ -178,5 +178,21 @@ return [
                 'symbol_required' => 'Please enter name symbol',
             ]
         ],
-    ]
+    ],
+    'exception' => [
+        'sorted_invalid_error' => '$sort must be an array consisting of [key => number] or a number. If $sort is a number, please enter $key.'
+    ],
+
+    'helper' => [
+        'larapex' => [
+            'data_empty' => 'No data to chart',
+            'xAxis_empty' => 'Please pass information for comparison such as by month, week, year, ...'
+        ]
+    ],
+
+    'utils' => [
+        'common' => [
+            'data_empty' => 'Missing error content information to display.'
+        ]
+    ],
 ];

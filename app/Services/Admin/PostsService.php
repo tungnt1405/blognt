@@ -5,10 +5,11 @@ namespace App\Services\Admin;
 use App\Services\AbstractService;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
 use App\Services\UploadFileService;
+use App\Utils\RedisUtil;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Storage;
 
 class PostsService extends AbstractService implements PostsServiceInterface
 {
@@ -16,6 +17,7 @@ class PostsService extends AbstractService implements PostsServiceInterface
      * @var UploadFileService
      */
     protected $_uploadFileService;
+    private static $instance;
 
     /**
      * PostsService constructor
@@ -27,6 +29,16 @@ class PostsService extends AbstractService implements PostsServiceInterface
         $this->_uploadFileService = $uploadFileService;
     }
 
+    public static function singleton()
+    {
+        if (!self::$instance) {
+            $upload = new UploadFileService();
+            self::$instance = new PostsService($upload);
+        }
+
+        return self::$instance;
+    }
+
     public function getRepository()
     {
         return \App\Repositories\Admin\PostRepository::class;
@@ -36,6 +48,15 @@ class PostsService extends AbstractService implements PostsServiceInterface
     {
         try {
             return $this->repository->getAllPosts($records, $conditions, $orders, $columns);
+        } catch (\Exception $e) {
+            $this->loggerTry($e);
+        }
+    }
+
+    public function countPostByMonth()
+    {
+        try {
+            return $this->repository->countPostByMonth();
         } catch (\Exception $e) {
             $this->loggerTry($e);
         }
@@ -54,18 +75,28 @@ class PostsService extends AbstractService implements PostsServiceInterface
     public function insertPost($data = [])
     {
         try {
-            $base_64  = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
+            $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->moveFileImage($data['thumbnail_posts']) : null;
+            if (!empty($data['thumbnail_posts_copy']) && empty($data['thumbnail_posts'])) {
+                $base_64 = $this->_uploadFileService->copyImage($data['thumbnail_posts_copy']);
+            }
             $data = array_merge($data, [
                 'author_id' => $this->getUser()->id,
                 'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
                 'thumbnail_posts' => $base_64
             ]);
+
             $this->logger('Insert Post', $data, config('constants.LOG_INFO'));
             $insertPost = $this->create($data);
-            $insertPost->postsInfomation()->create([
+            $dataInfo = [
                 'status' => $data['status'] ?? 0,
-                'public_date' => Carbon::parse($data['public_date'])
-            ]);
+                'public_date' => Carbon::parse($data['public_date']),
+                'meta_content' => $data['meta_content']
+            ];
+            $this->logger('Insert Post info', $dataInfo, config('constants.LOG_INFO'));
+            $insertPost->postsInfomation()->create($dataInfo);
+            if ($insertPost) {
+                $this->clearCachePosts();
+            }
             return $insertPost;
         } catch (\Exception  $e) {
             $this->loggerTry($e);
@@ -80,16 +111,25 @@ class PostsService extends AbstractService implements PostsServiceInterface
                 'parent_id' => !empty($data['post_type']) && $data['post_type'] == '1' ? $data['parent_id'] : null,
                 'update_at' => \Carbon\Carbon::now()
             ]);
-
-            $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->getBase64Image($data['thumbnail_posts']) : null;
-            if ($base_64 && isset($base_64)) {
+            $post = $this->find($id);
+            $base_64 = !empty($data['thumbnail_posts']) ? $this->_uploadFileService->moveFileImage($data['thumbnail_posts']) : null;
+            if ($post->count() > 0 && isset($base_64)) {
+                Storage::disk('public')->delete('images/' . $post->thumbnail_posts);
                 $data['thumbnail_posts'] = $base_64;
             }
+            $this->logger('Update Post: ' . $id, $data, config('constants.LOG_INFO'));
             $updatePost = $this->update($id, $data);
-            $updatePost->postsInfomation()->update([
+            $dataInfo = [
                 'status' => $data['status'] ?? 0,
-                'public_date' => Carbon::parse($data['public_date'])
-            ]);
+                'public_date' => Carbon::parse($data['public_date']),
+                'meta_content' => $data['meta_content'] ?? null
+            ];
+            $this->logger('Update Post info', $dataInfo, config('constants.LOG_INFO'));
+            $updatePost->postsInfomation()->update($dataInfo);
+
+            if ($updatePost) {
+                $this->clearCachePosts();
+            }
 
             return $updatePost;
         } catch (\Exception $e) {
@@ -111,6 +151,12 @@ class PostsService extends AbstractService implements PostsServiceInterface
     {
         try {
             $this->logger('Delete Posts', $ids, config('constants.LOG_INFO'));
+            foreach ($ids as $id) {
+                $post = $this->findPost($id, true);
+                if ($post->count() > 0) {
+                    Storage::disk('public')->delete('images/' . $post->thumbnail_posts);
+                }
+            };
             return $this->repository->destroyPosts($ids);
         } catch (\Exception $e) {
             $this->loggerTry($e);
@@ -125,6 +171,7 @@ class PostsService extends AbstractService implements PostsServiceInterface
             DB::commit();
             if (!empty($post)) {
                 $this->logger('Update Post Information', $post->toArray(), config('constants.LOG_INFO'));
+                $this->clearCachePosts();
                 return true;
             }
 
@@ -172,9 +219,23 @@ class PostsService extends AbstractService implements PostsServiceInterface
         }
     }
 
+    public function getPerPostByYear($year)
+    {
+        try {
+            return $this->repository->getPerPostByYear($year);
+        } catch (\Exception $e) {
+            $this->loggerTry($e);
+        }
+    }
+
     private function getUser()
     {
         return Auth::user();
+    }
+
+    private function clearCachePosts()
+    {
+        return RedisUtil::deleteKey('posts');
     }
 
     private function loggerTry($exception)

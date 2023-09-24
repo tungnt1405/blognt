@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\CategoriesController;
+use App\Http\Controllers\Api\CommonController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\SideBarController;
+use App\Utils\TestUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,15 +24,51 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('/test', fn () => response()->json(['message' => 'tested ok!']));
-Route::apiResource('/owner', SideBarController::class)
-    ->only(['index'])
-    ->except(['create', 'edit']);
-Route::apiResource('/posts', PostController::class)
-    ->only(['index', 'show'])
-    ->except(['create', 'edit']);
-Route::get('more-posts', [PostController::class, 'morePosts']);
-Route::get('{id}/post', [PostController::class, 'show']);
-Route::get('post/{slug}', [PostController::class, 'findSlug']);
-Route::get('post-search', [PostController::class, 'postSearch']);
-Route::get('about-me', [SideBarController::class, 'about']);
-Route::get('categories', [CategoriesController::class, 'index']);
+Route::get('/test-redis', function () {
+    try {
+        $redis = \Illuminate\Support\Facades\Redis::connect(env('REDIS_HOST'), env('REDIS_PORT'));
+        return response('redis working');
+    } catch (\Exception $e) {
+        return response($e->getMessage());
+    }
+});
+Route::get('/test-redis-utils', function () {
+    // if (empty(RedisUtil::getKey('test'))) {
+    //     RedisUtil::setKey('test', 'datatest', 60);
+    // }
+    // RedisUtil::deleteKey('test');
+    $data = TestUtil::test3(function () {
+        return 1;
+    });
+    return response()->json([
+        // 'data' => RedisUtil::getKey('test')
+        // 'data' => json_decode(RedisUtil::getKey('posts'))
+        'data' => $data,
+        'hm' => 1
+    ]);
+});
+Route::middleware(['setDefaultLocale', 'setlocale'])
+    ->prefix('v1')
+    ->group(function () {
+        // locale default setting in env
+        Route::apiResource('/owner', SideBarController::class)
+            ->only(['index'])
+            ->except(['create', 'edit']);
+        Route::apiResource('/posts', PostController::class)
+            ->only(['index', 'show'])
+            ->except(['create', 'edit']);
+        Route::get('more-posts', [PostController::class, 'morePosts']);
+        Route::get('{id}/post-id', [PostController::class, 'show'])->where('id', '[0-9]+');
+        Route::get('post/{slug}', [PostController::class, 'findSlug']);
+        Route::get('post-search', [PostController::class, 'postSearch']);
+        Route::get('about-me', [SideBarController::class, 'about']);
+        Route::get('categories', [CategoriesController::class, 'index']);
+        Route::post('suggest/posts', [PostController::class, 'suggest']);
+        Route::get('website-info', [CommonController::class, 'common']);
+
+        // set language for api: where(['locale' => '[a-zA-Z]{2}'])
+    });
+
+Route::prefix('v2')->group(function () {
+    Route::get('/post-generate-file', [PostController::class, 'generateFileBySlug']);
+});

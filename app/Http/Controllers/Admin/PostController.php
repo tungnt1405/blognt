@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\Posts\PostDetailProcessed;
+use App\Helpers\ToastrHelper;
 use App\Http\Requests\admin\Posts\StorePostRequest;
 use App\Http\Requests\admin\Posts\UpdatePostRequest;
 use App\Models\Post;
 use App\Services\Interfaces\Admin\CategoryServiceInterface;
 use App\Services\Interfaces\Admin\PostsServiceInterface;
+use App\Utils\RedisUtil;
 use Illuminate\Http\Request;
 
 class PostController extends AdminController
@@ -30,7 +33,7 @@ class PostController extends AdminController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index(Request $request)
     {
@@ -113,22 +116,30 @@ class PostController extends AdminController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
+        $copy = $request->get('copy_post');
+        $checkPost = false;
+        if (isset($copy)) {
+            $post = $this->postsService->findPost($copy);
+            $checkPost = true;
+        }
+
         return view('admin.posts.create')
-            ->with('checkPost', false)
+            ->with('checkPost', $checkPost)
             ->with('isTrash', false)
             ->with('listPosts', $this->postsService->listPosts())
-            ->with('categories', $this->categoryService->listCategory());
+            ->with('categories', $this->categoryService->listCategory())
+            ->with('post', $post ?? []);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StorePostRequest $request)
     {
@@ -136,12 +147,12 @@ class PostController extends AdminController
         $insert = $this->postsService->insertPost($input);
 
         if ($insert) {
-            $this->toastrSuccess('Inserted successfully', 'Success');
-            return redirect()->route('admin.posts');
+            ToastrHelper::toastrSuccess('Inserted successfully', 'Success');
+            return redirect()->route('admin.posts.index');
         }
 
-        $this->toastrError('Insert Failed', 'Error');
-        return back();
+        ToastrHelper::toastrError('Insert Failed', 'Error');
+        return back()->withInput();
     }
 
     /**
@@ -159,18 +170,19 @@ class PostController extends AdminController
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit($id)
     {
         $post = $this->postsService->findPost($id);
-        $listPosts = $listPosts = $this->postsService->listPosts($id);
+        $listPosts = $this->postsService->listPosts($id);
         $isTrash = false;
         if (!$post) {
             $isTrash = true;
             $post = $this->postsService->findPost($id, true);
         }
         return view('admin.posts.create')
+            ->with('edit', true)
             ->with('checkPost', true)
             ->with('post', $post)
             ->with('listPosts', $listPosts)
@@ -183,16 +195,17 @@ class PostController extends AdminController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdatePostRequest $request, $id)
     {
         $update = $this->postsService->updatePost($id, $request->toArray());
 
         if ($update) {
-            $this->toastrSuccess('Updated successfully', 'Success');
+            ToastrHelper::toastrSuccess('Updated successfully', 'Success');
+            broadcast(new PostDetailProcessed($this->postsService->findPost($id)))->toOthers();
         } else {
-            $this->toastrError('Updated Failed', 'Error');
+            ToastrHelper::toastrError('Updated Failed', 'Error');
         }
         return back();
     }
@@ -201,22 +214,22 @@ class PostController extends AdminController
      * Remove the specified resource from storage.
      *
      * @param  Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request)
     {
         $post = $this->postsService->destroyPosts($request->get('ids'));
 
         if (!$post) {
-            $this->toastrError('Sorry! Delete failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Delete failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
                     'message' => 'Sorry! Delete posts failed.',
                 ]);
         }
-
-        $this->toastrSuccess('Successfully delete posts', 'Success');
+        RedisUtil::deleteKey('posts');
+        ToastrHelper::toastrSuccess('Successfully delete posts', 'Success');
         return response()->json([
             'code' => 200,
             'message' => 'Successfully delete posts'
@@ -227,22 +240,22 @@ class PostController extends AdminController
      * Remove the specified resource from storage.
      *
      * @param  Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function softDeletePosts(Request $request)
     {
         $post = $this->postsService->deletePosts($request->get('ids'));
 
         if (!$post) {
-            $this->toastrError('Sorry! Delete failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Delete failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
                     'message' => 'Sorry! Delete posts failed.',
                 ]);
         }
-
-        $this->toastrSuccess('Successfully delete posts', 'Success');
+        RedisUtil::deleteKey('posts');
+        ToastrHelper::toastrSuccess('Successfully delete posts', 'Success');
         return response()->json([
             'code' => 200,
             'message' => 'Successfully delete posts'
@@ -254,7 +267,7 @@ class PostController extends AdminController
         $updatePost = $this->postsService->updateStatusPost($id, $request->get('status'));
 
         if ($updatePost === false) {
-            $this->toastrError('Sorry! Updating status failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Updating status failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
@@ -262,7 +275,7 @@ class PostController extends AdminController
                 ]);
         }
 
-        $this->toastrSuccess('Successfully change post status', 'Success');
+        ToastrHelper::toastrSuccess('Successfully change post status', 'Success');
         return response()
             ->json([
                 'code' => 200,
@@ -275,15 +288,15 @@ class PostController extends AdminController
         $restorePosts = $this->postsService->restorePostSoftDelete($request->get('ids'));
 
         if (!$restorePosts) {
-            $this->toastrError('Sorry! Restore failed.', 'Error');
+            ToastrHelper::toastrError('Sorry! Restore failed.', 'Error');
             return response()
                 ->json([
                     'code' => 500,
                     'message' => 'Sorry! Restore failed',
                 ]);
         }
-
-        $this->toastrSuccess('Successfully restore posts', 'Success');
+        RedisUtil::deleteKey('posts');
+        ToastrHelper::toastrSuccess('Successfully restore posts', 'Success');
         return response()->json([
             'code' => 200,
             'message' => 'Successfully restore posts'

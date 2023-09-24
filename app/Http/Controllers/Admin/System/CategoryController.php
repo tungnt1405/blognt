@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\System;
 
+use App\Helpers\ToastrHelper;
 use App\Http\Requests\admin\Setting\StoreCategoriesRequest;
 use App\Http\Requests\admin\Setting\UpdateCategoriesRequest;
 use App\Services\Admin\CategoryService;
@@ -37,9 +38,9 @@ class CategoryController extends SettingsController
         $insert = $this->categoryService->create($attributes);
 
         if (!$insert) {
-            $this->toastrSuccess('Insert Failed', 'Error');
+            ToastrHelper::toastrSuccess('Insert Failed', 'Error');
         } else {
-            $this->toastrSuccess('Insert Success', 'Success');
+            ToastrHelper::toastrSuccess('Insert Success', 'Success');
         }
 
         return redirect()->route('admin.setting.show', ['view' => 'categories']);
@@ -61,9 +62,9 @@ class CategoryController extends SettingsController
         $attributes['sort_no'] = $data['sort_no'];
         $update = $this->categoryService->update($id, $attributes);
         if (!$update) {
-            $this->toastrError('Update failed', 'Error');
+            ToastrHelper::toastrError('Update failed', 'Error');
         } else {
-            $this->toastrSuccess('Updated Success', 'Success');
+            ToastrHelper::toastrSuccess('Updated Success', 'Success');
         }
 
         return redirect()->route('admin.setting.show', ['view' => 'categories']);
@@ -79,9 +80,9 @@ class CategoryController extends SettingsController
     {
         $delete = $this->categoryService->delete($id);
         if (!$delete) {
-            $this->toastrError('Delete failed', 'Error');
+            ToastrHelper::toastrError('Delete failed', 'Error');
         } else {
-            $this->toastrSuccess('Delete Success', 'Success');
+            ToastrHelper::toastrSuccess('Delete Success', 'Success');
         }
 
         return redirect()->route('admin.setting.show', ['view' => 'categories']);

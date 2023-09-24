@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\System;
 
+use App\Helpers\ToastrHelper;
 use App\Http\Requests\admin\Setting\AddCountriesRequest;
 use App\Http\Requests\admin\Setting\UpdateCountriesRequest;
 use App\Services\Admin\CountryService;
@@ -34,9 +35,9 @@ class CountryController extends SettingsController
         $insert = $this->_countryService->insert($new_data);
 
         if (!$insert) {
-            $this->toastrSuccess('Insert Failed', 'Error');
+            ToastrHelper::toastrSuccess('Insert Failed', 'Error');
         } else {
-            $this->toastrSuccess('Insert Success', 'Success');
+            ToastrHelper::toastrSuccess('Insert Success', 'Success');
         }
 
         return redirect()->route('admin.setting.show', ['view' => 'countries']);
@@ -49,9 +50,9 @@ class CountryController extends SettingsController
         $data = $rq->all();
         $update = $this->_countryService->update($id, $data);
         if (!$update) {
-            $this->toastrError('Update failed', 'Error');
+            ToastrHelper::toastrError('Update failed', 'Error');
         } else {
-            $this->toastrSuccess('Updated Success', 'Success');
+            ToastrHelper::toastrSuccess('Updated Success', 'Success');
         }
 
         return redirect()->route('admin.setting.show', ['view' => 'countries']);
@@ -61,9 +62,9 @@ class CountryController extends SettingsController
     {
         $delete = $this->_countryService->delete($id);
         if (!$delete) {
-            $this->toastrError('Delete failed', 'Error');
+            ToastrHelper::toastrError('Delete failed', 'Error');
         } else {
-            $this->toastrSuccess('Delete Success', 'Success');
+            ToastrHelper::toastrSuccess('Delete Success', 'Success');
         }
 
         return redirect()->route('admin.setting.show', ['view' => 'countries']);

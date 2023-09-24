@@ -39,8 +39,6 @@ class AboutResource extends JsonResource
             'owner_project_join' => @$this->ownerInfo->make_project,
             'owner_experience' => @$this->ownerInfo->experience,
             'owner_career_goals' => @$this->ownerInfo->career_goals,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

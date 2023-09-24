@@ -53,11 +53,11 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
                 'avatar' => $base_64,
                 'name' => $attr['name'],
                 'introduce' => $attr['description'],
-                'gmail_url' => @$attr['gmail'],
+                // 'gmail_url' => @$attr['gmail'],
                 'fb_url' => @$attr['facebook'],
-                'twitter_url' => @$attr['twitter'],
+                // 'twitter_url' => @$attr['twitter'],
                 'linkin_url' => @$attr['linkin'],
-                'zalo_url' => @$attr['zalo'],
+                // 'zalo_url' => @$attr['zalo'],
                 'github_url' => @$attr['github']
             );
 
@@ -69,7 +69,7 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
 
     public function getFirstRecord()
     {
-        return $this->model->all()->first();
+        return $this->model::with('ownerInfo')->first();
     }
 
     public function update($id, $attributes = [])
@@ -83,11 +83,11 @@ class OwnerRepository extends BaseRepository implements OwnerRepositoryInterface
             'avatar' => $base_64 ?? $result->avatar,
             'name' => $attributes['name'],
             'introduce' => $attributes['description'],
-            'gmail_url' => @$attributes['gmail'],
+            // 'gmail_url' => @$attributes['gmail'],
             'fb_url' => @$attributes['facebook'],
-            'twitter_url' => @$attributes['twitter'],
+            // 'twitter_url' => @$attributes['twitter'],
             'linkin_url' => @$attributes['linkin'] ?? '',
-            'zalo_url' => @$attributes['zalo'],
+            // 'zalo_url' => @$attributes['zalo'],
             'github_url' => @$attributes['github']
         );
 

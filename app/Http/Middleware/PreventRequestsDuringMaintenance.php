@@ -12,6 +12,16 @@ class PreventRequestsDuringMaintenance extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        "admin_blog",
+        "admin_blog/*",
+        "maintain",
+        "assets",
+        "assets/*",
+        "build",
+        "build/*",
+        "livewire",
+        "livewire/*",
+        "api/website-info"
+        // "_debugbar/assets/*" // chỉ sử dụng trên local và test nên cần debug hay phát triển thì open
     ];
 }

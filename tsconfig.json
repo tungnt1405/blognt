@@ -3,11 +3,16 @@
         "target": "es6",
         "module": "commonjs",
         "outDir": "./public/js",
-        "rootDir": "./resources/assets/js/backend",
+        // "rootDir": "./resources/assets/js/backend",
         "strict": true,
-        "esModuleInterop": true
+        "esModuleInterop": false,
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": ["node_modules/"]
+        }
     },
-    "include": [
-        "resources/assets/js/backend/**/*"
-    ]
+    "include": ["resources/assets/js/backend/**/*"]
 }

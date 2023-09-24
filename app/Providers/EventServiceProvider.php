@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+use App\Events\Posts\PostDetailProcessed;
+use App\Listeners\SendPostDetailNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Throwable;
+
+use function Illuminate\Events\queueable;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -18,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        PostDetailProcessed::class => [ // ví dụ về event and listen
+            SendPostDetailNotification::class
+        ]
     ];
 
     /**
@@ -27,7 +36,14 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // khai báo chạy listen ở trên nên có thể bỏ qua chỗ này
+        // Event::listen(queueable(function (PostDetailProcessed $event) {
+        //     // handle event
+        //     Log::debug('debug', [$event]);
+        // })->catch(function (PostDetailProcessed $event, Throwable $e) {
+        //     // handle fail
+        //     Log::error('catch list: ', [$e->getMessage(), $event]);
+        // }));
     }
 
     /**

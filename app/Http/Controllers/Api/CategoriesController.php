@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoriesResource;
 use App\Services\Interfaces\Api\ApiCategoryServiceInterface;
+use App\Utils\CommonUtil;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -28,14 +29,14 @@ class CategoriesController extends Controller
     {
         $categories = $this->categoryService->getCategories();
         if (empty($categories)) {
-            return response()->json([
+            return CommonUtil::responeJson([
                 'code' => Response::HTTP_NOT_FOUND,
             ]);
         }
-        return response()->json([
+        return CommonUtil::responeJson([
             'code' => Response::HTTP_OK,
             'data' => CategoriesResource::collection($categories)
-        ], Response::HTTP_OK);
+        ]);
     }
 
     /**

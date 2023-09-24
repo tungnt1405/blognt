@@ -15,4 +15,5 @@ interface PostRepositoryInterface extends RepositoryInterface
     public function destroyPosts($ids);
     public function listPosts($id = null);
     public function findPost($id, $isTrash = false);
+    public function getPerPostByYear($year);
 }

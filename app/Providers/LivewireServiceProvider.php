@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Livewire\Admin\Dashbroad;
 use App\Http\Livewire\Admin\Posts\Create;
 use App\Http\Livewire\Admin\Posts\Show;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +20,7 @@ class LivewireServiceProvider extends ServiceProvider
     {
         Livewire::component('admin.posts.create', Create::class);
         Livewire::component('admin.posts.show', Show::class);
+        Livewire::component('admin.dashbroad', Dashbroad::class);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Repositories\Api;
 use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\Api\PostRepositoryInterface;
 use Carbon\Carbon;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class PostRepository extends BaseRepository implements PostRepositoryInterface
 {
@@ -49,63 +50,81 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         ];
     }
 
+    private function queryPost()
+    {
+        return $this->model::with(['user', 'category', 'postsInfomation'])
+            ->whereHas('postsInfomation', function ($query) {
+                $date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');
+                $query->where('public_date', '<=', $date)
+                    ->where('status', true);
+            })
+            ->withTrashed()
+            ->whereNull('deleted_at');
+    }
+
     public function getPosts($columns = ['*'], $limit = 10, $offset = 0, $filterSearch = [])
     {
-        $posts = $this->model
-            ->withTrashed()
-            ->whereNull('dtb_posts.deleted_at');
+        $posts = $this->queryPost();
 
-        foreach ($this->join as $table => $keys) {
-            $posts->join($table, $table . '.' . $keys['foreign_key'], '=', $this->table . '.' . $keys['key']);
-        }
-
-        $posts->where('dtb_posts_infomation.status', 1)
-            ->where('dtb_posts_infomation.public_date', '<=', Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s'));
-
-        if (!empty($filterSearch)) {
-
-            if ($filterSearch['keywords']) {
-                $posts->where(function ($query) use ($filterSearch) {
-                    $query->where('dtb_posts.title', 'like', '%' . trim($filterSearch['keywords']) . '%')
-                        ->orWhere('dtb_posts.slug', 'like', '%' . trim($filterSearch['keywords']) . '%');
-                });
-            }
-            if (!empty($filterSearch['categories'])) {
-                $posts->whereIn('dtb_posts.category_id', $filterSearch['categories']);
-            }
-        }
-
-        if (empty($columns) || is_array($columns) && in_array('*', $columns) || $columns === '*') {
-            $posts->select(['dtb_posts.*']);
-        } else {
-            $posts->select($columns);
-        }
-
-        $posts
+        $posts->select($columns ?: '*')
+            ->where(function ($query) use ($filterSearch) {
+                if (!empty($filterSearch['keywords'])) {
+                    $query->where(function ($query) use ($filterSearch) {
+                        $query->where('title', 'like', '%' . trim($filterSearch['keywords']) . '%')
+                            ->orWhere('slug', 'like', '%' . trim($filterSearch['keywords']) . '%');
+                    });
+                }
+                if (!empty($filterSearch['categories'])) {
+                    $query->whereIn('category_id', $filterSearch['categories']);
+                }
+            })
             ->skip($offset * $limit)
             ->take($limit)
-            ->orderBy('dtb_posts.updated_at', 'DESC')
-            ->orderBy('dtb_posts.id', 'DESC');
+            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC');
 
         return [
-            'total' => $posts->get()->count(),
+            'total' => $posts->count(),
             'posts' => $posts->get(),
-            'total_post' => $this->all()->count(),
         ];
     }
 
     public function getPost($id = null, $slug = '')
     {
-        $post = $this->model->withTrashed()
-            ->whereNull('dtb_posts.deleted_at');
+        $post = $this->queryPost();
 
-        if (!empty($id)) {
-            $post->where('id', $id);
-        }
+        return $post->where(function ($query) use ($id, $slug) {
+            if (!empty($id)) {
+                $query->where('id', $id);
+            }
 
-        if (!empty($slug)) {
-            $post->where('slug', $slug);
-        }
-        return $post->firstOrFail();
+            if (!empty($slug)) {
+                $query->where('slug', $slug);
+            }
+        })->firstOrFail();
+    }
+
+    public function suggestPosts($category_id, $post_id)
+    {
+        $post = $this->queryPost();
+        return $post->where('category_id', $category_id)
+            ->whereNot('id', $post_id)
+            ->get();
+    }
+
+    public function generateFileBySlugOfPost()
+    {
+        return $this->model::with(['postsInfomation' => function ($query) {
+            $query->select('post_id', 'meta_content as seo_content');
+        }])
+            ->whereHas('postsInfomation', function ($query) {
+                $date = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d H:i:s');
+                $query->where('public_date', '<=', $date)
+                    ->where('status', true);
+            })
+            ->withTrashed()
+            ->whereNull('deleted_at')->select('id', 'title as post_name', 'slug as post_slug')
+            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')->get();
     }
 }
