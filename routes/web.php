@@ -19,11 +19,13 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // })->where(['any' => '.*']);
 
-
-Route::get('/{any}', function () {
-    // return redirect(app()->getLocale());
-    // abort(404);
-    return view('guest.app');
-})->where(['any' => '^(?!api|admin_blog|maintain).*']);
+Route::get('/', function () {
+    abort(404);
+});
+// Route::get('/{any}', function () {
+//     // return redirect(app()->getLocale());
+//     // abort(404);
+//     return view('guest.app');
+// })->where(['any' => '^(?!api|admin_blog|maintain|images).*']);
 
 Route::get("/maintain", [SystemController::class, 'maintain']);

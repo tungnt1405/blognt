@@ -10,7 +10,12 @@
         <div class="flex flex-col md:flex-row items-center justify-between">
             <h2 class="font-semibold text-xl capitalize text-gray-800 leading-tight">
                 {{ __('Posts Management') }}
-                <br><small>{{ __('Add New') }}</small>
+                <br><small>{{ empty($edit) ? __('Add New') : __(' Update: ' . $post->title) }}</small>
+                @if (!empty($edit))
+                    <br><a href="{{ route('admin.posts.create', ['copy_post' => $post->id]) }}"
+                        class="hover:!text-white btn btn-outline btn-info btn-sm  mt-2">
+                        @lang('Copy') </a>
+                @endif
             </h2>
             {{-- <a href="{{ route('admin.owner.more-info') }}"
                 class="btn btn-outline btn-primary mt-5 md:mt-auto ">@lang('More other')</a> --}}
@@ -40,6 +45,7 @@
                 'categories' => $categories,
                 'post' => $post ?? [],
                 'checkPost' => $checkPost,
+                'edit' => $edit ?? false,
                 'listPosts' => $listPosts,
             ])
         </div>

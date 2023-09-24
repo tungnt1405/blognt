@@ -32,6 +32,6 @@ class OwnerService extends AbstractService implements OwnerServiceInterface
 
     private function loggerTry($exception)
     {
-        $this->logger('', $exception->getMessage(), config('constants.LOG_ERROR'));
+        $this->logger('', 'Owner API >>>'. $exception->getMessage(), config('constants.LOG_ERROR'));
     }
 }

@@ -33,7 +33,7 @@ class PostController extends AdminController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function index(Request $request)
     {
@@ -116,22 +116,30 @@ class PostController extends AdminController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
+        $copy = $request->get('copy_post');
+        $checkPost = false;
+        if (isset($copy)) {
+            $post = $this->postsService->findPost($copy);
+            $checkPost = true;
+        }
+
         return view('admin.posts.create')
-            ->with('checkPost', false)
+            ->with('checkPost', $checkPost)
             ->with('isTrash', false)
             ->with('listPosts', $this->postsService->listPosts())
-            ->with('categories', $this->categoryService->listCategory());
+            ->with('categories', $this->categoryService->listCategory())
+            ->with('post', $post ?? []);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StorePostRequest $request)
     {
@@ -162,7 +170,7 @@ class PostController extends AdminController
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit($id)
     {
@@ -174,6 +182,7 @@ class PostController extends AdminController
             $post = $this->postsService->findPost($id, true);
         }
         return view('admin.posts.create')
+            ->with('edit', true)
             ->with('checkPost', true)
             ->with('post', $post)
             ->with('listPosts', $listPosts)
@@ -186,7 +195,7 @@ class PostController extends AdminController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdatePostRequest $request, $id)
     {
@@ -205,7 +214,7 @@ class PostController extends AdminController
      * Remove the specified resource from storage.
      *
      * @param  Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request)
     {
@@ -231,7 +240,7 @@ class PostController extends AdminController
      * Remove the specified resource from storage.
      *
      * @param  Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function softDeletePosts(Request $request)
     {

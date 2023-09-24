@@ -19,12 +19,12 @@ cp vite.config.js.example vite.config.js
 -   DB_USERNAME
 -   DB_PASSWORD
 
-4. Create folder storage/framework (recommended)
+4. Create folder storage/ và storage/framework (recommended)
 5. In storage/framework create folder
 
--   cache
--   sessions
--   views
+-   storage/framework/cache
+-   storage/framework/sessions
+-   storage/framework/views
 
 6. Create folder storage/logs (recommended)
 
@@ -76,3 +76,9 @@ vue(),
 },
 
 ```
+
+2. Do lưu trữ file img upload của post ở storage nên cần run 
+```
+php artisan storage:link
+``` 
+để có thể tạo liên kết giữa `public/storage` và `storage/app/public`.

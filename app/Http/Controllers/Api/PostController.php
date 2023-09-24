@@ -4,15 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
-use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Services\Interfaces\Api\PostServiceInterface;
 use App\Utils\CommonUtil;
 use App\Utils\RedisUtil;
-use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
@@ -65,7 +62,7 @@ class PostController extends Controller
     }
 
     /**
-     * 
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
     public function show(Request $request, $id)
@@ -86,7 +83,7 @@ class PostController extends Controller
     }
 
     /**
-     * 
+     *
      * @return \Illuminate\Contracts\Routing\ResponseFactory
      */
     public function findSlug($slug)
@@ -113,7 +110,7 @@ class PostController extends Controller
     public function morePosts(Request $request)
     {
         $data = $request->all();
-        // vì offset truyền vào luôn lớn hơn giá trị cần lớn nên cần trừ đi 1 
+        // vì offset truyền vào luôn lớn hơn giá trị cần lớn nên cần trừ đi 1
         // ví dụ offset cần lấy là 2 thì request truyền vào đang là 3 vì thế cần trừ đi 1
         $posts = $this->postService->getPosts([], $data['limit'], --$data['offset']);
 
@@ -221,5 +218,14 @@ class PostController extends Controller
             'code' => $code,
             'data' => $message
         ], $code);
+    }
+
+    public function generateFileBySlug()
+    {
+        $data = $this->postService->generateFileBySlugOfPost();
+        return CommonUtil::responeJson([
+            'code' => Response::HTTP_OK,
+            'data' => $data
+        ]);
     }
 }

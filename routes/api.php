@@ -48,6 +48,7 @@ Route::get('/test-redis-utils', function () {
     ]);
 });
 Route::middleware(['setDefaultLocale', 'setlocale'])
+    ->prefix('v1')
     ->group(function () {
         // locale default setting in env
         Route::apiResource('/owner', SideBarController::class)
@@ -62,8 +63,12 @@ Route::middleware(['setDefaultLocale', 'setlocale'])
         Route::get('post-search', [PostController::class, 'postSearch']);
         Route::get('about-me', [SideBarController::class, 'about']);
         Route::get('categories', [CategoriesController::class, 'index']);
-        Route::post('/suggest/posts', [PostController::class, 'suggest']);
+        Route::post('suggest/posts', [PostController::class, 'suggest']);
         Route::get('website-info', [CommonController::class, 'common']);
 
         // set language for api: where(['locale' => '[a-zA-Z]{2}'])
     });
+
+Route::prefix('v2')->group(function () {
+    Route::get('/post-generate-file', [PostController::class, 'generateFileBySlug']);
+});
