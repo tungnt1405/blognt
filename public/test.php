@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    Test cicd1
+    Test cicd
 </body>
 
 </html>
