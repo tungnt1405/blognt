@@ -34,4 +34,4 @@ jobs:
                   DB_CONNECTION: sqlite
                   DB_DATABASE: database/database.sqlite
               # run: vendor/bin/phpunit
-              run: echo "${{ env.TEST_ACTIONS_VAL }}"
+              run: echo "${{ secrets.TEST_ACTIONS_VAL }}"
