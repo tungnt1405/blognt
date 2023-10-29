@@ -25,14 +25,11 @@ services:
             - mariadb
             - redis
     queue:
-        build:
-            args:
-                WWWGROUP: '${WWWGROUP}'
         image: sail-8.1/app
         container_name: blognt-queue
         restart: always
-        working_dir: /var/www/html
         environment:
+            # WWWGROUP: '${WWWGROUP}'
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
             XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
